@@ -1660,6 +1660,145 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
      ═══════════════════════════════════════════════════ -->
 
 <!-- 5.1 Lightbox d
+
+
+<!-- Modal detalle: Materiales y Tecnologías -->
+<div class="detail-modal-bg" id="modal-detail" onclick="detailModalBgClick(event)">
+  <div class="detail-modal" id="detail-modal-box">
+    <button class="detail-close" onclick="closeDetailModal()" aria-label="Cerrar">✕</button>
+    <!-- Hero -->
+    <div class="detail-hero" id="detail-hero">
+      <div class="detail-hero-left" id="detail-hero-left">
+        <div class="detail-icon-sym" id="detail-icon-sym"></div>
+        <div class="detail-icon-label" id="detail-icon-label"></div>
+      </div>
+      <div class="detail-hero-img" id="detail-hero-img" style="display:none">
+        <img id="detail-hero-img-el" src="" alt="" onclick="openLightbox(this.src, this.alt)" style="cursor:zoom-in;transition:transform .2s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div class="detail-hero-right">
+        <span class="detail-tipo-badge" id="detail-tipo-badge"></span>
+        <div class="detail-nombre" id="detail-nombre"></div>
+        <div class="detail-categoria" id="detail-categoria"></div>
+      </div>
+    </div>
+    <!-- Body -->
+    <div class="detail-body">
+      <div class="detail-block" id="detail-block-desc">
+        <div class="detail-block-label">Descripción técnica</div>
+        <div class="detail-block-text" id="detail-desc"></div>
+      </div>
+      <div class="detail-block" id="detail-block-sens">
+        <div class="detail-block-label">Sensaciones de juego</div>
+        <div class="detail-block-text sensacion" id="detail-sens"></div>
+      </div>
+      <div class="detail-block" id="detail-block-pitch">
+        <div class="detail-block-label">Argumento de venta</div>
+        <div class="detail-block-text pitch" id="detail-pitch"></div>
+      </div>
+      <div class="detail-block" id="detail-block-vs">
+        <div class="detail-block-label">¿En qué se diferencia?</div>
+        <div class="detail-block-text vs" id="detail-vs"></div>
+      </div>
+      <div class="detail-block" id="detail-block-palas">
+        <div class="detail-block-label">Palas en las que aparece</div>
+        <div id="detail-palas"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal ficha individual de pala -->
+<div class="pala-modal-bg" id="modal-pala" onclick="palaBgClick(event)">
+  <div class="pala-modal" id="pala-modal-box">
+    <button class="pala-modal-close" onclick="closePalaModal()" aria-label="Cerrar">✕</button>
+
+    <!-- Header -->
+    <div class="pala-modal-header">
+      <div class="pala-modal-img-wrap">
+        <img id="pm-img" src="" alt=""
+             onclick="openLightbox(this.src,this.alt)">
+      </div>
+      <div class="pala-modal-headline">
+        <div class="pala-modal-linea">
+          <span class="linea-tag" id="pm-linea-tag"></span>
+        </div>
+        <div class="pala-modal-nombre" id="pm-nombre"></div>
+        <div class="pala-modal-badges" id="pm-badges"></div>
+        <div class="pala-modal-jugador" id="pm-jugador"></div>
+      </div>
+    </div>
+
+    <!-- Body: 2 columns -->
+    <div class="pala-modal-body">
+
+      <!-- Columna izquierda -->
+      <div class="pala-modal-col">
+
+        <div class="pala-modal-section" id="pm-specs-wrap">
+          <div class="pala-modal-section-label">Especificaciones</div>
+          <div class="pala-modal-specs" id="pm-specs"></div>
+        </div>
+
+        <div class="pala-modal-section" id="pm-techs-wrap">
+          <div class="pala-modal-section-label">Tecnologías</div>
+          <div class="pala-modal-techs" id="pm-techs"></div>
+        </div>
+
+        <div class="pala-modal-section" id="pm-mats-wrap">
+          <div class="pala-modal-section-label">Materiales</div>
+          <div id="pm-mats"></div>
+        </div>
+
+        <div class="pala-modal-section" id="pm-nota-wrap" style="display:none">
+          <div class="pala-modal-nota" id="pm-nota"></div>
+        </div>
+
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="pala-modal-col">
+
+        <div class="pala-modal-section" id="pm-perfil-wrap">
+          <div class="pala-modal-section-label">Perfil de jugador</div>
+          <div class="pala-modal-text perfil-jugador" id="pm-perfil"></div>
+        </div>
+
+        <div class="pala-modal-section" id="pm-sensacion-wrap">
+          <div class="pala-modal-section-label">Sensación de juego</div>
+          <div class="pala-modal-text sensacion" id="pm-sensacion"></div>
+        </div>
+
+        <div class="pala-modal-section" id="pm-argumento-wrap">
+          <div class="pala-modal-section-label">Argumento de venta</div>
+          <div class="pala-modal-text argumento" id="pm-argumento"></div>
+        </div>
+
+        <div class="pala-modal-section" id="pm-desc-wrap">
+          <div class="pala-modal-section-label">Descripción técnica</div>
+          <div class="pala-modal-text" id="pm-desc"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer: comparar -->
+    <div class="pala-modal-footer">
+      <div class="pala-modal-footer-msg" id="pm-comp-msg"></div>
+      <button class="pala-modal-btn-go-comp" id="pm-btn-go-comp"
+              style="display:none"
+              onclick="goToComparador()">Ir al comparador →</button>
+      <button class="pala-modal-btn-compare" id="pm-btn-compare"
+              onclick="addToComparador()">
+        ⊕ Comparar esta pala
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
 /* ═══════════════════════════════════════════════════
    JS · 1. DATA
    Modelos de datos del portal Bullpadel 2026.
@@ -5231,141 +5370,5 @@ function togglePwdVisibility(inputId, btn) {
   btn.textContent = show ? '🙈' : '👁';
 }
 </script>
-
-<!-- Modal detalle: Materiales y Tecnologías -->
-<div class="detail-modal-bg" id="modal-detail" onclick="detailModalBgClick(event)">
-  <div class="detail-modal" id="detail-modal-box">
-    <button class="detail-close" onclick="closeDetailModal()" aria-label="Cerrar">✕</button>
-    <!-- Hero -->
-    <div class="detail-hero" id="detail-hero">
-      <div class="detail-hero-left" id="detail-hero-left">
-        <div class="detail-icon-sym" id="detail-icon-sym"></div>
-        <div class="detail-icon-label" id="detail-icon-label"></div>
-      </div>
-      <div class="detail-hero-img" id="detail-hero-img" style="display:none">
-        <img id="detail-hero-img-el" src="" alt="" onclick="openLightbox(this.src, this.alt)" style="cursor:zoom-in;transition:transform .2s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-      </div>
-      <div class="detail-hero-right">
-        <span class="detail-tipo-badge" id="detail-tipo-badge"></span>
-        <div class="detail-nombre" id="detail-nombre"></div>
-        <div class="detail-categoria" id="detail-categoria"></div>
-      </div>
-    </div>
-    <!-- Body -->
-    <div class="detail-body">
-      <div class="detail-block" id="detail-block-desc">
-        <div class="detail-block-label">Descripción técnica</div>
-        <div class="detail-block-text" id="detail-desc"></div>
-      </div>
-      <div class="detail-block" id="detail-block-sens">
-        <div class="detail-block-label">Sensaciones de juego</div>
-        <div class="detail-block-text sensacion" id="detail-sens"></div>
-      </div>
-      <div class="detail-block" id="detail-block-pitch">
-        <div class="detail-block-label">Argumento de venta</div>
-        <div class="detail-block-text pitch" id="detail-pitch"></div>
-      </div>
-      <div class="detail-block" id="detail-block-vs">
-        <div class="detail-block-label">¿En qué se diferencia?</div>
-        <div class="detail-block-text vs" id="detail-vs"></div>
-      </div>
-      <div class="detail-block" id="detail-block-palas">
-        <div class="detail-block-label">Palas en las que aparece</div>
-        <div id="detail-palas"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Modal ficha individual de pala -->
-<div class="pala-modal-bg" id="modal-pala" onclick="palaBgClick(event)">
-  <div class="pala-modal" id="pala-modal-box">
-    <button class="pala-modal-close" onclick="closePalaModal()" aria-label="Cerrar">✕</button>
-
-    <!-- Header -->
-    <div class="pala-modal-header">
-      <div class="pala-modal-img-wrap">
-        <img id="pm-img" src="" alt=""
-             onclick="openLightbox(this.src,this.alt)">
-      </div>
-      <div class="pala-modal-headline">
-        <div class="pala-modal-linea">
-          <span class="linea-tag" id="pm-linea-tag"></span>
-        </div>
-        <div class="pala-modal-nombre" id="pm-nombre"></div>
-        <div class="pala-modal-badges" id="pm-badges"></div>
-        <div class="pala-modal-jugador" id="pm-jugador"></div>
-      </div>
-    </div>
-
-    <!-- Body: 2 columns -->
-    <div class="pala-modal-body">
-
-      <!-- Columna izquierda -->
-      <div class="pala-modal-col">
-
-        <div class="pala-modal-section" id="pm-specs-wrap">
-          <div class="pala-modal-section-label">Especificaciones</div>
-          <div class="pala-modal-specs" id="pm-specs"></div>
-        </div>
-
-        <div class="pala-modal-section" id="pm-techs-wrap">
-          <div class="pala-modal-section-label">Tecnologías</div>
-          <div class="pala-modal-techs" id="pm-techs"></div>
-        </div>
-
-        <div class="pala-modal-section" id="pm-mats-wrap">
-          <div class="pala-modal-section-label">Materiales</div>
-          <div id="pm-mats"></div>
-        </div>
-
-        <div class="pala-modal-section" id="pm-nota-wrap" style="display:none">
-          <div class="pala-modal-nota" id="pm-nota"></div>
-        </div>
-
-      </div>
-
-      <!-- Columna derecha -->
-      <div class="pala-modal-col">
-
-        <div class="pala-modal-section" id="pm-perfil-wrap">
-          <div class="pala-modal-section-label">Perfil de jugador</div>
-          <div class="pala-modal-text perfil-jugador" id="pm-perfil"></div>
-        </div>
-
-        <div class="pala-modal-section" id="pm-sensacion-wrap">
-          <div class="pala-modal-section-label">Sensación de juego</div>
-          <div class="pala-modal-text sensacion" id="pm-sensacion"></div>
-        </div>
-
-        <div class="pala-modal-section" id="pm-argumento-wrap">
-          <div class="pala-modal-section-label">Argumento de venta</div>
-          <div class="pala-modal-text argumento" id="pm-argumento"></div>
-        </div>
-
-        <div class="pala-modal-section" id="pm-desc-wrap">
-          <div class="pala-modal-section-label">Descripción técnica</div>
-          <div class="pala-modal-text" id="pm-desc"></div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Footer: comparar -->
-    <div class="pala-modal-footer">
-      <div class="pala-modal-footer-msg" id="pm-comp-msg"></div>
-      <button class="pala-modal-btn-go-comp" id="pm-btn-go-comp"
-              style="display:none"
-              onclick="goToComparador()">Ir al comparador →</button>
-      <button class="pala-modal-btn-compare" id="pm-btn-compare"
-              onclick="addToComparador()">
-        ⊕ Comparar esta pala
-      </button>
-    </div>
-
-  </div>
-</div>
-
 </body>
 </html>
