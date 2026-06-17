@@ -5345,7 +5345,20 @@ function togglePwdVisibility(inputId, btn) {
   input.type = show ? 'text' : 'password';
   btn.textContent = show ? '🙈' : '👁';
 }
-s.', 'error');
+
+/* ── Delete user ──────────────────────────────────────────────────────────────── */
+
+function adminDelete(id) {
+  const users = getUsers();
+  const u     = users.find(u => u.id === id);
+  if (!u) return;
+
+  if (u.id === currentUser.id) {
+    adminShowAlert('alert-table', 'No podés eliminar tu propio usuario.', 'error');
+    return;
+  }
+  if (currentUser.rol !== 'owner') {
+    adminShowAlert('alert-table', 'No tenés permisos para eliminar usuarios.', 'error');
     return;
   }
 
@@ -5369,6 +5382,7 @@ function togglePwdVisibility(inputId, btn) {
   input.type = show ? 'text' : 'password';
   btn.textContent = show ? '🙈' : '👁';
 }
+
 </script>
 </body>
 </html>
