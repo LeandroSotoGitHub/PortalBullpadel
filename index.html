@@ -292,7 +292,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .step-quote{background:var(--gris-claro);border-left:3px solid var(--rojo);padding:10px 14px;border-radius:0 var(--radio) var(--radio) 0;font-size:13px;color:#444;line-height:1.6;font-style:italic;margin-top:10px}
 .step-quote strong{font-style:normal;color:var(--negro)}
 .step-say{background:#fff;border:1px solid var(--gris-borde);border-radius:var(--radio);padding:10px 14px;font-size:13px;color:#333;line-height:1.5;display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
-.step-say::before{content:'💬';font-size:14px;flex-shrink:0;font-style:normal}
+.step-say::before{content:'\"';font-size:18px;font-weight:900;color:var(--rojo);flex-shrink:0;font-style:normal}
 .step-warn{background:#fff5f5;border:1px solid #fecaca;border-radius:var(--radio);padding:10px 14px;font-size:13px;color:#7f1d1d;line-height:1.5;display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
 .step-warn::before{content:'✗';font-size:14px;flex-shrink:0;font-weight:700}
 
@@ -715,9 +715,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pwd-wrap { position: relative; }
 .pwd-wrap input { width: 100%; padding-right: 40px; box-sizing: border-box; }
 .pwd-eye {
-  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
   background: none; border: none; cursor: pointer;
-  font-size: 16px; color: #aaa; line-height: 1; padding: 2px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: #aaa; padding: 3px 5px;
   transition: color .15s;
 }
 .pwd-eye:hover { color: var(--negro); }
@@ -1205,6 +1206,712 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   border: none;
 }
 
+
+/* ═══════════════════════════════════════════════════
+   RUN 9B — Progreso, Checklist y Quiz
+   ═══════════════════════════════════════════════════ */
+
+/* Barra de progreso general */
+.cap-progress-bar-wrap {
+  background: #fff;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.cap-progress-label {
+  font-size: 12px; font-weight: 700; color: var(--negro);
+  white-space: nowrap; flex-shrink: 0;
+}
+.cap-progress-track {
+  flex: 1; height: 8px; background: var(--gris-claro);
+  border-radius: 4px; overflow: hidden;
+}
+.cap-progress-fill {
+  height: 100%; background: var(--rojo);
+  border-radius: 4px; transition: width .4s;
+}
+.cap-progress-pct {
+  font-size: 12px; font-weight: 700; color: var(--rojo);
+  white-space: nowrap; flex-shrink: 0; min-width: 36px; text-align: right;
+}
+
+/* Sidebar: module progress */
+.cap-mod-progress {
+  font-size: 10px; color: #666; margin-top: 2px;
+}
+.cap-mod-btn.active .cap-mod-progress { color: #aaa; }
+
+/* Sidebar: unit completion indicator */
+.cap-unit-btn {
+  position: relative; padding-right: 28px;
+}
+.cap-unit-check {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-size: 12px; font-weight: 700;
+}
+.cap-unit-check.done  { color: #4ade80; }
+.cap-unit-check.todo  { color: #555; }
+
+/* Mark complete button */
+.cap-mark-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--gris-claro);
+  border-radius: var(--radio-lg);
+  margin-top: 20px;
+  border: 1px solid var(--gris-borde);
+}
+.cap-mark-status {
+  font-size: 13px; color: #555;
+  display: flex; align-items: center; gap: 6px;
+}
+.cap-mark-status.done { color: #166534; font-weight: 600; }
+.cap-mark-btn {
+  padding: 7px 16px; font-size: 12px; font-weight: 700;
+  border-radius: var(--radio); border: none; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.cap-mark-btn.mark    { background: var(--rojo); color: #fff; }
+.cap-mark-btn.mark:hover { background: #a80e25; }
+.cap-mark-btn.unmark  { background: #fff; color: #888;
+                         border: 1px solid var(--gris-borde); }
+.cap-mark-btn.unmark:hover { border-color: #aaa; color: var(--negro); }
+
+/* Checklist */
+.cap-checklist-block {
+  margin-top: 20px;
+  background: #fff;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+}
+.cap-checklist-head {
+  padding: 10px 16px;
+  background: var(--gris-claro);
+  border-bottom: 1px solid var(--gris-borde);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cap-checklist-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: #777;
+}
+.cap-checklist-count {
+  font-size: 11px; font-weight: 700; color: var(--rojo);
+}
+.cap-checklist-items {
+  padding: 8px 0;
+}
+.cap-checklist-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 16px; cursor: pointer;
+  transition: background .1s;
+}
+.cap-checklist-item:hover { background: #fafafa; }
+.cap-checklist-cb {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 2px solid var(--gris-borde);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  transition: all .15s; background: #fff;
+}
+.cap-checklist-item.checked .cap-checklist-cb {
+  background: var(--rojo); border-color: var(--rojo); color: #fff;
+}
+.cap-checklist-item.checked .cap-checklist-cb::after { content: '✓'; font-size: 11px; }
+.cap-checklist-text {
+  font-size: 13px; color: #444; line-height: 1.5;
+}
+.cap-checklist-item.checked .cap-checklist-text {
+  color: #999; text-decoration: line-through;
+}
+
+/* Quiz */
+.cap-quiz-block {
+  margin-top: 28px;
+  background: #fff;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+}
+.cap-quiz-head {
+  padding: 14px 20px;
+  background: var(--negro);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.cap-quiz-title {
+  font-size: 13px; font-weight: 700; color: #fff;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.cap-quiz-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 10px;
+  background: var(--rojo); color: #fff; border-radius: 20px;
+}
+.cap-quiz-body { padding: 20px; }
+.cap-quiz-prev-result {
+  padding: 10px 14px;
+  background: var(--gris-claro);
+  border-radius: var(--radio);
+  margin-bottom: 16px;
+  font-size: 13px; color: #555;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.cap-quiz-prev-score { font-weight: 700; color: var(--rojo); }
+.cap-quiz-question {
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--gris-borde);
+}
+.cap-quiz-question:last-of-type { border-bottom: none; }
+.cap-quiz-q-text {
+  font-size: 14px; font-weight: 600; color: var(--negro);
+  margin-bottom: 10px; line-height: 1.5;
+}
+.cap-quiz-q-num {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: #aaa; margin-bottom: 4px;
+}
+.cap-quiz-options { display: flex; flex-direction: column; gap: 7px; }
+.cap-quiz-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  cursor: pointer; transition: all .15s; font-size: 13px; color: #444;
+  background: #fff;
+}
+.cap-quiz-option:hover:not(.answered) { border-color: var(--rojo); background: #fff5f5; }
+.cap-quiz-option.selected { border-color: var(--rojo); background: #fff5f5; }
+.cap-quiz-option.correct  { border-color: #16A34A; background: #f0fdf4; color: #14532D; font-weight: 600; }
+.cap-quiz-option.incorrect{ border-color: #dc2626; background: #fef2f2; color: #7f1d1d; }
+.cap-quiz-option.show-correct { border-color: #16A34A; background: #f0fdf4; }
+.cap-quiz-option-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--gris-borde);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 10px; font-weight: 700;
+  transition: all .15s;
+}
+.cap-quiz-option.selected .cap-quiz-option-dot { border-color: var(--rojo); background: var(--rojo); color: #fff; }
+.cap-quiz-option.correct  .cap-quiz-option-dot { border-color: #16A34A; background: #16A34A; color: #fff; }
+.cap-quiz-option.incorrect .cap-quiz-option-dot { border-color: #dc2626; background: #dc2626; color: #fff; }
+.cap-quiz-explanation {
+  margin-top: 8px; font-size: 12px; color: #555; line-height: 1.5;
+  padding: 8px 12px; background: var(--gris-claro);
+  border-radius: var(--radio); border-left: 3px solid var(--gris-borde); display: none;
+}
+.cap-quiz-explanation.visible { display: block; }
+.cap-quiz-explanation.correct { border-left-color: #16A34A; }
+.cap-quiz-explanation.incorrect { border-left-color: #dc2626; }
+.cap-quiz-footer {
+  margin-top: 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.cap-quiz-result {
+  font-size: 14px; font-weight: 700; color: var(--negro);
+}
+.cap-quiz-result .score { color: var(--rojo); }
+.cap-quiz-btn {
+  padding: 9px 18px; font-size: 13px; font-weight: 700;
+  border-radius: var(--radio); border: none; cursor: pointer;
+  transition: background .15s;
+}
+.cap-quiz-btn.submit { background: var(--rojo); color: #fff; }
+.cap-quiz-btn.submit:hover { background: #a80e25; }
+.cap-quiz-btn.retry  { background: var(--negro); color: #fff; }
+.cap-quiz-btn.retry:hover  { background: #333; }
+
+
+/* ── Mobile nav hamburger ── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  padding: 6px; margin-left: auto; flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: #fff; border-radius: 2px; transition: all .2s;
+}
+@media (max-width: 700px) {
+  .nav-hamburger { display: flex; }
+  .nav-bar {
+    display: none;
+    flex-direction: column;
+    padding: 8px 0;
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: var(--negro);
+    border-bottom: 2px solid var(--rojo);
+    z-index: 99;
+  }
+  .nav-bar.open { display: flex; }
+  .nav-btn {
+    padding: 12px 24px; text-align: left;
+    border-bottom: 1px solid #1a1a1a; border-bottom-width: 1px;
+    border-radius: 0; font-size: 14px;
+  }
+  .nav-btn.active { color: var(--rojo); border-bottom-color: transparent; }
+  .header { position: sticky; }
+}
+
+
+/* Quiz toggle */
+.cap-quiz-head { cursor: pointer; user-select: none; }
+.cap-quiz-head:hover { background: #1a1a1a; }
+.cap-quiz-toggle-icon {
+  font-size: 14px; color: #aaa; transition: transform .2s; flex-shrink: 0;
+}
+.cap-quiz-body { display: none; }
+.cap-quiz-block.open .cap-quiz-body { display: block; }
+.cap-quiz-block.open .cap-quiz-toggle-icon { transform: rotate(180deg); }
+
+
+/* ═══════════════════════════════════════════════════
+   RECOMENDADOR BULLPADEL
+   ═══════════════════════════════════════════════════ */
+.rec-intro { margin-bottom: 24px; }
+.rec-intro p { font-size: 14px; color: #555; line-height: 1.6; }
+
+/* Pregunta card */
+.rec-questions { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
+.rec-q { background: #fff; border: 1px solid var(--gris-borde); border-radius: var(--radio-lg); overflow: hidden; }
+.rec-q-head {
+  padding: 12px 16px; background: var(--gris-claro);
+  border-bottom: 1px solid var(--gris-borde);
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: #777;
+  display: flex; align-items: center; gap: 8px;
+}
+.rec-q-num {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--rojo);
+  color: #fff; font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.rec-options {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 16px;
+}
+.rec-option {
+  padding: 7px 14px; font-size: 13px; font-weight: 500;
+  border: 1.5px solid var(--gris-borde); border-radius: 20px;
+  background: #fff; color: #555; cursor: pointer;
+  transition: all .15s; user-select: none;
+}
+.rec-option:hover { border-color: var(--rojo); color: var(--rojo); background: #fff5f5; }
+.rec-option.selected {
+  border-color: var(--rojo); background: var(--rojo); color: #fff; font-weight: 700;
+}
+
+/* Actions */
+.rec-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+.rec-btn-primary {
+  padding: 11px 24px; font-size: 14px; font-weight: 700;
+  background: var(--rojo); color: #fff; border: none;
+  border-radius: var(--radio); cursor: pointer; transition: background .15s;
+}
+.rec-btn-primary:hover { background: #a80e25; }
+.rec-btn-secondary {
+  padding: 11px 20px; font-size: 13px; font-weight: 600;
+  background: #fff; color: #777; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio); cursor: pointer; transition: all .15s;
+}
+.rec-btn-secondary:hover { border-color: #aaa; color: var(--negro); }
+
+/* Results */
+.rec-results-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  padding-bottom: 14px; border-bottom: 2px solid var(--rojo);
+}
+.rec-results-title { font-size: 16px; font-weight: 800; color: var(--negro); }
+.rec-results-sub   { font-size: 13px; color: #888; margin-top: 2px; }
+
+.rec-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+.rec-card {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); overflow: hidden;
+  transition: box-shadow .2s;
+}
+.rec-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.09); }
+.rec-card.top { border-top: 3px solid var(--rojo); }
+.rec-card.alt { border-top: 3px solid #555; }
+
+.rec-card-rank {
+  padding: 8px 14px;
+  background: var(--gris-claro);
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: #888;
+  display: flex; align-items: center; gap: 6px;
+}
+.rec-card-rank.top { background: #FDE8EA; color: var(--rojo); }
+
+.rec-card-img-wrap {
+  height: 140px; background: #f9f9f9;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--gris-borde); padding: 12px;
+}
+.rec-card-img-wrap img { max-height: 120px; max-width: 100%; object-fit: contain; }
+.rec-card-img-placeholder {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--gris-borde); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 24px; color: #aaa;
+}
+
+.rec-card-body { padding: 14px 16px; }
+.rec-card-linea { margin-bottom: 6px; }
+.rec-card-nombre { font-size: 16px; font-weight: 800; color: var(--negro); margin-bottom: 8px; }
+
+.rec-card-specs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px;
+  margin-bottom: 10px;
+}
+.rec-card-spec { font-size: 11px; color: #888; }
+.rec-card-spec strong { color: #555; font-weight: 600; }
+
+.rec-card-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.rec-chip {
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 20px; background: #FDE8EA; color: var(--rojo);
+  letter-spacing: .04em;
+}
+.rec-chip.neutral { background: #f0f0f0; color: #666; }
+
+.rec-card-why {
+  font-size: 12px; color: #555; line-height: 1.6;
+  background: var(--gris-claro); padding: 10px 12px;
+  border-radius: var(--radio); margin-bottom: 10px;
+  border-left: 3px solid var(--gris-borde);
+}
+.rec-card-why.top { border-left-color: var(--rojo); }
+
+.rec-card-frase {
+  font-size: 12px; color: #444; font-style: italic;
+  line-height: 1.55; margin-bottom: 12px;
+}
+
+.rec-card-actions { display: flex; gap: 8px; }
+.rec-card-btn {
+  flex: 1; padding: 8px 10px; font-size: 12px; font-weight: 700;
+  border-radius: var(--radio); border: none; cursor: pointer;
+  transition: all .15s; text-align: center;
+}
+.rec-card-btn.primary { background: var(--rojo); color: #fff; }
+.rec-card-btn.primary:hover { background: #a80e25; }
+.rec-card-btn.secondary {
+  background: #fff; color: #555;
+  border: 1px solid var(--gris-borde);
+}
+.rec-card-btn.secondary:hover { border-color: #aaa; color: var(--negro); }
+
+/* Empty / no answers */
+.rec-empty {
+  padding: 48px 24px; text-align: center;
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+}
+.rec-empty-icon { font-size: 36px; margin-bottom: 12px; }
+.rec-empty-title { font-size: 15px; font-weight: 700; color: var(--negro); margin-bottom: 6px; }
+.rec-empty-sub   { font-size: 13px; color: #888; }
+
+@media(max-width:600px) { .rec-cards { grid-template-columns: 1fr; } }
+
+
+/* Recomendador Run 10B additions */
+.rec-perfil-resumen {
+  background: var(--negro); color: #ccc;
+  border-radius: var(--radio-lg); padding: 12px 18px;
+  font-size: 12px; line-height: 1.6; margin-bottom: 20px;
+}
+.rec-perfil-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--rojo); margin-right: 8px;
+}
+.rec-card.premium { border-top-color: #d97706; }
+.rec-card-rank.premium { background: #fffbeb; color: #92400e; }
+.rec-chip.premium { background: #fffbeb; color: #92400e; }
+
+
+/* Botón comparar las 3 recomendaciones */
+.rec-compare-all-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; font-size: 13px; font-weight: 700;
+  background: var(--negro); color: #fff;
+  border: 2px solid var(--rojo); border-radius: var(--radio);
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.rec-compare-all-btn:hover { background: var(--rojo); border-color: var(--rojo); }
+.rec-results-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   HOME / DASHBOARD
+   ═══════════════════════════════════════════════════ */
+
+/* Hero */
+.home-hero {
+  background: var(--negro);
+  border-radius: var(--radio-lg);
+  padding: 40px 40px 36px;
+  margin-bottom: 28px;
+  border-bottom: 3px solid var(--rojo);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.home-hero-eyebrow {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .14em; color: var(--rojo); margin-bottom: 12px;
+}
+.home-hero-title {
+  font-size: 28px; font-weight: 900; color: #fff;
+  line-height: 1.15; margin-bottom: 10px; letter-spacing: -.02em;
+}
+.home-hero-sub {
+  font-size: 14px; color: #aaa; line-height: 1.6;
+  max-width: 520px; margin-bottom: 24px;
+}
+.home-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.home-hero-btn {
+  padding: 11px 22px; font-size: 13px; font-weight: 700;
+  border-radius: var(--radio); border: none; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.home-hero-btn.primary { background: var(--rojo); color: #fff; }
+.home-hero-btn.primary:hover { background: #a80e25; }
+.home-hero-btn.ghost {
+  background: transparent; color: #aaa;
+  border: 1px solid #333;
+}
+.home-hero-btn.ghost:hover { border-color: #666; color: #fff; }
+.home-hero-badge {
+  background: var(--rojo); color: #fff;
+  border-radius: 12px; padding: 6px 16px;
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; flex-shrink: 0; align-self: flex-start;
+}
+
+/* Stats bar */
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px; margin-bottom: 28px;
+}
+.home-stat {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); padding: 16px; text-align: center;
+}
+.home-stat-num {
+  font-size: 30px; font-weight: 900; color: var(--rojo);
+  line-height: 1; margin-bottom: 4px;
+}
+.home-stat-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: #999;
+}
+
+/* Section label */
+.home-section-label {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: #aaa; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.home-section-label::after {
+  content:''; flex:1; height:1px; background: var(--gris-borde);
+}
+
+/* Quick access cards */
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px; margin-bottom: 28px;
+}
+.home-card {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); padding: 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: box-shadow .15s, border-color .15s; cursor: pointer;
+}
+.home-card:hover {
+  box-shadow: 0 4px 18px rgba(0,0,0,.08);
+  border-color: var(--rojo);
+}
+.home-card-icon {
+  font-size: 10px; font-weight: 900; letter-spacing: .04em;
+  color: var(--rojo); font-family: 'Arial Black', Arial, sans-serif;
+  width: 44px; height: 44px;
+  background: #FDE8EA; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.home-card-name {
+  font-size: 13px; font-weight: 800; color: var(--negro);
+}
+.home-card-desc {
+  font-size: 12px; color: #777; line-height: 1.55; flex: 1;
+}
+.home-card-btn {
+  align-self: flex-start; margin-top: 4px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700;
+  background: var(--negro); color: #fff;
+  border: none; border-radius: var(--radio); cursor: pointer;
+  transition: background .15s;
+}
+.home-card-btn:hover { background: var(--rojo); }
+
+/* Ruta sugerida */
+.home-ruta {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); overflow: hidden;
+  margin-bottom: 28px;
+}
+.home-ruta-head {
+  padding: 14px 20px; background: var(--negro);
+  display: flex; align-items: center; gap: 10px;
+}
+.home-ruta-title {
+  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .09em; color: #fff;
+}
+.home-ruta-steps {
+  display: flex; flex-wrap: wrap;
+  padding: 20px;
+  gap: 0;
+}
+.home-ruta-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 16px 10px 0;
+  flex: 1 1 200px; min-width: 180px;
+  position: relative;
+}
+.home-ruta-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--rojo); color: #fff;
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.home-ruta-text { font-size: 13px; color: #444; line-height: 1.5; padding-top: 4px; }
+
+@media(max-width:600px) {
+  .home-hero { padding: 28px 20px 24px; }
+  .home-hero-title { font-size: 22px; }
+  .home-cards { grid-template-columns: 1fr; }
+  .home-ruta-steps { flex-direction: column; }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ONBOARDING MODAL
+   ═══════════════════════════════════════════════════ */
+.ob-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 9500;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.ob-bg.open { display: flex; }
+
+.ob-modal {
+  background: #fff;
+  border-radius: var(--radio-lg);
+  width: 100%; max-width: 520px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.3);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* Header strip */
+.ob-header {
+  background: var(--negro);
+  padding: 22px 28px 18px;
+  border-bottom: 3px solid var(--rojo);
+}
+.ob-step-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--rojo); margin-bottom: 8px;
+}
+.ob-title {
+  font-size: 19px; font-weight: 900; color: #fff;
+  line-height: 1.2; letter-spacing: -.01em;
+}
+
+/* Step icon */
+.ob-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: #FDE8EA;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 900; color: var(--rojo);
+  letter-spacing: .04em; margin-bottom: 14px;
+  font-family: 'Arial Black', Arial, sans-serif;
+}
+
+/* Body */
+.ob-body {
+  padding: 24px 28px 20px;
+  flex: 1;
+}
+.ob-text {
+  font-size: 14px; color: #444; line-height: 1.7;
+}
+
+/* Progress dots */
+.ob-dots {
+  display: flex; gap: 6px; align-items: center;
+  padding: 0 28px 4px;
+}
+.ob-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gris-borde); transition: all .2s;
+}
+.ob-dot.active { background: var(--rojo); width: 22px; border-radius: 4px; }
+
+/* Footer */
+.ob-footer {
+  padding: 16px 28px 22px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; border-top: 1px solid var(--gris-borde);
+}
+.ob-footer-left { display: flex; gap: 8px; align-items: center; }
+.ob-btn {
+  padding: 9px 18px; font-size: 13px; font-weight: 700;
+  border-radius: var(--radio); border: none; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.ob-btn-primary { background: var(--rojo); color: #fff; }
+.ob-btn-primary:hover { background: #a80e25; }
+.ob-btn-secondary {
+  background: #fff; color: #555;
+  border: 1px solid var(--gris-borde);
+}
+.ob-btn-secondary:hover { border-color: #aaa; color: var(--negro); }
+.ob-btn-ghost {
+  background: none; border: none; color: #aaa;
+  font-size: 12px; cursor: pointer; padding: 4px;
+}
+.ob-btn-ghost:hover { color: #666; }
+
+/* Home trigger button */
+.home-ob-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: #aaa;
+  background: none; border: none; cursor: pointer;
+  padding: 0; transition: color .15s; text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.home-ob-trigger:hover { color: var(--negro); }
+
+@media(max-width: 560px) {
+  .ob-modal { border-radius: 0; max-width: 100%; min-height: 100dvh; }
+  .ob-bg { padding: 0; align-items: flex-end; }
+}
+
 </style>
 </head>
 <body>
@@ -1237,7 +1944,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="login-field">
         <label for="login-password">Contraseña</label>
         <div class="pwd-wrap"><input id="login-password" type="password" placeholder="••••••••"
-               autocomplete="current-password" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('login-password', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">👁</button></div>
+               autocomplete="current-password" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('login-password', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
       </div>
       <div class="login-error" id="login-error"></div>
       <button class="login-btn" type="submit">Ingresar</button>
@@ -1260,6 +1967,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </svg>
   </div>
   <span class="header-title">Bullpadel 2026</span>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
   <div class="session-bar" id="session-bar" style="display:none">
     <div class="session-user">
       <div class="session-avatar" id="session-avatar">?</div>
@@ -1288,13 +1998,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- ═══════════════════════════════════════════════════
      HTML · 3. NAVEGACIÓN PRINCIPAL
      ═══════════════════════════════════════════════════ -->
-<nav class="nav-bar">
-  <button class="nav-btn active" onclick="showSection('palas',this)">Catálogo de palas</button>
+<nav class="nav-bar" id="nav-bar">
+  <button class="nav-btn active" onclick="showSection('inicio',this)">Inicio</button>
+  <button class="nav-btn" onclick="showSection('palas',this)">Catálogo de palas</button>
   <button class="nav-btn" onclick="showSection('glosario',this)">Materiales y tecnologías</button>
   <button class="nav-btn" onclick="showSection('comparador',this)">Comparador</button>
   <button class="nav-btn" onclick="showSection('tabla',this)">Vista gama completa</button>
   <button class="nav-btn" onclick="showSection('guia',this)">Guía de venta</button>
   <button class="nav-btn" onclick="showSection('capacitaciones',this)">Capacitaciones</button>
+  <button class="nav-btn" onclick="showSection('recomendador',this)">Recomendador</button>
   <button class="nav-btn" id="nav-admin" onclick="showSection('admin',this)">Administración</button>
 </nav>
 
@@ -1303,8 +2015,101 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
      ═══════════════════════════════════════════════════ -->
 <main class="main">
 
+  <!-- Home / Dashboard -->
+  <section id="sec-inicio" class="section visible">
+
+    <!-- Hero -->
+    <div class="home-hero">
+      <div>
+        <div class="home-hero-eyebrow">Portal técnico · Distribuidores</div>
+        <div class="home-hero-title">Portal Bullpadel 2026</div>
+        <div class="home-hero-sub">Herramienta de consulta, capacitación y recomendación para vendedores y distribuidores. Accedé al catálogo técnico, compará palas, capacitáte y encontrá la recomendación adecuada según el perfil de cada jugador.</div>
+        <div class="home-hero-actions">
+          <button class="home-hero-btn primary" onclick="showSection('recomendador', this)">Ir al recomendador</button>
+          <button class="home-hero-btn ghost" onclick="showSection('palas', this)">Ver catálogo</button>
+          <button class="home-hero-btn ghost" onclick="showSection('capacitaciones', this)">Capacitaciones</button>
+        </div>
+      </div>
+      <div class="home-hero-badge">Temporada 2026</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="home-stats" id="home-stats"></div>
+
+    <!-- Accesos rápidos -->
+    <div class="home-section-label">Accesos rápidos</div>
+    <div class="home-cards">
+
+      <div class="home-card" onclick="showSection('recomendador',null)">
+        <div class="home-card-icon">REC</div>
+        <div class="home-card-name">Recomendador Bullpadel</div>
+        <div class="home-card-desc">Respondé algunas preguntas y encontrá las palas más adecuadas según nivel, estilo y necesidad del jugador.</div>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSection('recomendador',null)">Usar recomendador</button>
+      </div>
+
+      <div class="home-card" onclick="showSection('palas',null)">
+        <div class="home-card-icon">CAT</div>
+        <div class="home-card-name">Catálogo de palas</div>
+        <div class="home-card-desc">Consultá fichas técnicas, materiales, tecnologías, sensación de juego y perfil recomendado.</div>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSection('palas',null)">Ver catálogo</button>
+      </div>
+
+      <div class="home-card" onclick="showSection('comparador',null)">
+        <div class="home-card-icon">VS</div>
+        <div class="home-card-name">Comparador</div>
+        <div class="home-card-desc">Compará hasta 3 palas lado a lado para entender diferencias clave entre modelos.</div>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSection('comparador',null)">Ir al comparador</button>
+      </div>
+
+      <div class="home-card" onclick="showSection('capacitaciones',null)">
+        <div class="home-card-icon">CAP</div>
+        <div class="home-card-name">Capacitaciones</div>
+        <div class="home-card-desc">Formación comercial con videos, infografías, checklist, progreso y quiz por módulo.</div>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSection('capacitaciones',null)">Ver capacitaciones</button>
+      </div>
+
+      <div class="home-card" onclick="showSection('glosario',null)">
+        <div class="home-card-icon">MAT</div>
+        <div class="home-card-name">Materiales y tecnologías</div>
+        <div class="home-card-desc">Entendé cada material y tecnología en lenguaje simple para explicarlo mejor en el mostrador.</div>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSection('glosario',null)">Explorar materiales</button>
+      </div>
+
+      <div class="home-card" onclick="showSection('guia',null)">
+        <div class="home-card-icon">GVT</div>
+        <div class="home-card-name">Guía de venta</div>
+        <div class="home-card-desc">Recorré una metodología simple para asesorar mejor al cliente desde el primer contacto.</div>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSection('guia',null)">Ver guía</button>
+      </div>
+
+    </div>
+
+    <!-- Ruta sugerida -->
+    <div class="home-section-label">Para vendedores y distribuidores</div>
+    <div class="home-ruta">
+      <div class="home-ruta-head">
+        <div class="home-ruta-title">Ruta sugerida para vendedores</div>
+      </div>
+      <div class="home-ruta-steps">
+        <div class="home-ruta-step"><div class="home-ruta-num">1</div><div class="home-ruta-text">Capacitáte con los módulos principales del portal.</div></div>
+        <div class="home-ruta-step"><div class="home-ruta-num">2</div><div class="home-ruta-text">Usá el recomendador según el perfil del jugador.</div></div>
+        <div class="home-ruta-step"><div class="home-ruta-num">3</div><div class="home-ruta-text">Compará las opciones recomendadas en el comparador.</div></div>
+        <div class="home-ruta-step"><div class="home-ruta-num">4</div><div class="home-ruta-text">Abrí la ficha técnica de la pala elegida.</div></div>
+        <div class="home-ruta-step"><div class="home-ruta-num">5</div><div class="home-ruta-text">Cerrá la recomendación con un argumento claro y personalizado.</div></div>
+      </div>
+    </div>
+
+    <!-- Onboarding trigger -->
+    <div style="text-align:center;padding:8px 0 4px">
+      <button class="home-ob-trigger" onclick="openOnboarding()">
+        Ver bienvenida nuevamente
+      </button>
+    </div>
+
+  </section>
+
   <!-- 4.1 Catálogo de palas -->
-  <section id="sec-palas" class="section visible">
+  <section id="sec-palas" class="section">
     <div class="sec-head">
       <h1>Catálogo de palas 2026</h1>
       <p>Fichas técnicas completas con materiales, tecnologías y perfil de jugador</p>
@@ -1401,7 +2206,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
     <!-- Descargar catálogo técnico -->
     <div class="download-block">
-      <div class="download-block-icon">📋</div>
+      <div class="download-block-icon" style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--rojo)">CSV</div>
       <div class="download-block-body">
         <div class="download-block-title">Descargar catálogo técnico</div>
         <div class="download-block-desc">
@@ -1450,6 +2255,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <h1>Capacitaciones</h1>
       <p>Formación completa para el equipo de ventas Bullpadel — de la marca al mostrador</p>
     </div>
+    <div class="cap-progress-bar-wrap" id="cap-overall-progress" style="display:none">
+      <div class="cap-progress-label" id="cap-progress-label">Progreso del curso</div>
+      <div class="cap-progress-track"><div class="cap-progress-fill" id="cap-progress-fill" style="width:0%"></div></div>
+      <div class="cap-progress-pct" id="cap-progress-pct">0%</div>
+    </div>
     <div class="cap-layout">
       <div class="cap-sidebar" id="cap-sidebar"></div>
       <div class="cap-main" id="cap-main"></div>
@@ -1463,7 +2273,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <p>Gestión de usuarios del portal Bullpadel</p>
     </div>
     <div id="admin-restricted" class="admin-restricted" style="display:none">
-      <div class="admin-restricted-icon">🔒</div>
+      <div class="admin-restricted-icon" style="font-size:32px;font-weight:900;color:var(--rojo)">✕</div>
       <h2>Acceso restringido</h2>
       <p>No tenés permisos para acceder a esta sección.</p>
     </div>
@@ -1499,7 +2309,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
               <div class="form-row">
                 <div class="form-field">
                   <label>Contraseña <span class="form-required">*</span></label>
-                  <div class="pwd-wrap"><input type="password" id="cu-password" placeholder="Mínimo 6 caracteres" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('cu-password', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">👁</button></div>
+                  <div class="pwd-wrap"><input type="password" id="cu-password" placeholder="Mínimo 6 caracteres" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('cu-password', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
                 </div>
                 <div class="form-field">
                   <label>Rol <span class="form-required">*</span></label>
@@ -1635,12 +2445,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="form-field">
             <label>Nueva contraseña <span class="form-required">*</span></label>
             <div class="pwd-wrap"><input type="password" id="pwd-new"
-                   placeholder="Mínimo 6 caracteres" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwd-new', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">👁</button></div>
+                   placeholder="Mínimo 6 caracteres" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwd-new', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
           </div>
           <div class="form-field">
             <label>Confirmar contraseña <span class="form-required">*</span></label>
             <div class="pwd-wrap"><input type="password" id="pwd-confirm"
-                   placeholder="Repetir contraseña" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwd-confirm', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">👁</button></div>
+                   placeholder="Repetir contraseña" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwd-confirm', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
           </div>
         </form>
       </div>
@@ -1652,6 +2462,78 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
   </div>
+
+
+  <!-- Recomendador Bullpadel -->
+  <section id="sec-recomendador" class="section">
+    <div class="sec-head">
+      <h1>Recomendador Bullpadel</h1>
+      <p>Respondé algunas preguntas y encontrá las palas más adecuadas según nivel, estilo y necesidad del jugador.</p>
+    </div>
+    <div class="rec-questions">
+      <!-- Q1 -->
+      <div class="rec-q">
+        <div class="rec-q-head"><div class="rec-q-num">1</div>Nivel del jugador</div>
+        <div class="rec-options" id="rec-q1">
+          <div class="rec-option" onclick="recSelect(1,'Iniciación',this)">Iniciación</div>
+          <div class="rec-option" onclick="recSelect(1,'Amateur',this)">Amateur</div>
+          <div class="rec-option" onclick="recSelect(1,'Intermedio',this)">Intermedio</div>
+          <div class="rec-option" onclick="recSelect(1,'Avanzado',this)">Avanzado</div>
+          <div class="rec-option" onclick="recSelect(1,'Profesional',this)">Profesional / competitivo</div>
+          <div class="rec-option" onclick="recSelect(1,'Junior',this)">Junior</div>
+        </div>
+      </div>
+      <!-- Q2 -->
+      <div class="rec-q">
+        <div class="rec-q-head"><div class="rec-q-num">2</div>¿Qué busca priorizar?</div>
+        <div class="rec-options" id="rec-q2">
+          <div class="rec-option" onclick="recSelect(2,'potencia',this)">Potencia</div>
+          <div class="rec-option" onclick="recSelect(2,'control',this)">Control</div>
+          <div class="rec-option" onclick="recSelect(2,'confort',this)">Confort</div>
+          <div class="rec-option" onclick="recSelect(2,'polivalencia',this)">Polivalencia</div>
+          <div class="rec-option" onclick="recSelect(2,'salida',this)">Salida de bola</div>
+          <div class="rec-option" onclick="recSelect(2,'manejabilidad',this)">Manejabilidad</div>
+        </div>
+      </div>
+      <!-- Q3 -->
+      <div class="rec-q">
+        <div class="rec-q-head"><div class="rec-q-num">3</div>Estilo de juego</div>
+        <div class="rec-options" id="rec-q3">
+          <div class="rec-option" onclick="recSelect(3,'Ofensivo',this)">Ofensivo</div>
+          <div class="rec-option" onclick="recSelect(3,'Defensivo',this)">Defensivo</div>
+          <div class="rec-option" onclick="recSelect(3,'Polivalente',this)">Polivalente</div>
+          <div class="rec-option" onclick="recSelect(3,'no_sabe',this)">No lo tiene claro</div>
+        </div>
+      </div>
+      <!-- Q4 -->
+      <div class="rec-q">
+        <div class="rec-q-head"><div class="rec-q-num">4</div>Sensación preferida</div>
+        <div class="rec-options" id="rec-q4">
+          <div class="rec-option" onclick="recSelect(4,'facil',this)">Fácil de manejar</div>
+          <div class="rec-option" onclick="recSelect(4,'equilibrada',this)">Equilibrada</div>
+          <div class="rec-option" onclick="recSelect(4,'firme',this)">Firme / precisa</div>
+          <div class="rec-option" onclick="recSelect(4,'comoda',this)">Cómoda / menos exigente</div>
+        </div>
+      </div>
+      <!-- Q5 -->
+      <div class="rec-q">
+        <div class="rec-q-head"><div class="rec-q-num">5</div>Necesidad puntual</div>
+        <div class="rec-options" id="rec-q5">
+          <div class="rec-option" onclick="recSelect(5,'mas_potencia',this)">Más potencia arriba</div>
+          <div class="rec-option" onclick="recSelect(5,'mas_control',this)">Más control en defensa</div>
+          <div class="rec-option" onclick="recSelect(5,'salida_bola',this)">Mejor salida de bola</div>
+          <div class="rec-option" onclick="recSelect(5,'menos_vibracion',this)">Menor vibración / más confort</div>
+          <div class="rec-option" onclick="recSelect(5,'mas_efecto',this)">Más efecto</div>
+          <div class="rec-option" onclick="recSelect(5,'no_sabe',this)">No sabe</div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-actions">
+      <button class="rec-btn-primary" onclick="calcularRecomendacion()">Calcular recomendación</button>
+      <button class="rec-btn-secondary" onclick="limpiarRecomendador()">↺ Limpiar respuestas</button>
+    </div>
+    <div id="rec-results"></div>
+  </section>
 
 </main>
 
@@ -2716,7 +3598,9 @@ const ROLES = {
       verCapacitaciones:    true,
       verCompetencia:       true,
       verConfiguracion:     true,
+      verRecomendador:      true,
       verAdminPanel:        true,
+      verRecomendador:      true,
 
       // Usuarios
       gestionarUsuarios:    true,   // ver listado de usuarios
@@ -2752,7 +3636,9 @@ const ROLES = {
       verCapacitaciones:    true,
       verCompetencia:       true,   // puede ver comparativa con competencia
       verConfiguracion:     false,  // no puede ver configuración global
+      verRecomendador:      true,
       verAdminPanel:        true,   // panel admin limitado (solo sus usuarios)
+      verRecomendador:      true,
 
       // Usuarios — solo puede gestionar usuarios creados por él
       gestionarUsuarios:    true,   // ver sus propios usuarios creados
@@ -2790,7 +3676,9 @@ const ROLES = {
       verCapacitaciones:    true,   // puede ver capacitaciones
       verCompetencia:       false,  // no puede ver comparativa con competencia
       verConfiguracion:     false,
+      verRecomendador:      true,
       verAdminPanel:        false,
+      verRecomendador:      true,
 
       // Descargas
       descargarArchivos:    true,   // puede descargar archivos permitidos por CONFIG
@@ -3288,6 +4176,17 @@ const CAPACITACIONES = [
     name: "Bullpadel — La marca",
     desc: "Conocer a fondo la marca que representamos: su historia, valores, posicionamiento y por qué es diferente.",
     objetivos: ["Explicar el origen y la historia de Bullpadel","Comunicar los valores de la marca","Identificar el posicionamiento frente a la competencia","Conocer a los jugadores embajadores"],
+    checklist: [
+          "Puedo explicar el origen y la historia de Bullpadel.",
+          "Identifico los valores principales de la marca.",
+          "Conozco el rol de los jugadores embajadores y sus palas.",
+          "Puedo diferenciar a Bullpadel de la competencia con criterio."
+        ],
+    quiz: { title: "Quiz del módulo", questions: [
+          { question: "¿Cuál es el objetivo de conocer la historia y origen de Bullpadel?", options: ["Memorizar fechas sin aplicarlas", "Entender el contexto de la marca que representamos", "Definir precios de venta", "Comparar stock entre productos"], correct: 1, explanation: "Conocer la marca ayuda a vender con más criterio y representar mejor su identidad." },
+          { question: "¿Cómo debería presentarse Bullpadel ante un cliente?", options: ["Como una marca especialista en pádel", "Como una tienda online", "Como una marca de cualquier deporte", "Como una marca enfocada solo en profesionales"], correct: 0, explanation: "Bullpadel se diferencia por su especialización en pádel y amplitud de gama." },
+          { question: "¿Por qué importan los jugadores embajadores?", options: ["Porque permiten vender solo por fama", "Porque ayudan a conectar producto, estilo de juego y aspiración", "Porque reemplazan la ficha técnica", "Porque definen el precio del producto"], correct: 1, explanation: "Los embajadores sirven como referencia, pero siempre hay que recomendar según el jugador." }
+        ] },
     units: [
       {
         title: "Historia y origen",
@@ -3356,6 +4255,17 @@ const CAPACITACIONES = [
     name: "El mundo del pádel",
     desc: "Entender el deporte que vendemos: su crecimiento, sus circuitos y por qué es el momento ideal para estar en el sector.",
     objetivos: ["Conocer el contexto de crecimiento del pádel en Argentina y el mundo","Identificar los principales circuitos profesionales","Entender por qué el cliente actual está más informado","Hablar con criterio sobre el ecosistema del deporte"],
+    checklist: [
+          "Entiendo el contexto de crecimiento del pádel en Argentina.",
+          "Conozco los principales circuitos profesionales.",
+          "Puedo explicar por qué el cliente actual está más informado.",
+          "Identifico la oportunidad de mercado actual."
+        ],
+    quiz: { title: "Quiz del módulo", questions: [
+          { question: "¿Por qué es importante entender el crecimiento del pádel?", options: ["Para saber que hay una oportunidad de mercado", "Para reemplazar la capacitación de producto", "Para vender sin preguntar", "Para evitar hablar con el cliente"], correct: 0, explanation: "El crecimiento del deporte ayuda a entender el contexto y la oportunidad comercial." },
+          { question: "¿Qué aportan los circuitos profesionales?", options: ["Visibilidad, referencia y aspiración", "Precios de venta", "Stock disponible", "Códigos SKU"], correct: 0, explanation: "Los circuitos profesionales impulsan la visibilidad del deporte y de los jugadores." },
+          { question: "¿Qué caracteriza al nuevo perfil del jugador?", options: ["Busca productos al azar", "Está más informado y compara más antes de comprar", "No le interesan las palas", "Solo compra por precio"], correct: 1, explanation: "El jugador actual suele estar más informado y necesita mejor asesoramiento." }
+        ] },
     units: [
       {
         title: "El pádel en números",
@@ -3428,6 +4338,18 @@ const CAPACITACIONES = [
     name: "Conocer el producto",
     desc: "Dominar la gama Bullpadel 2026: líneas, materiales y tecnologías — explicados con criterio y sin tecnicismos innecesarios.",
     objetivos: ["Identificar las líneas de producto y a qué jugador va cada una","Explicar los materiales clave en lenguaje simple","Conectar tecnologías con beneficios reales","Leer una ficha técnica y traducirla al cliente"],
+    checklist: [
+          "Identifico las líneas PROLINE, NEXT, ADVANCE, TOUR y JUNIOR.",
+          "Puedo explicar la diferencia entre materiales en lenguaje simple.",
+          "Sé leer una ficha técnica y traducirla al cliente.",
+          "Conecto materiales y tecnologías con beneficios concretos."
+        ],
+    quiz: { title: "Quiz del módulo", questions: [
+          { question: "¿Cuál es la forma correcta de usar una ficha técnica en venta?", options: ["Leer todos los datos sin explicarlos", "Traducir los datos técnicos en beneficios para el jugador", "Usarla para cargar productos en ecommerce", "Usarla solo para definir precios"], correct: 1, explanation: "La ficha técnica debe convertirse en argumentos simples y comerciales." },
+          { question: "¿Qué indica el balance de una pala?", options: ["Dónde se siente el peso de la pala", "El precio final", "El stock disponible", "La fecha de lanzamiento"], correct: 0, explanation: "El balance ayuda a entender si la pala se siente más orientada a potencia, control o manejabilidad." },
+          { question: "¿Cómo conviene explicar materiales y tecnologías?", options: ["Como nombres técnicos aislados", "Como beneficios concretos en cancha", "Como datos de stock", "Como argumentos médicos"], correct: 1, explanation: "El cliente no compra el nombre técnico; compra el beneficio que siente en el juego." },
+          { question: "¿Qué frase representa mejor este módulo?", options: ["No vendas datos. Traducí beneficios.", "Vendé siempre la pala más cara.", "Mostrá solo la pala del jugador profesional.", "No preguntes al cliente."], correct: 0, explanation: "El objetivo del módulo es convertir datos técnicos en argumentos comerciales." }
+        ] },
     units: [
       {
         title: "Las líneas de producto",
@@ -3513,6 +4435,18 @@ const CAPACITACIONES = [
     name: "El vendedor Bullpadel",
     desc: "Integrar todo el conocimiento en una venta consultiva real: del primer contacto a la fidelización.",
     objetivos: ["Aplicar el flujo de venta en situaciones reales","Conectar el perfil del jugador con la pala correcta","Usar el método FABS con naturalidad","Generar una experiencia que fidelice al cliente"],
+    checklist: [
+          "Aplico el flujo de venta en situaciones reales.",
+          "Conozco el perfil de jugador y puedo recomendar según él.",
+          "Uso el método FABS con naturalidad.",
+          "Respondo objeciones conectando necesidad con beneficio."
+        ],
+    quiz: { title: "Quiz del módulo", questions: [
+          { question: "¿Cuál es el rol del vendedor Bullpadel?", options: ["Mostrar productos sin preguntar", "Actuar como asesor especializado", "Vender solo por precio", "Recomendar siempre la pala profesional"], correct: 1, explanation: "El vendedor debe entender al cliente y recomendar según necesidad, nivel y estilo." },
+          { question: "¿Cuál es una buena primera acción antes de recomendar?", options: ["Preguntar cómo juega y qué busca mejorar", "Mostrar la pala más cara", "Hablar solo de tecnología", "Cerrar la venta rápido"], correct: 0, explanation: "Una buena recomendación empieza con una buena pregunta." },
+          { question: "¿Cómo se debe responder a una objeción?", options: ["Forzando la venta", "Escuchando, aclarando y conectando necesidad con beneficio", "Ignorando la duda", "Cambiando de tema"], correct: 1, explanation: "Responder objeciones requiere entender la preocupación y traducirla en una recomendación útil." },
+          { question: "¿Qué frase resume mejor el rol del asesor?", options: ["La mejor pala es la más técnica", "La mejor pala es la que mejor acompaña al jugador", "La mejor pala es la más cara", "La mejor pala es la que tenga más tecnologías"], correct: 1, explanation: "La recomendación correcta depende del jugador, no solo del producto." }
+        ] },
     units: [
       {
         title: "El asesor especializado",
@@ -3692,56 +4626,121 @@ function renderRecursosBlock(recursos) {
 
 
 function renderCapacitaciones() {
-  // Guard: only render when logged in and DOM is ready
   if (!currentUser) return;
   const sidebar = document.getElementById('cap-sidebar');
   const main    = document.getElementById('cap-main');
   if (!sidebar || !main) return;
 
-  // Sidebar
+  const cl = getCapChecklist();
+  const qr = getCapQuizResults();
+
+  // ── Sidebar ──────────────────────────────────────────────────────────
   sidebar.innerHTML = '<div class="cap-sidebar-title">Módulos</div>' +
-    CAPACITACIONES.map((mod, mi) => `
-      <div>
-        <button class="cap-mod-btn ${mi===0?'active':''}" id="cap-mod-btn-${mi}" onclick="selectCapMod(${mi})">
-          <div class="cap-mod-num">${mod.num}</div>
-          <div class="cap-mod-info">
-            <div class="cap-mod-label">${mod.label}</div>
-            <div class="cap-mod-name">${mod.name}</div>
-          </div>
-        </button>
-        <div class="cap-units" id="cap-units-${mi}" style="${mi===0?'':'display:none'}">
-          ${mod.units.map((u,ui) => `
-            <button class="cap-unit-btn ${ui===0&&mi===0?'active':''}" id="cap-unit-btn-${mi}-${ui}" onclick="selectCapUnit(${mi},${ui})">${u.title}</button>
-          `).join('')}
-        </div>
-      </div>
-    `).join('');
+    CAPACITACIONES.map((mod, mi) => {
+      const prog = getModuleProgress(mi);
+      const unitBtns = mod.units.map((u, ui) => {
+        const done = isCapUnitComplete(mi, ui);
+        return '<button class="cap-unit-btn' + (ui===0&&mi===0?' active':'') + '" id="cap-unit-btn-'+mi+'-'+ui+'" onclick="selectCapUnit('+mi+','+ui+')">' +
+               u.title + '<span class="cap-unit-check ' + (done?'done':'todo') + '" id="cap-unit-ck-'+mi+'-'+ui+'">' + (done?'\u2713':'\u25cb') + '</span></button>';
+      }).join('');
+      return '<div>' +
+        '<button class="cap-mod-btn' + (mi===0?' active':'') + '" id="cap-mod-btn-'+mi+'" onclick="selectCapMod('+mi+')">' +
+          '<div class="cap-mod-num">'+mod.num+'</div>' +
+          '<div class="cap-mod-info">' +
+            '<div class="cap-mod-label">'+mod.label+'</div>' +
+            '<div class="cap-mod-name">'+mod.name+'</div>' +
+            '<div class="cap-mod-progress" id="cap-mod-prog-'+mi+'">'+prog.done+'/'+prog.total+' completadas</div>' +
+          '</div>' +
+        '</button>' +
+        '<div class="cap-units" id="cap-units-'+mi+'" style="'+(mi===0?'':'display:none')+'">' + unitBtns + '</div>' +
+      '</div>';
+    }).join('');
 
-  // Main panels
-  main.innerHTML = CAPACITACIONES.map((mod, mi) => `
-    <div class="cap-panel ${mi===0?'active':''}" id="cap-panel-${mi}">
-      <div class="cap-mod-header">
-        <div class="cap-mod-eyebrow">${mod.label}</div>
-        <div class="cap-mod-title">${mod.name}</div>
-        <div class="cap-mod-desc">${mod.desc}</div>
-        <div class="cap-objetivos">${mod.objetivos.map(o=>`<span class="cap-objetivo">✓ ${o}</span>`).join('')}</div>
-      </div>
-      ${mod.units.map((unit, ui) => `
-        <div class="cap-unit-panel ${ui===0?'active':''}" id="cap-unit-panel-${mi}-${ui}">
-          <div class="cap-unit-title"><span class="cap-unit-num">${mod.num}.${ui+1}</span>${unit.title}</div>
-          ${renderRecursosBlock(unit.recursos)}
-          ${unit.content}
-          <div class="cap-nav-footer">
-            <button class="cap-nav-btn" onclick="capNavPrev(${mi},${ui})" ${mi===0&&ui===0?'style="visibility:hidden"':''}>← Anterior</button>
-            <span style="font-size:12px;color:#aaa">Unidad ${ui+1} de ${mod.units.length}</span>
-            <button class="cap-nav-btn primary" onclick="capNavNext(${mi},${ui})" ${mi===CAPACITACIONES.length-1&&ui===mod.units.length-1?'style="visibility:hidden"':''}>Siguiente →</button>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
+  // ── Main panels ───────────────────────────────────────────────────────
+  main.innerHTML = CAPACITACIONES.map((mod, mi) => {
+
+    // Checklist
+    const clDone = mod.checklist ? mod.checklist.filter((_, idx) => cl[mi+'_'+idx]).length : 0;
+    const clHtml = mod.checklist ? ('<div class="cap-checklist-block">' +
+      '<div class="cap-checklist-head"><div class="cap-checklist-title">Checklist del m\u00f3dulo</div><div class="cap-checklist-count" id="cap-cl-count-'+mi+'">'+clDone+'/'+mod.checklist.length+'</div></div>' +
+      '<div class="cap-checklist-items">' +
+        mod.checklist.map((item, idx) => {
+          const chk = !!cl[mi+'_'+idx];
+          return '<div class="cap-checklist-item'+(chk?' checked':'')+'" id="cap-cl-item-'+mi+'-'+idx+'" onclick="toggleChecklistItem('+mi+','+idx+')">' +
+            '<div class="cap-checklist-cb"></div><div class="cap-checklist-text">'+item+'</div></div>';
+        }).join('') +
+      '</div></div>') : '';
+
+    // Quiz
+    const prev    = qr[mi];
+    const quizHtml = mod.quiz ? ('<div class="cap-quiz-block">' +
+      '<div class="cap-quiz-head" onclick="toggleQuizBlock(this)">' +
+          '<div class="cap-quiz-title">'+mod.quiz.title+'</div>' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<div class="cap-quiz-badge">'+mod.quiz.questions.length+' preguntas</div>' +
+            '<div class="cap-quiz-toggle-icon">▾</div>' +
+          '</div>' +
+        '</div>' +
+      '<div class="cap-quiz-body">' +
+        (prev ? '<div class="cap-quiz-prev-result">\u00daltimo intento: <span class="cap-quiz-prev-score">'+prev.score+'/'+prev.total+' correctas</span> \u00b7 '+prev.date+'</div>' : '') +
+        mod.quiz.questions.map((q, qi) =>
+          '<div class="cap-quiz-question">' +
+            '<div class="cap-quiz-q-num">Pregunta '+(qi+1)+'</div>' +
+            '<div class="cap-quiz-q-text">'+q.question+'</div>' +
+            '<div class="cap-quiz-options">' +
+              q.options.map((opt, oi) =>
+                '<div class="cap-quiz-option" id="cap-qopt-'+mi+'-'+qi+'-'+oi+'" onclick="selectQuizOption('+mi+','+qi+','+oi+')">' +
+                '<div class="cap-quiz-option-dot" id="cap-qdot-'+mi+'-'+qi+'-'+oi+'">'+(oi+1)+'</div>'+opt+'</div>'
+              ).join('') +
+            '</div>' +
+            '<div class="cap-quiz-explanation" id="cap-qexp-'+mi+'-'+qi+'"></div>' +
+          '</div>'
+        ).join('') +
+        '<div class="cap-quiz-footer">' +
+          '<div class="cap-quiz-result" id="cap-quiz-result-'+mi+'" style="display:none"></div>' +
+          '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+            '<button class="cap-quiz-btn submit" id="cap-quiz-submit-'+mi+'" onclick="submitQuiz('+mi+')">Finalizar quiz</button>' +
+            '<button class="cap-quiz-btn retry"  id="cap-quiz-retry-'+mi+'"  onclick="retryQuiz('+mi+')"  style="display:none">\u21ba Reintentar</button>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>') : '';
+
+    // Units
+    const unitsHtml = mod.units.map((unit, ui) => {
+      const done = isCapUnitComplete(mi, ui);
+      return '<div class="cap-unit-panel '+(ui===0?'active':'')+'" id="cap-unit-panel-'+mi+'-'+ui+'">' +
+        '<div class="cap-unit-title"><span class="cap-unit-num">'+mod.num+'.'+(ui+1)+'</span>'+unit.title+'</div>' +
+        renderRecursosBlock(unit.recursos) +
+        unit.content +
+        '<div class="cap-mark-wrap">' +
+          '<div class="cap-mark-status'+(done?' done':'')+'" id="cap-mark-status-'+mi+'-'+ui+'">' +
+            (done ? '\u2713 Unidad completada' : 'Marcar esta unidad como completada') +
+          '</div>' +
+          '<button class="cap-mark-btn '+(done?'unmark':'mark')+'" id="cap-mark-btn-'+mi+'-'+ui+'" onclick="markCapUnit('+mi+','+ui+')">' +
+            (done ? 'Marcar como pendiente' : 'Marcar como completada') +
+          '</button>' +
+        '</div>' +
+        '<div class="cap-nav-footer">' +
+          '<button class="cap-nav-btn" onclick="capNavPrev('+mi+','+ui+')" '+(mi===0&&ui===0?'style="visibility:hidden"':'')+'>\u2190 Anterior</button>' +
+          '<span style="font-size:12px;color:#aaa">Unidad '+(ui+1)+' de '+mod.units.length+'</span>' +
+          '<button class="cap-nav-btn primary" onclick="capNavNext('+mi+','+ui+')" '+(mi===CAPACITACIONES.length-1&&ui===mod.units.length-1?'style="visibility:hidden"':'')+'>Siguiente \u2192</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="cap-panel '+(mi===0?'active':'')+'" id="cap-panel-'+mi+'">' +
+      '<div class="cap-mod-header">' +
+        '<div class="cap-mod-eyebrow">'+mod.label+'</div>' +
+        '<div class="cap-mod-title">'+mod.name+'</div>' +
+        '<div class="cap-mod-desc">'+mod.desc+'</div>' +
+        '<div class="cap-objetivos">'+mod.objetivos.map(o=>'<span class="cap-objetivo">\u2713 '+o+'</span>').join('')+'</div>' +
+      '</div>' +
+      unitsHtml + clHtml + quizHtml +
+    '</div>';
+  }).join('');
+
+  updateOverallProgressUI();
 }
-
 function selectCapMod(mi) {
   // Update sidebar buttons
   document.querySelectorAll('.cap-mod-btn').forEach((b,i) => b.classList.toggle('active', i===mi));
@@ -3970,6 +4969,12 @@ function mountPortal() {
   }
   // Always re-render admin when mounting (reflects latest users)
   renderAdmin();
+  // Render home stats
+  renderHomeStats();
+  // Show onboarding on first visit
+  if (!hasSeenOnboarding()) {
+    setTimeout(openOnboarding, 400); // small delay so portal renders first
+  }
 }
 
 // ── Role-based nav visibility ─────────────────────────────────────────────
@@ -3979,12 +4984,14 @@ function applyRolePermissions() {
 
   // Map nav button text → permission key
   const navMap = [
+    { text: 'Inicio',                   perm: 'verCatalogo' }, // Inicio visible for all logged users
     { text: 'Catálogo de palas',        perm: 'verCatalogo' },
     { text: 'Materiales y tecnologías', perm: 'verMateriales' },
     { text: 'Comparador',               perm: 'verComparador' },
     { text: 'Vista gama completa',      perm: 'verTablaGama' },
     { text: 'Guía de venta',            perm: 'verGuiaVenta' },
     { text: 'Capacitaciones',           perm: 'verCapacitaciones' },
+    { text: 'Recomendador',             perm: 'verRecomendador' },
     { text: 'Administración',           perm: 'verAdminPanel' },
   ];
 
@@ -4158,7 +5165,7 @@ function renderPalas(){
     const activeLabels = activeTags.map(t => t.label).join(', ');
     grid.innerHTML = `
       <div class="no-results-block" style="grid-column:1/-1">
-        <div class="no-results-icon">🔍</div>
+        <div class="no-results-icon" style="font-size:28px;font-weight:900;color:#ddd;letter-spacing:-.02em">—</div>
         <div class="no-results-title">Sin resultados</div>
         <div class="no-results-sub">
           No encontramos palas para los filtros aplicados:<br>
@@ -4780,12 +5787,791 @@ document.addEventListener('keydown', function(e) {
 });
 
 
+
+/* ═══════════════════════════════════════════════════
+   JS · RUN 9B — Progreso, Checklist, Quiz
+   ═══════════════════════════════════════════════════ */
+
+function getCapProgressKey() {
+  if (!currentUser) return null;
+  return 'bp2026_cap_progress_' + (currentUser.id || currentUser.email);
+}
+function getCapProgress() {
+  const key = getCapProgressKey();
+  if (!key) return {};
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { return {}; }
+}
+function saveCapProgress(p) {
+  const key = getCapProgressKey(); if (!key) return;
+  localStorage.setItem(key, JSON.stringify(p));
+}
+function isCapUnitComplete(mi, ui) {
+  const p = getCapProgress(); return !!(p[mi] && p[mi][ui]);
+}
+function toggleCapUnitComplete(mi, ui) {
+  const p = getCapProgress();
+  if (!p[mi]) p[mi] = {};
+  p[mi][ui] = !p[mi][ui];
+  saveCapProgress(p);
+}
+function getModuleProgress(mi) {
+  const total = CAPACITACIONES[mi].units.length;
+  let done = 0;
+  for (let ui = 0; ui < total; ui++) { if (isCapUnitComplete(mi, ui)) done++; }
+  return { done, total };
+}
+function getOverallCapProgress() {
+  let done = 0, total = 0;
+  CAPACITACIONES.forEach((mod, mi) => {
+    mod.units.forEach((_, ui) => { total++; if (isCapUnitComplete(mi, ui)) done++; });
+  });
+  return { done, total, pct: total ? Math.round(done/total*100) : 0 };
+}
+
+function getCapChecklistKey() {
+  if (!currentUser) return null;
+  return 'bp2026_cap_checklist_' + (currentUser.id || currentUser.email);
+}
+function getCapChecklist() {
+  const key = getCapChecklistKey();
+  if (!key) return {};
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { return {}; }
+}
+function saveCapChecklist(cl) {
+  const key = getCapChecklistKey(); if (!key) return;
+  localStorage.setItem(key, JSON.stringify(cl));
+}
+function toggleChecklistItem(modIdx, itemIdx) {
+  const cl = getCapChecklist();
+  const k  = modIdx + '_' + itemIdx;
+  cl[k] = !cl[k];
+  saveCapChecklist(cl);
+  updateChecklistUI(modIdx);
+  updateOverallProgressUI();
+}
+
+function getCapQuizKey() {
+  if (!currentUser) return null;
+  return 'bp2026_cap_quiz_' + (currentUser.id || currentUser.email);
+}
+function getCapQuizResults() {
+  const key = getCapQuizKey();
+  if (!key) return {};
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { return {}; }
+}
+function saveCapQuizResult(modIdx, score, total) {
+  const key = getCapQuizKey(); if (!key) return;
+  const r = getCapQuizResults();
+  r[modIdx] = { score, total, date: new Date().toLocaleDateString() };
+  localStorage.setItem(key, JSON.stringify(r));
+}
+
+function updateOverallProgressUI() {
+  const { done, total, pct } = getOverallCapProgress();
+  const wrap  = document.getElementById('cap-overall-progress');
+  const fill  = document.getElementById('cap-progress-fill');
+  const pctEl = document.getElementById('cap-progress-pct');
+  const lblEl = document.getElementById('cap-progress-label');
+  if (!wrap) return;
+  wrap.style.display = 'flex';
+  if (fill)  fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (lblEl) lblEl.textContent = 'Progreso del curso: ' + done + ' de ' + total + ' unidades';
+}
+function updateSidebarProgress() {
+  CAPACITACIONES.forEach((mod, mi) => {
+    const prog  = getModuleProgress(mi);
+    const progEl = document.getElementById('cap-mod-prog-' + mi);
+    if (progEl) progEl.textContent = prog.done + '/' + prog.total + ' completadas';
+    mod.units.forEach((_, ui) => {
+      const ck = document.getElementById('cap-unit-ck-' + mi + '-' + ui);
+      if (!ck) return;
+      const done = isCapUnitComplete(mi, ui);
+      ck.textContent = done ? '\u2713' : '\u25cb';
+      ck.className   = 'cap-unit-check ' + (done ? 'done' : 'todo');
+    });
+  });
+}
+function updateMarkButton(mi, ui) {
+  const done = isCapUnitComplete(mi, ui);
+  const st   = document.getElementById('cap-mark-status-' + mi + '-' + ui);
+  const btn  = document.getElementById('cap-mark-btn-' + mi + '-' + ui);
+  if (st)  { st.textContent = done ? '\u2713 Unidad completada' : 'Marcar esta unidad como completada'; st.className = 'cap-mark-status' + (done ? ' done' : ''); }
+  if (btn) { btn.textContent = done ? 'Marcar como pendiente' : 'Marcar como completada'; btn.className = 'cap-mark-btn ' + (done ? 'unmark' : 'mark'); }
+}
+function updateChecklistUI(modIdx) {
+  const cl  = getCapChecklist();
+  const mod = CAPACITACIONES[modIdx];
+  if (!mod.checklist) return;
+  let done = 0;
+  mod.checklist.forEach((_, idx) => {
+    const k    = modIdx + '_' + idx;
+    const item = document.getElementById('cap-cl-item-' + modIdx + '-' + idx);
+    if (item) { if (cl[k]) { item.classList.add('checked'); done++; } else { item.classList.remove('checked'); } }
+  });
+  const cnt = document.getElementById('cap-cl-count-' + modIdx);
+  if (cnt) cnt.textContent = done + '/' + mod.checklist.length;
+}
+function markCapUnit(mi, ui) {
+  toggleCapUnitComplete(mi, ui);
+  updateMarkButton(mi, ui);
+  updateSidebarProgress();
+  updateOverallProgressUI();
+}
+
+let quizSelections = {};
+let quizSubmitted  = {};
+
+function selectQuizOption(mi, qi, oi) {
+  if (quizSubmitted[mi]) return;
+  if (!quizSelections[mi]) quizSelections[mi] = {};
+  quizSelections[mi][qi] = oi;
+  CAPACITACIONES[mi].quiz.questions.forEach((_, qIdx) => {
+    CAPACITACIONES[mi].quiz.questions[qIdx].options.forEach((_, oIdx) => {
+      const el = document.getElementById('cap-qopt-' + mi + '-' + qIdx + '-' + oIdx);
+      if (el) el.classList.toggle('selected', oIdx === (quizSelections[mi][qIdx] !== undefined ? quizSelections[mi][qIdx] : -1));
+    });
+  });
+}
+function submitQuiz(mi) {
+  const mod = CAPACITACIONES[mi];
+  if (!mod || !mod.quiz) return;
+  const qs   = mod.quiz.questions;
+  const sels = quizSelections[mi] || {};
+  let score  = 0;
+  qs.forEach((q, qi) => {
+    const sel = sels[qi];
+    const ok  = sel === q.correct;
+    if (ok) score++;
+    q.options.forEach((_, oi) => {
+      const el  = document.getElementById('cap-qopt-' + mi + '-' + qi + '-' + oi);
+      const dot = document.getElementById('cap-qdot-' + mi + '-' + qi + '-' + oi);
+      if (!el) return;
+      el.className = 'cap-quiz-option answered';
+      if (oi === q.correct)                { el.classList.add('correct'); }
+      if (oi === sel && !ok)               { el.classList.add('incorrect'); }
+      if (dot) dot.textContent = oi === q.correct ? '\u2713' : (oi === sel && !ok ? '\u2717' : String(oi+1));
+    });
+    const expEl = document.getElementById('cap-qexp-' + mi + '-' + qi);
+    if (expEl) {
+      expEl.textContent = (ok ? '\u2713 Correcto. ' : '\u2717 Incorrecto. ') + q.explanation;
+      expEl.className   = 'cap-quiz-explanation visible ' + (ok ? 'correct' : 'incorrect');
+    }
+  });
+  quizSubmitted[mi] = true;
+  saveCapQuizResult(mi, score, qs.length);
+  const resEl = document.getElementById('cap-quiz-result-' + mi);
+  if (resEl) { resEl.innerHTML = 'Resultado: <span class="score">' + score + '/' + qs.length + ' correctas</span>'; resEl.style.display = 'block'; }
+  const sub = document.getElementById('cap-quiz-submit-' + mi);
+  const ret = document.getElementById('cap-quiz-retry-' + mi);
+  if (sub) sub.style.display = 'none';
+  if (ret) ret.style.display = '';
+}
+function retryQuiz(mi) {
+  quizSelections[mi] = {};
+  quizSubmitted[mi]  = false;
+  const mod = CAPACITACIONES[mi];
+  if (!mod || !mod.quiz) return;
+  mod.quiz.questions.forEach((q, qi) => {
+    q.options.forEach((_, oi) => {
+      const el  = document.getElementById('cap-qopt-' + mi + '-' + qi + '-' + oi);
+      const dot = document.getElementById('cap-qdot-' + mi + '-' + qi + '-' + oi);
+      if (el)  el.className = 'cap-quiz-option';
+      if (dot) dot.textContent = String(oi+1);
+    });
+    const expEl = document.getElementById('cap-qexp-' + mi + '-' + qi);
+    if (expEl) expEl.className = 'cap-quiz-explanation';
+  });
+  const resEl = document.getElementById('cap-quiz-result-' + mi);
+  if (resEl) resEl.style.display = 'none';
+  const sub = document.getElementById('cap-quiz-submit-' + mi);
+  const ret = document.getElementById('cap-quiz-retry-' + mi);
+  if (sub) sub.style.display = '';
+  if (ret) ret.style.display = 'none';
+}
+
+
+
+/* ── Quiz block toggle ── */
+function toggleQuizBlock(headEl) {
+  const block = headEl.closest('.cap-quiz-block');
+  if (block) block.classList.toggle('open');
+}
+
+
+/* ═══════════════════════════════════════════════════
+   RECOMENDADOR BULLPADEL — Run 10B
+   ═══════════════════════════════════════════════════ */
+
+let recAnswers = {};
+let _recResultIds = []; // tracks current recommendation ids
+
+function recSelect(qNum, value, el) {
+  recAnswers[qNum] = value;
+  el.closest('.rec-options').querySelectorAll('.rec-option')
+    .forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function normalizarTexto(t) {
+  if (!t) return '';
+  return String(t).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ');
+}
+
+function hayPalabra(texto, palabras) {
+  const n = normalizarTexto(texto);
+  return palabras.some(p => n.includes(p));
+}
+
+/* ── Score ─────────────────────────────────────────────────────────────── */
+function scorePala(pala, ans) {
+  let score = 0;
+  const rawChips = [];
+
+  const nivel     = ans[1] || '';
+  const prioridad = ans[2] || '';
+  const estilo    = ans[3] || '';
+  const sensacion = ans[4] || '';
+  const necesidad = ans[5] || '';
+
+  const textoTotal = [
+    pala.nivel, pala.estilo, pala.forma, pala.balance,
+    pala.exterior, pala.interior, pala.tacto,
+    pala.perfilJugador, pala.sensacionJuego,
+    pala.argumentoVenta, pala.descTecnica,
+    ...(pala.tecnologias || []), ...(pala.materiales || [])
+  ].join(' ');
+
+  const estiloN = normalizarTexto(pala.estilo || '');
+  const nivelN  = normalizarTexto(pala.nivel  || '');
+
+  // ── Q1: Nivel ───────────────────────────────────────────────────────────
+  if (nivel && pala.nivel) {
+    const q = normalizarTexto(nivel);
+    if (nivelN.includes(q) || q.includes(nivelN.split(' ')[0])) {
+      score += 30; rawChips.push('nivel');
+    } else if (
+      (nivel==='Avanzado'    && nivelN.includes('profesional')) ||
+      (nivel==='Profesional' && nivelN.includes('avanzado'))    ||
+      (nivel==='Intermedio'  && nivelN.includes('amateur'))     ||
+      (nivel==='Amateur'     && nivelN.includes('intermedio'))
+    ) { score += 12; }
+    // PROLINE available to all but gets a mild bonus only for higher levels
+    const isPROLINE = pala.linea === 'PROLINE';
+    const isBasicLevel = ['Iniciación','Amateur','Junior'].includes(nivel);
+    if (isPROLINE && isBasicLevel) { score -= 5; } // soft penalty, not exclusion
+  }
+
+  // ── Q2: Prioridad ────────────────────────────────────────────────────────
+  if (prioridad === 'potencia') {
+    if (estiloN.includes('ofensivo'))                       { score += 22; rawChips.push('ofensivo'); }
+    if (hayPalabra(textoTotal, ['potencia','ataque','explosiv','smash','remate','definicion','peso de bola'])) { score += 15; rawChips.push('potencia'); }
+    if (normalizarTexto(pala.balance||'').includes('alto')) { score += 10; rawChips.push('balance alto'); }
+    if (['Diamante','Geométrica'].includes(pala.forma))     { score += 7; }
+  }
+  if (prioridad === 'control') {
+    if (estiloN.includes('defensiv') || estiloN.includes('control')) { score += 22; rawChips.push('control'); }
+    if (hayPalabra(textoTotal, ['control','precision','defensa','manejabilidad','tecnico','tecnica'])) { score += 15; rawChips.push('control'); }
+    if (normalizarTexto(pala.balance||'').includes('bajo')) { score += 10; rawChips.push('balance bajo'); }
+    if (['Redonda','Híbrida','Lágrima'].includes(pala.forma)) { score += 7; }
+  }
+  if (prioridad === 'confort') {
+    if (hayPalabra(textoTotal, ['confort','cloud','elastic','soft','suave','amortiguacion','comodo','comodidad','menos exigente','amable'])) { score += 28; rawChips.push('confort'); }
+    if ((pala.materiales||[]).some(m => ['EF','CE','SE','FX'].includes(m))) { score += 14; rawChips.push('confort'); }
+    if ((pala.tecnologias||[]).some(t => ['Vibradrive','Hesacore'].includes(t))) { score += 10; rawChips.push('confort'); }
+  }
+  if (prioridad === 'polivalencia') {
+    if (estiloN.includes('polivalente'))                    { score += 28; rawChips.push('polivalente'); }
+    if (hayPalabra(textoTotal, ['equilibrio','versatil','polivalente','todas las situaciones','completo'])) { score += 14; rawChips.push('polivalente'); }
+    if (['Híbrida','Lágrima'].includes(pala.forma))         { score += 8; }
+  }
+  if (prioridad === 'salida') {
+    if (hayPalabra(textoTotal, ['salida de bola','reaccion','rebote','velocidad de bola','nucleo','elasticidad'])) { score += 22; rawChips.push('salida de bola'); }
+    if ((pala.materiales||[]).some(m => ['ME','BE','EL'].includes(m))) { score += 10; rawChips.push('salida de bola'); }
+  }
+  if (prioridad === 'manejabilidad') {
+    if (hayPalabra(textoTotal, ['manejo','manejable','agil','rapida','ligera','facil','velocidad de mano'])) { score += 22; rawChips.push('fácil de usar'); }
+    if (normalizarTexto(pala.balance||'').includes('bajo')) { score += 10; rawChips.push('balance bajo'); }
+    const pesoMin = parseInt((pala.peso||'').replace(/[^0-9]/g,'')) || 999;
+    if (pesoMin <= 360) { score += 8; rawChips.push('peso ligero'); }
+  }
+
+  // ── Q3: Estilo ───────────────────────────────────────────────────────────
+  if (estilo && estilo !== 'no_sabe') {
+    const eq = normalizarTexto(estilo);
+    if (estiloN.includes(eq)) { score += 20; rawChips.push('estilo ' + estilo.toLowerCase()); }
+    else if (estiloN.includes('polivalente')) { score += 6; }
+  }
+
+  // ── Q4: Sensación ────────────────────────────────────────────────────────
+  if (sensacion === 'facil' || sensacion === 'comoda') {
+    if (hayPalabra(textoTotal, ['facil','comod','suave','accesible','menos exigente','amable','perdona'])) { score += 12; rawChips.push('fácil de usar'); }
+    if ((pala.materiales||[]).some(m => ['EF','CE','SE','FX','PG','EL'].includes(m))) { score += 8; rawChips.push('confort'); }
+  }
+  if (sensacion === 'firme') {
+    if (hayPalabra(textoTotal, ['firme','precis','rigido','seco','directo','cristal','carbon'])) { score += 12; rawChips.push('firme / precisa'); }
+    if ((pala.materiales||[]).some(m => ['T18','X12','X3','A18'].includes(m))) { score += 8; rawChips.push('carbono de alto rendimiento'); }
+  }
+  if (sensacion === 'equilibrada') {
+    if (estiloN.includes('polivalente')) { score += 12; rawChips.push('equilibrada'); }
+    if (hayPalabra(textoTotal, ['equilibr','versati','completo'])) { score += 8; rawChips.push('equilibrada'); }
+  }
+
+  // ── Q5: Necesidad ────────────────────────────────────────────────────────
+  if (necesidad === 'mas_potencia') {
+    if (estiloN.includes('ofensivo'))                       { score += 14; rawChips.push('ofensivo'); }
+    if (hayPalabra(textoTotal, ['potencia','smash','ataque','explosiv','remate'])) { score += 14; rawChips.push('potencia'); }
+    if (normalizarTexto(pala.balance||'').includes('alto')) { score += 8; }
+  }
+  if (necesidad === 'mas_control') {
+    if (estiloN.includes('defensiv') || estiloN.includes('control')) { score += 14; rawChips.push('control'); }
+    if (hayPalabra(textoTotal, ['control','defensa','tecnic','precision'])) { score += 14; rawChips.push('control en defensa'); }
+  }
+  if (necesidad === 'salida_bola') {
+    if (hayPalabra(textoTotal, ['salida','reaccion','rebote','bola sale'])) { score += 18; rawChips.push('salida de bola'); }
+  }
+  if (necesidad === 'menos_vibracion') {
+    if (hayPalabra(textoTotal, ['confort','cloud','elastic','soft','hesacore','vibradrive','amortiguacion','suave'])) { score += 20; rawChips.push('confort'); }
+    if ((pala.tecnologias||[]).some(t => ['Vibradrive','Hesacore'].includes(t))) { score += 12; rawChips.push('anti-vibración'); }
+  }
+  if (necesidad === 'mas_efecto') {
+    if (hayPalabra(textoTotal, ['efecto','spin','topspin','grain','rugoso','grip'])) { score += 20; rawChips.push('genera efecto'); }
+    if ((pala.tecnologias||[]).some(t => ['Topspin','3D Grain'].includes(t))) { score += 14; rawChips.push('superficie para spin'); }
+  }
+
+  // ── Deduplicate chips: keep only 1 per concept ────────────────────────
+  const conceptMap = {
+    'ofensivo':                   'Estilo ofensivo',
+    'control':                    'Control',
+    'control en defensa':         'Control en defensa',
+    'potencia':                   'Potencia',
+    'confort':                    'Confort',
+    'anti-vibración':             'Anti-vibración',
+    'fácil de usar':              'Fácil de usar',
+    'polivalente':                'Polivalente',
+    'equilibrada':                'Equilibrada',
+    'balance alto':               'Balance alto',
+    'balance bajo':               'Balance bajo',
+    'salida de bola':             'Salida de bola',
+    'genera efecto':              'Genera efecto',
+    'superficie para spin':       'Superficie para spin',
+    'firme / precisa':            'Firme / precisa',
+    'carbono de alto rendimiento':'Material de alto rendimiento',
+    'peso ligero':                'Peso ligero',
+    'nivel':                      null, // internal only
+  };
+  const seen = new Set();
+  const chips = [];
+  for (const raw of rawChips) {
+    const label = conceptMap[raw];
+    if (label === null || label === undefined) continue;
+    if (!seen.has(label)) { seen.add(label); chips.push(label); }
+    if (chips.length >= 4) break;
+  }
+  // Add estilo chip if style was selected and matches
+  if (estilo && estilo !== 'no_sabe' && estiloN.includes(normalizarTexto(estilo)) && !seen.has('Estilo '+estilo)) {
+    if (chips.length < 4) chips.push('Estilo ' + estilo);
+  }
+
+  return { score, chips };
+}
+
+/* ── Rank ───────────────────────────────────────────────────────────────── */
+function recomendarPalas(ans, n) {
+  n = n || 3;
+  return PALAS.map(p => {
+    const r = scorePala(p, ans);
+    return { pala: p, score: r.score, chips: r.chips };
+  }).sort((a, b) => b.score - a.score).slice(0, n);
+}
+
+/* ── Detect if a pala is "premium" relative to the user's level ─────────── */
+function esPremiumParaNivel(pala, nivel) {
+  const basicLevels = ['Iniciación','Amateur','Junior','Intermedio'];
+  return basicLevels.includes(nivel) && pala.linea === 'PROLINE';
+}
+
+/* ── Labels for alt cards ────────────────────────────────────────────────── */
+function etiquetaAlternativa(pala, ans, idx) {
+  if (idx === 0) return { label: 'Recomendación principal', cls: 'top' };
+  const nivel     = ans[1] || '';
+  const prioridad = ans[2] || '';
+  const estiloN   = normalizarTexto(pala.estilo || '');
+  const textoN    = normalizarTexto([pala.descTecnica, pala.sensacionJuego, pala.perfilJugador].join(' '));
+  const premium   = esPremiumParaNivel(pala, nivel);
+
+  if (premium && idx >= 1) return { label: 'Alternativa premium', cls: 'premium' };
+  if (prioridad === 'confort' || hayPalabra(textoN, ['comod','suave','elastic','cloud'])) return { label: 'Alternativa más confortable', cls: 'alt' };
+  if (estiloN.includes('polivalente')) return { label: 'Alternativa más equilibrada', cls: 'alt' };
+  if (estiloN.includes('ofensivo'))    return { label: 'Alternativa más técnica', cls: 'alt' };
+  if (estiloN.includes('defensiv'))    return { label: 'Alternativa más fácil de usar', cls: 'alt' };
+  return { label: 'Alternativa de mayor prestación', cls: 'alt' };
+}
+
+/* ── Perfil resumen ──────────────────────────────────────────────────────── */
+function generarResumenPerfil(ans) {
+  const partes = [];
+  const mapNivel  = { 'Iniciación':'jugador en iniciación', 'Amateur':'jugador amateur', 'Intermedio':'jugador intermedio', 'Avanzado':'jugador avanzado', 'Profesional':'jugador profesional / competitivo', 'Junior':'jugador junior' };
+  const mapPrior  = { 'potencia':'busca potencia', 'control':'busca control', 'confort':'busca confort', 'polivalencia':'busca polivalencia', 'salida':'busca buena salida de bola', 'manejabilidad':'busca manejabilidad' };
+  const mapEstilo = { 'Ofensivo':'estilo ofensivo', 'Defensivo':'estilo defensivo', 'Polivalente':'estilo polivalente', 'no_sabe':'estilo a definir' };
+  const mapSens   = { 'facil':'sensación fácil de manejar', 'equilibrada':'sensación equilibrada', 'firme':'sensación firme y precisa', 'comoda':'sensación cómoda' };
+  const mapNec    = { 'mas_potencia':'necesita más potencia', 'mas_control':'necesita más control en defensa', 'salida_bola':'necesita mejor salida de bola', 'menos_vibracion':'necesita sensación más cómoda al impacto', 'mas_efecto':'necesita más efecto', 'no_sabe':null };
+  if (ans[1] && mapNivel[ans[1]])  partes.push(mapNivel[ans[1]]);
+  if (ans[2] && mapPrior[ans[2]])  partes.push(mapPrior[ans[2]]);
+  if (ans[3] && mapEstilo[ans[3]]) partes.push(mapEstilo[ans[3]]);
+  if (ans[4] && mapSens[ans[4]])   partes.push(mapSens[ans[4]]);
+  const nec = ans[5] && mapNec[ans[5]];
+  if (nec) partes.push(nec);
+  return partes.length ? partes.join(' · ') : 'Perfil no especificado';
+}
+
+/* ── Explicación ─────────────────────────────────────────────────────────── */
+function explicarRecomendacion(pala, ans, chips, idx) {
+  const nivel     = ans[1] || '';
+  const prioridad = ans[2] || '';
+  const estilo    = ans[3] || '';
+  const premium   = esPremiumParaNivel(pala, nivel);
+  const textoN    = normalizarTexto([pala.sensacionJuego, pala.perfilJugador, pala.descTecnica].join(' '));
+
+  let base = '';
+
+  if (premium && idx >= 1) {
+    // Premium explanation for basic-level user
+    const razon = prioridad === 'confort'      ? 'combina una sensación cómoda y amable al impacto con buen rendimiento'
+                : prioridad === 'control'      ? 'ofrece un nivel de control y precisión difícil de encontrar en gamas básicas'
+                : prioridad === 'salida'       ? 'tiene una reacción de núcleo que la hace muy accesible y con gran salida de bola'
+                : prioridad === 'polivalencia' ? 'responde bien en defensa y ataque sin exigir una técnica muy afinada'
+                : 'su combinación de materiales y tecnologías la hace más accesible de lo que su línea sugiere';
+    base = 'Si bien es una pala de mayores prestaciones, puede tener sentido para este perfil porque ' + razon + '. La presentaría como una opción para quien quiere dar un salto de calidad sin cambiar su estilo de juego.';
+  } else {
+    // Standard explanation
+    const coincidencias = chips.slice(0,3).join(', ').toLowerCase();
+    const perfilResumen = nivel ? 'Para un ' + nivel.toLowerCase() : 'Para este perfil';
+    const prioStr = prioridad ? ' que prioriza ' + prioridad : '';
+    const estiloStr = estilo && estilo !== 'no_sabe' ? ' con juego ' + estilo.toLowerCase() : '';
+    base = perfilResumen + prioStr + estiloStr + ', esta pala encaja bien' +
+      (coincidencias ? ' porque destaca en ' + coincidencias : '') + '.';
+    if (pala.perfilJugador) {
+      const frag = pala.perfilJugador.split('.')[0];
+      if (frag && frag.length < 120) base += ' ' + frag + '.';
+    }
+  }
+  return base;
+}
+
+/* ── Frase de venta ──────────────────────────────────────────────────────── */
+function fraseVenta(pala, ans, idx) {
+  const prioridad = ans[2] || '';
+  const premium   = esPremiumParaNivel(pala, ans[1] || '');
+
+  if (premium && idx >= 1) {
+    return 'Si querés ir a una opción de mayor prestación, esta pala puede acompañarte muy bien. Suma tecnología y rendimiento con una sensación más accesible de lo que parece a primera vista.';
+  }
+
+  const mapaFrases = {
+    potencia:     'Por lo que me contás, esta pala te puede dar la potencia que buscás — genera un golpe contundente y con dirección.',
+    control:      'Por lo que me contás, esta pala te va a dar seguridad — fácil de controlar y muy predecible en defensa.',
+    confort:      'Para lo que buscás, esta pala tiene una sensación muy amable al impacto y es fácil de usar todo el partido.',
+    polivalencia: 'Esta pala te acompaña en todas las situaciones — no te va a limitar si querés atacar o defender.',
+    salida:       'Por lo que me contás, esta pala tiene muy buena reacción de núcleo — la bola sale con facilidad incluso en golpes suaves.',
+    manejabilidad:'Es fácil de mover y muy rápida en la mano — una pala que no te pesa y que responde bien.',
+  };
+  return mapaFrases[prioridad] || 'Esta pala encaja bien con el perfil del jugador y es una buena base para recomendar con confianza.';
+}
+
+/* ── Render ──────────────────────────────────────────────────────────────── */
+function renderResultadosRecomendador(resultados) {
+  const el = document.getElementById('rec-results');
+  if (!el) return;
+  if (!resultados.length) {
+    el.innerHTML = '<div class="rec-empty"><div class="rec-empty-icon">&#128269;</div><div class="rec-empty-title">Sin resultados</div><div class="rec-empty-sub">Respond\u00e9 al menos una pregunta para obtener recomendaciones.</div></div>';
+    return;
+  }
+
+  // Perfil resumen
+  const resumen = generarResumenPerfil(recAnswers);
+  const resumenHtml = '<div class="rec-perfil-resumen"><span class="rec-perfil-label">Perfil detectado:</span> ' + resumen + '</div>';
+
+  const cards = resultados.map(({ pala, score, chips }, idx) => {
+    const { label, cls } = etiquetaAlternativa(pala, recAnswers, idx);
+    const why   = explicarRecomendacion(pala, recAnswers, chips, idx);
+    const frase = fraseVenta(pala, recAnswers, idx);
+    const imgSrc = IMGS[pala.id] ? IMGS[pala.id] : '';
+    const imgHtml = imgSrc
+      ? '<img src="'+imgSrc+'" alt="'+pala.nombre+'" style="max-height:120px;max-width:100%;object-fit:contain">'
+      : '<div class="rec-card-img-placeholder" style="font-size:11px;font-weight:800;color:#aaa;text-transform:uppercase;letter-spacing:.05em">SIN<br>FOTO</div>';
+    const chipsHtml = chips.length
+      ? chips.map(ch => '<span class="rec-chip'+(cls==='premium'?' premium':'')+'">' + ch + '</span>').join('')
+      : '<span class="rec-chip neutral">Coincidencia general</span>';
+
+    return '<div class="rec-card '+cls+'">' +
+      '<div class="rec-card-rank '+cls+'">' + (idx===0?'&#9733; ':'') + label + '</div>' +
+      '<div class="rec-card-img-wrap">'+imgHtml+'</div>' +
+      '<div class="rec-card-body">' +
+        '<div class="rec-card-linea"><span class="linea-tag tag-'+(pala.linea||'')+'">'+(pala.linea||'')+'</span></div>' +
+        '<div class="rec-card-nombre">'+pala.nombre+'</div>' +
+        '<div class="rec-card-specs">' +
+          '<div class="rec-card-spec"><strong>Nivel</strong> '+(pala.nivel||'&mdash;')+'</div>' +
+          '<div class="rec-card-spec"><strong>Estilo</strong> '+(pala.estilo||'&mdash;')+'</div>' +
+          '<div class="rec-card-spec"><strong>Forma</strong> '+(pala.forma||'&mdash;')+'</div>' +
+          '<div class="rec-card-spec"><strong>Balance</strong> '+(pala.balance||'&mdash;')+'</div>' +
+        '</div>' +
+        '<div class="rec-card-chips">'+chipsHtml+'</div>' +
+        '<div class="rec-card-why '+(idx===0?'top':'')+'">' + why + '</div>' +
+        '<div class="rec-card-frase">&ldquo;' + frase + '&rdquo;</div>' +
+        '<div class="rec-card-actions">' +
+          '<button class="rec-card-btn primary" onclick="openPalaModal(\''+pala.id+'\')">Ver ficha</button>' +
+          '<button class="rec-card-btn secondary" onclick="recAgregarComparador(\''+pala.id+'\')">Comparar</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Store current result ids for the compare-all button
+  _recResultIds = resultados.map(r => r.pala.id);
+
+  const compareAllBtn = _recResultIds.length > 1
+    ? '<button class="rec-compare-all-btn" onclick="goToComparadorConPalas(_recResultIds)">&#9878; Comparar las ' + _recResultIds.length + ' recomendaciones</button>'
+    : '';
+
+  el.innerHTML =
+    '<div class="rec-results-toolbar">' +
+      '<div><div class="rec-results-title">Tus recomendaciones</div>' +
+      '<div class="rec-results-sub">Bas\u00e1ndote en el perfil indicado &mdash; pod\u00e9s ajustar las respuestas y volver a calcular.</div></div>' +
+      compareAllBtn +
+    '</div>' +
+    resumenHtml +
+    '<div class="rec-cards">' + cards + '</div>';
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+
+/* ── Comparar las 3 recomendaciones ─────────────────────────────────────── */
+function goToComparadorConPalas(ids) {
+  // ids: array of pala ids (up to 3)
+  const selIds = ['c1', 'c2', 'c3'];
+  // Clear existing selections first
+  selIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel) sel.value = '';
+  });
+  // Load each pala id into the corresponding select
+  ids.forEach((palaId, idx) => {
+    if (!palaId || idx >= selIds.length) return;
+    const sel = document.getElementById(selIds[idx]);
+    // Verify pala exists in PALAS before setting
+    const exists = PALAS.some(p => p.id === palaId);
+    if (sel && exists) sel.value = palaId;
+  });
+  // Render comparador
+  renderComp();
+  // Navigate to comparador section
+  const btn = [...document.querySelectorAll('.nav-btn')]
+    .find(b => b.textContent.trim() === 'Comparador');
+  if (btn) btn.click();
+}
+
+function calcularRecomendacion() {
+  renderResultadosRecomendador(recomendarPalas(recAnswers, 3));
+}
+
+function recAgregarComparador(palaId) {
+  const selIds = ['c1','c2','c3'];
+  for (const id of selIds) {
+    const sel = document.getElementById(id);
+    if (sel && !sel.value) {
+      sel.value = palaId;
+      renderComp();
+      const btn = [...document.querySelectorAll('.nav-btn')].find(b => b.textContent.trim() === 'Comparador');
+      if (btn) btn.click();
+      return;
+    }
+  }
+  alert('El comparador ya tiene 3 palas. Abriendo la ficha de la pala.');
+  openPalaModal(palaId);
+}
+
+function limpiarRecomendador() {
+  recAnswers = {};
+  document.querySelectorAll('.rec-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('rec-results').innerHTML = '';
+}
+
+
+/* ═══════════════════════════════════════════════════
+   HOME / DASHBOARD
+   ═══════════════════════════════════════════════════ */
+
+function renderHomeStats() {
+  const el = document.getElementById('home-stats');
+  if (!el) return;
+
+  const numPalas   = PALAS.length;
+  const numLineas  = new Set(PALAS.map(p => p.linea).filter(Boolean)).size;
+  const numItems   = (typeof ITEMS !== 'undefined') ? ITEMS.length : 0;
+  const numModulos = (typeof CAPACITACIONES !== 'undefined') ? CAPACITACIONES.length : 0;
+
+  const stats = [
+    { num: numPalas,   label: 'Palas en catálogo' },
+    { num: numLineas,  label: 'Líneas de producto' },
+    { num: numItems,   label: 'Mat. y tecnologías' },
+    { num: numModulos, label: 'Módulos de capacitación' },
+  ];
+
+  el.innerHTML = stats.map(s =>
+    '<div class="home-stat">' +
+      '<div class="home-stat-num">' + s.num + '</div>' +
+      '<div class="home-stat-label">' + s.label + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+
+
+/* ═══════════════════════════════════════════════════
+   ONBOARDING — Primera visita
+   ═══════════════════════════════════════════════════ */
+
+const OB_STEPS = [
+  {
+    icon: 'BP',
+    title: 'Bienvenido al Portal Bullpadel 2026',
+    text: 'Esta es tu herramienta de consulta, capacitaci\u00f3n y recomendaci\u00f3n para vender mejor la gama Bullpadel.'
+  },
+  {
+    icon: 'RUTA',
+    title: 'Un flujo pensado para vender mejor',
+    text: 'Capacit\u00e1te, consult\u00e1 el cat\u00e1logo, us\u00e1 el recomendador, compar\u00e1 opciones y abr\u00ed la ficha t\u00e9cnica para cerrar con un argumento claro.'
+  },
+  {
+    icon: 'CAT',
+    title: 'Conoc\u00e9 el producto con criterio',
+    text: 'En el Cat\u00e1logo pod\u00e9s consultar fichas t\u00e9cnicas, l\u00edneas, formas, balances y perfiles de jugador. En Materiales y tecnolog\u00edas encontr\u00e1s explicaciones simples para traducir cada dato t\u00e9cnico en un beneficio de venta.'
+  },
+  {
+    icon: 'REC',
+    title: 'Recomend\u00e1 con m\u00e1s criterio',
+    text: 'Cuando un cliente no sabe qu\u00e9 pala elegir, us\u00e1 el Recomendador. Respond\u00e9s 5 preguntas, el sistema rankea las palas y despu\u00e9s pod\u00e9s comparar las 3 recomendaciones.'
+  },
+  {
+    icon: 'CAP',
+    title: 'Formaci\u00f3n comercial',
+    text: 'En Capacitaciones encontr\u00e1s videos, infograf\u00edas, checklist y quiz. Tu progreso queda guardado autom\u00e1ticamente. Pod\u00e9s volver a ver esta bienvenida desde Inicio cuando quieras.'
+  }
+];
+
+let _obStep = 0;
+
+function getOnboardingKey() {
+  if (!currentUser) return null;
+  return 'bp2026_onboarding_' + (currentUser.id || currentUser.email);
+}
+
+function hasSeenOnboarding() {
+  const key = getOnboardingKey();
+  if (!key) return true; // no user = don't show
+  return localStorage.getItem(key) === 'seen';
+}
+
+function markOnboardingSeen() {
+  const key = getOnboardingKey();
+  if (key) localStorage.setItem(key, 'seen');
+}
+
+function openOnboarding() {
+  _obStep = 0;
+  renderOnboardingStep();
+  document.getElementById('ob-bg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOnboarding(saveSeen) {
+  if (saveSeen !== false) markOnboardingSeen();
+  document.getElementById('ob-bg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function nextOnboardingStep() {
+  if (_obStep < OB_STEPS.length - 1) {
+    _obStep++;
+    renderOnboardingStep();
+  } else {
+    closeOnboarding(true);
+  }
+}
+
+function prevOnboardingStep() {
+  if (_obStep > 0) {
+    _obStep--;
+    renderOnboardingStep();
+  }
+}
+
+function renderOnboardingStep() {
+  const step  = OB_STEPS[_obStep];
+  const total = OB_STEPS.length;
+  const isLast = _obStep === total - 1;
+  const isFirst = _obStep === 0;
+
+  document.getElementById('ob-step-label').textContent =
+    'Paso ' + (_obStep + 1) + ' de ' + total;
+  document.getElementById('ob-title').textContent = step.title;
+  document.getElementById('ob-icon').textContent  = step.icon;
+  document.getElementById('ob-text').textContent  = step.text;
+
+  // Dots
+  document.getElementById('ob-dots').innerHTML = OB_STEPS.map((_, i) =>
+    '<div class="ob-dot' + (i === _obStep ? ' active' : '') + '"></div>'
+  ).join('');
+
+  // Buttons
+  const prevBtn = document.getElementById('ob-prev');
+  const nextBtn = document.getElementById('ob-next');
+  prevBtn.style.visibility = isFirst ? 'hidden' : 'visible';
+  nextBtn.textContent = isLast ? 'Empezar a usar el portal' : 'Siguiente';
+}
+
+// Escape key closes onboarding
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const bg = document.getElementById('ob-bg');
+    if (bg && bg.classList.contains('open')) closeOnboarding(true);
+  }
+});
+
+// Click outside modal closes it
+document.getElementById('ob-bg').addEventListener('click', function(e) {
+  if (e.target === this) closeOnboarding(true);
+});
+
+
 /* ═══════════════════════════════════════════════════
    JS · 6. EVENTOS E INTERACCIONES
    showSection · lightbox · guia navigation · capacitaciones navigation
    ═══════════════════════════════════════════════════ */
 
+function toggleMobileNav() {
+  var nav = document.getElementById('nav-bar');
+  if (nav) nav.classList.toggle('open');
+}
+
 function showSection(id,btn){
+  var nav2 = document.getElementById('nav-bar');
+  if (nav2) nav2.classList.remove('open');
+  // Allow btn to be null (called from home cards)
+  if (!btn) {
+    // Find matching nav button and activate it
+    btn = [...document.querySelectorAll('.nav-btn')]
+      .find(b => {
+        var sectionMap = { 'inicio':'Inicio','palas':'Catálogo de palas','glosario':'Materiales y tecnologías',
+          'comparador':'Comparador','tabla':'Vista gama completa','guia':'Guía de venta',
+          'capacitaciones':'Capacitaciones','recomendador':'Recomendador','admin':'Administración' };
+        return b.textContent.trim() === (sectionMap[id] || '');
+      }) || null;
+  }
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('visible'));
   document.getElementById('sec-'+id).classList.add('visible');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -5010,7 +6796,7 @@ function renderAdmin() {
   if (!visible.length) {
     tbody.innerHTML = `<tr><td colspan="7">
       <div class="admin-empty">
-        <div class="admin-empty-icon">👥</div>
+        
         No hay usuarios para mostrar.
       </div></td></tr>`;
     return;
@@ -5044,13 +6830,13 @@ function renderAdmin() {
       <td>
         <div class="col-actions">
           ${canEdit   ? `<button class="btn btn-secondary btn-sm btn-icon" title="Editar"
-                          onclick="adminOpenEdit('${u.id}')">✏️</button>` : ''}
+                          onclick="adminOpenEdit('${u.id}')" style="min-width:52px">Editar</button>` : ''}
           ${canPwd    ? `<button class="btn btn-secondary btn-sm btn-icon" title="Contraseña"
-                          onclick="adminOpenPwd('${u.id}')">🔑</button>` : ''}
+                          onclick="adminOpenPwd('${u.id}')" style="min-width:52px">Clave</button>` : ''}
           ${canToggle ? `<button class="btn ${toggleClass} btn-sm"
                           onclick="adminToggleStatus('${u.id}')">${toggleLabel}</button>` : ''}
           ${canDelete ? `<button class="btn btn-danger btn-sm btn-icon" title="Eliminar"
-                          onclick="adminDelete('${u.id}')">🗑</button>` : ''}
+                          onclick="adminDelete('${u.id}')" style="min-width:52px">Borrar</button>` : ''}
         </div>
       </td>
     </tr>`;
@@ -5343,7 +7129,7 @@ function togglePwdVisibility(inputId, btn) {
   if (!input) return;
   const show = input.type === 'password';
   input.type = show ? 'text' : 'password';
-  btn.textContent = show ? '🙈' : '👁';
+  btn.textContent = show ? 'Ocultar' : 'Ver';
 }
 
 /* ── Delete user ──────────────────────────────────────────────────────────────── */
@@ -5380,9 +7166,47 @@ function togglePwdVisibility(inputId, btn) {
   if (!input) return;
   const show = input.type === 'password';
   input.type = show ? 'text' : 'password';
-  btn.textContent = show ? '🙈' : '👁';
+  btn.textContent = show ? 'Ocultar' : 'Ver';
 }
 
 </script>
+
+<!-- Lightbox de imágenes -->
+<div id="lightbox" onclick="closeLightbox()"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);
+            z-index:9999;cursor:zoom-out;align-items:center;justify-content:center;">
+  <img id="lightbox-img" src="" alt=""
+       style="max-width:90vw;max-height:90vh;object-fit:contain;
+              border-radius:8px;box-shadow:0 8px 48px rgba(0,0,0,.6);">
+  <button onclick="closeLightbox()"
+          style="position:fixed;top:20px;right:24px;background:none;border:none;
+                 color:#fff;font-size:32px;cursor:pointer;line-height:1;opacity:.8">✕</button>
+</div>
+
+
+<!-- Onboarding modal -->
+<div class="ob-bg" id="ob-bg">
+  <div class="ob-modal" id="ob-modal">
+    <div class="ob-header">
+      <div class="ob-step-label" id="ob-step-label">Paso 1 de 5</div>
+      <div class="ob-title" id="ob-title"></div>
+    </div>
+    <div class="ob-body">
+      <div class="ob-icon" id="ob-icon"></div>
+      <div class="ob-text" id="ob-text"></div>
+    </div>
+    <div class="ob-dots" id="ob-dots"></div>
+    <div class="ob-footer">
+      <div class="ob-footer-left">
+        <button class="ob-btn ob-btn-secondary" id="ob-prev"
+                onclick="prevOnboardingStep()">Anterior</button>
+      </div>
+      <button class="ob-btn-ghost" onclick="closeOnboarding(true)">Omitir</button>
+      <button class="ob-btn ob-btn-primary" id="ob-next"
+              onclick="nextOnboardingStep()">Siguiente</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
