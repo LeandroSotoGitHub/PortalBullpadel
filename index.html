@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bullpadel 2026 · Portal Distribuidores</title>
 <style>
@@ -43,7 +44,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
    3. HEADER Y NAVEGACIÓN — .header, .nav-bar, lightbox
    ═══════════════════════════════════════════════════ */
 
-.header{background:var(--negro);padding:0 32px;display:flex;align-items:center;gap:20px;height:64px;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--rojo)}
+.header{
+  background:var(--negro);padding:0 24px;
+  display:flex;align-items:center;gap:12px;
+  height:64px;position:sticky;top:0;z-index:100;
+  border-bottom:3px solid var(--rojo);
+  /* needed so absolute nav-bar positions against header */
+}
 .logo-mark{width:36px;height:36px;background:var(--rojo);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .logo-mark svg{width:22px;height:22px}
 .header-title{color:var(--blanco);font-size:18px;font-weight:700;letter-spacing:-.02em}
@@ -500,7 +507,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* Session bar — user info + logout in header */
 .session-bar{
-  display:flex;align-items:center;gap:10px;margin-left:auto;
+  display:flex;align-items:center;gap:10px;
+  margin-left:auto;
+  min-width:0; /* allow shrinking */
 }
 .session-user{
   display:flex;align-items:center;gap:8px;
@@ -512,6 +521,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 }
 .session-name{
   font-size:12px;color:#aaa;line-height:1.2;
+  max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .session-role{
   font-size:10px;font-weight:700;text-transform:uppercase;
@@ -1431,31 +1441,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   display: none;
   flex-direction: column; justify-content: center; gap: 5px;
   background: none; border: none; cursor: pointer;
-  padding: 6px; margin-left: auto; flex-shrink: 0;
+  padding: 6px; flex-shrink: 0;
+  /* NO margin-left:auto — session-bar already handles that */
 }
 .nav-hamburger span {
   display: block; width: 22px; height: 2px;
   background: #fff; border-radius: 2px; transition: all .2s;
 }
+
 @media (max-width: 700px) {
+  .header { padding: 0 16px; gap: 8px; }
+
+  .header-title { font-size: 14px; }
+
+  /* Hide session name on very small screens, keep avatar + logout */
+  .session-name, .session-role { display: none; }
+
+  /* Logout button shorter on mobile */
+  .logout-btn { padding: 5px 10px; font-size: 11px; }
+
+  /* Show hamburger */
   .nav-hamburger { display: flex; }
+
+  /* Nav dropdown */
   .nav-bar {
     display: none;
     flex-direction: column;
-    padding: 8px 0;
-    position: absolute; top: 64px; left: 0; right: 0;
+    padding: 6px 0;
+    /* Position relative to the sticky header */
+    position: fixed;
+    top: 64px; left: 0; right: 0;
     background: var(--negro);
     border-bottom: 2px solid var(--rojo);
     z-index: 99;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
   }
   .nav-bar.open { display: flex; }
+
   .nav-btn {
-    padding: 12px 24px; text-align: left;
-    border-bottom: 1px solid #1a1a1a; border-bottom-width: 1px;
-    border-radius: 0; font-size: 14px;
+    padding: 13px 20px;
+    text-align: left;
+    border-bottom: 1px solid #1a1a1a;
+    border-radius: 0;
+    font-size: 14px;
+    width: 100%;
   }
-  .nav-btn.active { color: var(--rojo); border-bottom-color: transparent; }
-  .header { position: sticky; }
+  .nav-btn:last-child { border-bottom: none; }
+  .nav-btn.active { color: var(--rojo); }
 }
 
 
@@ -1967,9 +2001,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </svg>
   </div>
   <span class="header-title">Bullpadel 2026</span>
-  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menú">
-    <span></span><span></span><span></span>
-  </button>
   <div class="session-bar" id="session-bar" style="display:none">
     <div class="session-user">
       <div class="session-avatar" id="session-avatar">?</div>
@@ -1980,6 +2011,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <button class="logout-btn" onclick="handleLogout()">Cerrar sesión</button>
   </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
 <!-- ═══════════════════════════════════════════════════
@@ -4567,8 +4601,10 @@ function renderRecursosBlock(recursos) {
           src="${embedUrl}"
           title="${videoLabel || 'Video de capacitación'}"
           loading="lazy"
-          allowfullscreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+          frameborder="0"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
         </iframe>
       </div>
     </div>` : '';
@@ -6542,10 +6578,6 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Click outside modal closes it
-document.getElementById('ob-bg').addEventListener('click', function(e) {
-  if (e.target === this) closeOnboarding(true);
-});
 
 
 /* ═══════════════════════════════════════════════════
@@ -6642,10 +6674,15 @@ function goGuiaStep(idx) {
 
 renderGuia();
 
-/* ── Admin UI wiring ── */
+/* ── Admin UI wiring + onboarding click-outside ── */
 document.addEventListener('DOMContentLoaded', () => {
   const cuRol = document.getElementById('cu-rol');
   if (cuRol) cuRol.addEventListener('change', adminUpdateMayoristaHint);
+  // Onboarding: click outside modal closes it
+  const obBg = document.getElementById('ob-bg');
+  if (obBg) obBg.addEventListener('click', function(e) {
+    if (e.target === this) closeOnboarding(true);
+  });
 });
 
 /* ── Auth init ── */
