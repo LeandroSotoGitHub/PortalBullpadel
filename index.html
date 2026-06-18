@@ -1946,6 +1946,137 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .ob-bg { padding: 0; align-items: flex-end; }
 }
 
+
+/* ═══════════════════════════════════════════════════
+   COMPARADOR MEJORADO — RUN 14A-1
+   ═══════════════════════════════════════════════════ */
+
+/* Summary block */
+.comp-summary {
+  background: var(--negro); color: #ccc;
+  border-radius: var(--radio-lg); padding: 18px 22px;
+  margin-bottom: 16px; font-size: 13px; line-height: 1.7;
+}
+.comp-summary-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--rojo); margin-bottom: 6px;
+}
+
+/* Highlights */
+.comp-highlights {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 20px;
+}
+.comp-highlight-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 20px;
+  background: #fff; border: 1px solid var(--gris-borde);
+  font-size: 12px; font-weight: 600; color: var(--negro);
+}
+.comp-highlight-chip .chip-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--rojo);
+}
+.comp-highlights-title {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: #aaa;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.comp-highlights-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--gris-borde);
+}
+
+/* Table improvements */
+.comp-table-wrap {
+  overflow-x: auto; background: #fff;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+  margin-bottom: 20px;
+}
+.comp-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+.comp-table thead th {
+  padding: 0 16px 16px; text-align: center;
+  font-size: 13px; font-weight: 700; color: var(--negro);
+  border-bottom: 2px solid var(--gris-borde);
+  vertical-align: bottom;
+}
+.comp-table thead th:first-child { text-align: left; }
+.comp-table .row-label {
+  padding: 10px 16px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; color: #999;
+  background: var(--gris-claro); white-space: nowrap;
+  border-bottom: 1px solid #f0f0f0;
+}
+.comp-table tbody td {
+  padding: 10px 16px; font-size: 13px; color: #444;
+  text-align: center; border-bottom: 1px solid #f5f5f5;
+  vertical-align: top;
+}
+.comp-table tbody tr:last-child td { border-bottom: none; }
+.comp-table tbody tr:hover td { background: #fafafa; }
+.comp-table .diff {
+  background: #fdf6f6; color: #b03030; font-weight: 600;
+}
+.comp-pala-img {
+  width: 80px; height: 90px; object-fit: contain;
+  cursor: zoom-in; display: block; margin: 0 auto 8px;
+  transition: transform .2s;
+}
+.comp-pala-img:hover { transform: scale(1.06); }
+.comp-pala-nombre { font-size: 13px; font-weight: 800; color: var(--negro); }
+.comp-pala-linea  { margin-top: 4px; }
+.comp-chips-cell  { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.comp-tech-chip {
+  font-size: 10px; padding: 2px 7px; border-radius: 4px;
+  background: #f5f5f5; color: #555; border: 1px solid var(--gris-borde);
+}
+
+/* How to explain block */
+.comp-explain { margin-top: 4px; }
+.comp-explain-title {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: #aaa; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.comp-explain-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--gris-borde);
+}
+.comp-explain-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.comp-explain-card {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); padding: 16px;
+  border-top: 3px solid var(--gris-borde);
+}
+.comp-explain-card.proline { border-top-color: var(--rojo); }
+.comp-explain-card-nombre {
+  font-size: 13px; font-weight: 800; color: var(--negro); margin-bottom: 4px;
+}
+.comp-explain-card-etiqueta {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--rojo); margin-bottom: 10px;
+}
+.comp-explain-card-frase {
+  font-size: 12px; color: #555; line-height: 1.6; font-style: italic;
+}
+
+/* Empty state */
+.comp-empty {
+  padding: 48px 24px; text-align: center;
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+}
+.comp-empty-title { font-size: 15px; font-weight: 700; color: var(--negro); margin-bottom: 6px; }
+.comp-empty-sub   { font-size: 13px; color: #888; }
+
+@media(max-width:600px) {
+  .comp-explain-cards { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -2211,8 +2342,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <!-- 4.3 Comparador -->
   <section id="sec-comparador" class="section">
     <div class="sec-head">
-      <h1>Comparador de palas</h1>
-      <p>Seleccioná hasta 3 palas para comparar sus especificaciones técnicas lado a lado</p>
+      <h1>Comparador Bullpadel</h1>
+      <p>Analizá diferencias técnicas y comerciales entre las palas seleccionadas.</p>
     </div>
     <div class="comp-selects">
       <div class="comp-select-group">
@@ -2505,6 +2636,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <p>Respondé algunas preguntas y encontrá las palas más adecuadas según nivel, estilo y necesidad del jugador.</p>
     </div>
     <div class="rec-questions">
+      <!-- Q0 -->
+      <div class="rec-q">
+        <div class="rec-q-head"><div class="rec-q-num">0</div>Tipo de pala buscada <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:#aaa">(opcional)</span></div>
+        <div class="rec-options" id="rec-q0">
+          <div class="rec-option selected" onclick="recSelect(0,'indistinto',this)">Indistinto</div>
+          <div class="rec-option" onclick="recSelect(0,'standard',this)">Estándar / adulto</div>
+          <div class="rec-option" onclick="recSelect(0,'w',this)">Línea W / más liviana</div>
+        </div>
+      </div>
+
       <!-- Q1 -->
       <div class="rec-q">
         <div class="rec-q-head"><div class="rec-q-num">1</div>Nivel del jugador</div>
@@ -2811,7 +2952,8 @@ const PALAS = [
     sensacionJuego:"La Vertex 05 ofrece un comportamiento equilibrado en todas las situaciones de juego. Responde con precisión tanto en el fondo de pista como en la red, generando potencia sin sacrificar el control. Recomendada para jugadores que buscan una pala versátil con un rendimiento consistente en cada intercambio.",
     argumentoVenta:"La pala más completa de la gama PROLINE: tecnología de competición que no encasilla al jugador en un solo estilo. Un solo modelo que responde a todo.",
     relacionados:["vertex05geo","vertex05hybrid","xplo26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"vertex05geo", sku:"BP-PRO-V05G-2026",
@@ -2829,7 +2971,8 @@ const PALAS = [
     sensacionJuego:"La Vertex 05 Geo amplía el área de contacto efectiva gracias a su marco geométrico, incrementando el ángulo de lanzamiento en los puntos más exigentes de la cara. Diseñada para jugadores que combinan juego ofensivo con alta exigencia técnica en cada golpe.",
     argumentoVenta:"La Vertex que ataca más. El marco GEO amplía la zona de golpeo donde más se necesita — las 2 y las 10. Ideal para el jugador que quiere potencia con dirección.",
     relacionados:["vertex05","neuron02edge","xplo26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"vertex05hybrid", sku:"BP-PRO-V05H-2026",
@@ -2847,7 +2990,8 @@ const PALAS = [
     sensacionJuego:"La Vertex 05 Hybrid mantiene la tecnología de la familia Vertex con un balance orientado hacia el control. Su forma híbrida facilita el manejo en situaciones de defensa y permite una transición natural entre el fondo de pista y la red.",
     argumentoVenta:"La Vertex para el jugador que defiende y contraataca. Más manejable que la Vertex 05 estándar, con el mismo corazón de alto rendimiento.",
     relacionados:["vertex05","neuron02","hack04hybrid26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"vertex05comfort", sku:"BP-PRO-V05C-2026",
@@ -2865,7 +3009,8 @@ const PALAS = [
     sensacionJuego:"La Vertex 05 Comfort incorpora la arquitectura de corazón de la gama Vertex con materiales de mayor absorción en la superficie exterior. Proporciona el rendimiento de una pala de alto nivel con una respuesta más amortiguada, reduciendo la fatiga en sesiones prolongadas.",
     argumentoVenta:"Todo el rendimiento Vertex, con fibra Fibrix que absorbe el impacto sin robarle potencia al golpe. Al final del partido el brazo está descansado.",
     relacionados:["vertex05","hack04comfort26","xplocomfort26"],
-    nota:"Solo disponible fuera de Europa"
+    nota:"Solo disponible fuera de Europa",
+    tipo_pala:"standard"
   },
   {
     id:"vertex05w", sku:"BP-PRO-V05W-2026",
@@ -2883,7 +3028,8 @@ const PALAS = [
     sensacionJuego:"La Vertex 05 W está diseñada específicamente para jugadoras de nivel avanzado, con un peso optimizado que facilita la velocidad de mano y la precisión en la red. Incorpora todas las tecnologías de la familia Vertex 05 en un formato más ligero y manejable.",
     argumentoVenta:"La pala de Delfi Brea: más liviana que el resto de la familia Vertex, pero igual de precisa y potente. En la mano se siente ágil y rápida.",
     relacionados:["vertex05wcloud","elitew","wonder"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"hack0426", sku:"BP-PRO-H04-2026",
@@ -2901,7 +3047,8 @@ const PALAS = [
     sensacionJuego:"La pala que más duele golpear del otro lado. La Hack 04 26 genera potencia con el movimiento del brazo, no con la fuerza bruta. Una sensación adictiva para el jugador ofensivo.",
     argumentoVenta:"10 años de evolución en una pala. La Hack 04 26 convierte la velocidad del swing en potencia explosiva — el jugador ofensivo que la prueba no vuelve atrás.",
     relacionados:["hack04hybrid26","hack04comfort26","xplo26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"hack04hybrid26", sku:"BP-PRO-H04H-2026",
@@ -2919,7 +3066,8 @@ const PALAS = [
     sensacionJuego:"La Hack que defiende como ataca. La forma híbrida equilibra todo: potencia en los ataques, estabilidad en los bloqueos. Cuando la pelota viene rápida, esta pala la devuelve con intereses.",
     argumentoVenta:"La Hack para el jugador completo. Aluminized Carbon 18K da potencia con una amortiguación que ningún carbono puro puede ofrecer.",
     relacionados:["hack0426","hack04hybridcloud","neuron02"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"hack04comfort26", sku:"BP-PRO-H04C-2026",
@@ -2937,7 +3085,8 @@ const PALAS = [
     sensacionJuego:"La potencia de la Hack sin el sacrificio físico. La fibra Fibrix suaviza el golpe lo justo para que el brazo no se resienta, pero la bola igual sale fuerte.",
     argumentoVenta:"Para el jugador agresivo que cuida el brazo: toda la potencia Hack con Fibrix que absorbe lo que no tiene que llegar al codo.",
     relacionados:["hack0426","hack04hybridcloud","xplocomfort26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"hack04hybridcloud", sku:"BP-PRO-H04HC-2026",
@@ -2955,7 +3104,8 @@ const PALAS = [
     sensacionJuego:"La Hack para el jugador que quiere disfrutar. Sin vibración, sin dureza, sin sacrificio. La bola sale bien igual — pero el brazo lo agradece.",
     argumentoVenta:"La pala que protege el brazo sin comprometer el rendimiento. Elastic Fiber + CloudEva = el sistema anti-lesión más completo de la gama Hack.",
     relacionados:["hack04comfort26","neuron02cloud","vertex05wcloud"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"neuron02", sku:"BP-PRO-N02-2026",
@@ -2973,7 +3123,8 @@ const PALAS = [
     sensacionJuego:"La pala de los que controlan el partido desde el fondo. Cada golpe va donde tiene que ir, sin sorpresas. La Neuron 02 es firme, precisa y muy directa.",
     argumentoVenta:"La pala de Chingotto: control total desde cualquier ángulo. PrismLock y Nerve hacen el marco más rígido y eficiente del catálogo de control.",
     relacionados:["neuron02edge","neuron02cloud","vertex05hybrid"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"neuron02edge", sku:"BP-PRO-N02E-2026",
@@ -2991,7 +3142,8 @@ const PALAS = [
     sensacionJuego:"Para el jugador que quiere controlarlo todo y atacar cuando toca. La forma GEO agrega palanca justo donde se ejecutan los remates. Control total con un golpe extra de potencia.",
     argumentoVenta:"La Neuron que ataca. PrismLock da rigidez de cristal y el GEO da potencia cuando se necesita. Para el jugador técnico que quiere decidir el punto.",
     relacionados:["neuron02","vertex05geo","xplo26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"neuron02cloud", sku:"BP-PRO-N02CL-2026",
@@ -3009,7 +3161,8 @@ const PALAS = [
     sensacionJuego:"El control total de la Neuron 02, pero sin que el brazo pague el precio. La versión Cloud transforma cada golpe en algo suave y fluido — sin vibración, sin impacto duro.",
     argumentoVenta:"Toda la precisión de la Neuron con Elastic Fiber y CloudEva. Para el jugador técnico que quiere seguir jugando muchos años sin lesionarse.",
     relacionados:["neuron02","hack04hybridcloud","vertex05wcloud"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"vertex05wcloud", sku:"BP-PRO-V05WCL-2026",
@@ -3027,7 +3180,8 @@ const PALAS = [
     sensacionJuego:"La Vertex más cómoda que existe. Cloud Eva en el núcleo y Elastic Fiber en la cara — dos materiales pensados para que el brazo no sufra. La bola sale bien de todas formas.",
     argumentoVenta:"La combinación más inteligente para la jugadora que cuida el cuerpo: tecnologías Vertex + el binomio Elastic Fiber / CloudEva. Sin vibraciones, sin dolor.",
     relacionados:["vertex05w","neuron02cloud","hack04hybridcloud"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"xplo26", sku:"BP-PRO-XPLO-2026",
@@ -3045,7 +3199,8 @@ const PALAS = [
     sensacionJuego:"La pala más explosiva del catálogo. No hay más que decir. Cuando la golpeás fuerte, la bola sale como un tiro. La sensación de rematar con esta pala es difícil de encontrar en otra.",
     argumentoVenta:"La pala más potente de la historia de Bullpadel. Diseñada con Di Nenno para llevar la potencia dinámica al máximo. El cliente que busca potencia no necesita ver más.",
     relacionados:["xplocomfort26","hack0426","neuron02edge"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"xplocomfort26", sku:"BP-PRO-XPLOC-2026",
@@ -3063,7 +3218,8 @@ const PALAS = [
     sensacionJuego:"La potencia de la XPLO sin los límites. La fibra Fibrix suaviza lo justo para que cualquier jugador pueda sacarle todo el partido sin arriesgar el brazo.",
     argumentoVenta:"La XPLO para el jugador que juega 3 veces por semana. Toda la explosividad, con el Fibrix que cuida el brazo. El paso natural desde una pala avanzada.",
     relacionados:["xplo26","hack04comfort26","pearl26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"icon26", sku:"BP-PRO-ICON-2026",
@@ -3081,7 +3237,8 @@ const PALAS = [
     sensacionJuego:"Una pala que se siente especial desde que la agarrás. Potente, técnica y con un spin que se nota diferente. Para el jugador que quiere que su pala diga algo sobre cómo juega.",
     argumentoVenta:"La pala de Juan Martín Díaz: una leyenda del pádel en cada golpe. Identidad visual única y TorsionConcept para multiplicar la potencia de cada smash.",
     relacionados:["xplo26","hack0426","pearl26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"pearl26", sku:"BP-PRO-PEARL-2026",
@@ -3099,7 +3256,8 @@ const PALAS = [
     sensacionJuego:"Liviana, potente y muy cómoda. La Pearl está pensada para el jugador que quiere atacar sin cargarse el brazo. La forma triangular del corazón distribuye la energía del golpe de forma más eficiente.",
     argumentoVenta:"Ligereza y potencia en equilibrio: la Pearl es la opción para el jugador que quiere atacar toda la sesión sin que el brazo le pase la factura.",
     relacionados:["xplocomfort26","flowlegend","hack04comfort26"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"wonder", sku:"BP-PRO-WND-2026",
@@ -3117,7 +3275,8 @@ const PALAS = [
     sensacionJuego:"La pala de Claudia Fernández transmite exactamente lo que ella juega: soltura, potencia y carácter. Se defiende bien, ataca bien y responde igual en todas las situaciones.",
     argumentoVenta:"La jugadora que no quiere limitarse a un solo estilo. La Wonder lo hace todo bien — defensa, ataque, red, fondo. Inspirada en el juego de Claudia Fernández.",
     relacionados:["elitew","flowlegend","vertex05w"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"elitew", sku:"BP-PRO-ELITEW-2026",
@@ -3135,7 +3294,8 @@ const PALAS = [
     sensacionJuego:"Ligera, manejable y con mucho carácter. La Elite W se mueve rápido en la mano — en la red respondés antes, en el fondo llegás mejor. No hace falta hacer fuerza.",
     argumentoVenta:"La pala más ágil de la gama femenina PROLINE. Para la jugadora que quiere imponer su ritmo sin cargar peso innecesario.",
     relacionados:["wonder","pearl26","vertex05w"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"flowlegend", sku:"BP-PRO-FLOW-2026",
@@ -3153,7 +3313,8 @@ const PALAS = [
     sensacionJuego:"Para la jugadora que quiere fluir. Liviana, potente y muy fácil de usar. La bola sale bien tanto en defensa como al atacar cerca de la red. Un arma elegante para un juego elegante.",
     argumentoVenta:"La pala de Alejandra Salazar: ligereza de campeonato con FlowForce que lleva toda la energía del swing a la bola. Para la jugadora que quiere más con menos esfuerzo.",
     relacionados:["wonder","elitew","pearl26"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"ionicpower26", sku:"BP-NXT-IPWR-2026",
@@ -3171,7 +3332,8 @@ const PALAS = [
     sensacionJuego:"La entrada al carbono con todo el rendimiento. La Ionic Power es ágil, potente y muy manejable — el balance alto ayuda a generar potencia sin necesitar una técnica depurada.",
     argumentoVenta:"El salto natural desde palas básicas: Glaphite da potencia con comodidad, XForce da firmeza en el marco. Para el jugador intermedio que quiere rendir más.",
     relacionados:["ioniccontrol26","ioniclight26","vertexadvance"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"ioniccontrol26", sku:"BP-NXT-ICTR-2026",
@@ -3189,7 +3351,8 @@ const PALAS = [
     sensacionJuego:"Para el jugador que quiere ganar los puntos con cabeza. La Ionic Control es precisa y consistente — siempre responde igual, sin sorpresas.",
     argumentoVenta:"Control y estabilidad para el jugador intermedio que está perfeccionando su técnica. Glaphite y forma redonda: la combinación perfecta para consolidar el juego.",
     relacionados:["ionicpower26","ioniclight26","hack02advance"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"ioniclight26", sku:"BP-NXT-ILTG-2026",
@@ -3207,7 +3370,8 @@ const PALAS = [
     sensacionJuego:"La pala más versátil de la línea NEXT. Ni muy ofensiva ni muy defensiva — sirve para todo. El balance medio y el peso reducido la hacen fácil de llevar todo el partido.",
     argumentoVenta:"Para el jugador en desarrollo que no quiere limitarse: la Ionic Light es equilibrio total. Útil en cualquier situación del partido.",
     relacionados:["ionicpower26","ioniccontrol26","vertexadvance"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"vertexadvance", sku:"BP-ADV-VADV-2026",
@@ -3225,7 +3389,8 @@ const PALAS = [
     sensacionJuego:"La potencia de la Vertex en un formato más accesible. La Vertex Advance es firme, directa y tiene mucha salida de bola para ser una pala de iniciación avanzada.",
     argumentoVenta:"El primer modelo serio de Bullpadel. El jugador que ya tiene técnica y quiere empezar a sentir lo que es una pala de rendimiento real.",
     relacionados:["hack02advance","ionicpower26","ioniclight26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"hack02advance", sku:"BP-ADV-H02A-2026",
@@ -3243,7 +3408,8 @@ const PALAS = [
     sensacionJuego:"El control de la Hack adaptado para el jugador que está creciendo. Forma redonda, balance medio y un núcleo cómodo que perdona los golpes no perfectos.",
     argumentoVenta:"Para el amateur defensivo que quiere fiabilidad: Hack Core mejora los golpes descentrados y Evalastic mantiene el rendimiento toda la temporada.",
     relacionados:["vertexadvance","ioniccontrol26","indigactr26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"indigapwr26", sku:"BP-TOUR-IPWR-2026",
@@ -3261,7 +3427,8 @@ const PALAS = [
     sensacionJuego:"La primera pala seria para el jugador que empieza a tomarse el pádel en serio. Cómoda, durable y con buena salida de bola — no es una pala de juguete.",
     argumentoVenta:"Para el jugador que empieza a invertir en serio: Polyglass + CarbonTube a un precio accesible. La pala de iniciación que no frena el desarrollo.",
     relacionados:["indigactr26","indigaw26","hack02advance"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"indigactr26", sku:"BP-TOUR-ICTR-2026",
@@ -3279,7 +3446,8 @@ const PALAS = [
     sensacionJuego:"Ultraligera y muy fácil de manejar. La Indiga CTR 26 está pensada para que la pelota vaya donde se la manda, sin complicaciones.",
     argumentoVenta:"Para el jugador que está aprendiendo: redonda, liviana, balance bajo. El control viene solo — la pala no es un obstáculo sino una herramienta.",
     relacionados:["indigapwr26","indigaw26","ioniccontrol26"],
-    nota:null
+    nota:null,
+    tipo_pala:"standard"
   },
   {
     id:"indigaw26", sku:"BP-TOUR-IW-2026",
@@ -3297,7 +3465,8 @@ const PALAS = [
     sensacionJuego:"Diseñada para que jugar sea un placer desde el primer día. Liviana, cómoda y linda — la Indiga W no cansa el brazo y se maneja sola.",
     argumentoVenta:"La pala de iniciación para jugadoras que quieren disfrutar desde el primer día: liviana, cómoda y con todo lo necesario para aprender bien.",
     relacionados:["indigactr26","elitew","ioniclight26"],
-    nota:null
+    nota:null,
+    tipo_pala:"w"
   },
   {
     id:"hackjr26", sku:"BP-JNR-H04JR-2026",
@@ -3315,7 +3484,8 @@ const PALAS = [
     sensacionJuego:"La pala de Paquito Navarro en tamaño junior. No es una pala de niño — tiene las mismas tecnologías que las palas de adulto, adaptadas para el jugador joven que ya se lo toma en serio.",
     argumentoVenta:"Para el junior serio: tecnologías de adulto (Hack Core, CarbonTube) en el tamaño correcto. El jugador joven que aspira a más.",
     relacionados:["indigapwr26","vertexadvance","hack02advance"],
-    nota:null
+    nota:null,
+    tipo_pala:"junior"
   }
 ];
 
@@ -5307,36 +5477,274 @@ function populateCompSelects(){
   ['c1','c2','c3'].forEach(id=>document.getElementById(id).innerHTML=opts);
 }
 
-function renderComp(){
-  const sel=['c1','c2','c3'].map(id=>document.getElementById(id).value).filter(Boolean);
-  const r=document.getElementById('comp-result');
-  if(sel.length<2){r.innerHTML='<p style="color:#888;font-size:13px;padding:16px 0">Seleccioná al menos 2 palas para comparar.</p>';return;}
-  const palas=sel.map(id=>PALAS.find(p=>p.id===id));
-  const rows=[
-    ['Línea',p=>p.linea],['Forma',p=>p.forma],['Peso',p=>p.peso],['Perfil',p=>p.perfil],
-    ['Balance',p=>p.balance],['Sup. de juego',p=>p.superficie],
-    ['Comp. exterior',p=>p.exterior],['Núcleo',p=>p.interior],
-    ['Nivel',p=>p.nivel],['Estilo',p=>p.estilo],['Rugoso',p=>p.rugoso],['Tacto',p=>p.tacto],
-    ['Tecnologías',p=>(p.tecnologias||[]).join(' · ')||'—'],
-  ];
-  r.innerHTML=`<div class="comp-table-wrap"><table class="comp-table">
-    <thead><tr>
-      <th>Especificación</th>
-      ${palas.map(p=>`<th class="pala-col"><img class="comp-pala-img" src="${IMGS[p.id]||''}" alt="${p.nombre}" onclick="openLightbox(this.src,this.alt)" style="cursor:zoom-in"><br>${p.nombre}</th>`).join('')}
-    </tr></thead>
-    <tbody>
-    ${rows.map(([label,fn])=>{
-      const vals=palas.map(fn);
-      const allSame=vals.every(v=>v===vals[0]);
-      return `<tr>
-        <td class="row-label">${label}</td>
-        ${vals.map(v=>`<td class="${allSame?'':'diff'}">${v}</td>`).join('')}
-      </tr>`;
-    }).join('')}
-    </tbody>
-  </table></div>
-  <p style="font-size:12px;color:#888;margin-top:8px">Celdas en rojo indican diferencias entre las palas seleccionadas.</p>`;
+
+/* ── Comparador helpers ─────────────────────────────────────────────────── */
+
+function getSelectedComparePalas() {
+  return ['c1','c2','c3']
+    .map(id => document.getElementById(id) ? document.getElementById(id).value : '')
+    .filter(Boolean)
+    .map(id => PALAS.find(p => p.id === id))
+    .filter(Boolean);
 }
+
+function compNormalizeText(v) {
+  if (!v) return '';
+  return String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ');
+}
+
+function compHasText(pala, keywords) {
+  const t = compNormalizeText([
+    pala.estilo, pala.exterior, pala.interior, pala.sensacionJuego,
+    pala.perfilJugador, pala.argumentoVenta, pala.descTecnica,
+    ...(pala.materiales||[]), ...(pala.tecnologias||[])
+  ].join(' '));
+  return keywords.some(k => t.includes(k));
+}
+
+function isProlinePala(p)  { return p.linea === 'PROLINE'; }
+function isComfortPala(p)  { return compHasText(p, ['confort','cloud','elastic','soft','suave','amortiguacion','comoda','amable']); }
+function isControlPala(p)  { return compHasText(p, ['control','defensa','precision','tecnic']) || compNormalizeText(p.estilo||'').includes('defensiv'); }
+function isPowerPala(p)    { return compHasText(p, ['potencia','ataque','explosiv','smash','remate']) || compNormalizeText(p.estilo||'').includes('ofensivo'); }
+function isEasyPala(p)     { return compHasText(p, ['facil','manejable','agil','ligera','accesible','perdona']); }
+function isTechnicalPala(p){ return (p.linea==='PROLINE') && compHasText(p,['carbon','tricarbon','xtend','hesacore','vibradrive']); }
+
+/* Build executive summary */
+function buildCompareSummary(palas) {
+  // Classify each pala by its dominant role in this comparison
+  const prolinePalas = palas.filter(isProlinePala);
+  const easyPalas    = palas.filter(isEasyPala);
+  const comfortPalas = palas.filter(isComfortPala);
+  const powerPalas   = palas.filter(isPowerPala);
+  const controlPalas = palas.filter(p => isControlPala(p) && !isPowerPala(p));
+  const multiLine    = new Set(palas.map(p => p.linea)).size > 1;
+
+  const parts = [];
+
+  // Opening: describe what each pala brings to the comparison by name
+  if (prolinePalas.length > 0 && prolinePalas.length < palas.length) {
+    const premiumNames = prolinePalas.map(p => p.nombre).join(' y ');
+    const restNames    = palas.filter(p => !isProlinePala(p)).map(p => p.nombre).join(' y ');
+    parts.push(
+      'En esta comparación, ' + premiumNames + ' aparece como la opción de mayor prestación y perfil más técnico, ' +
+      'mientras que ' + restNames + ' funciona como alternativa ' +
+      (easyPalas.some(p => !isProlinePala(p)) ? 'más accesible y fácil de manejar' :
+       comfortPalas.some(p => !isProlinePala(p)) ? 'más confortable y amable en el golpe' :
+       'más asequible dentro de la gama') + '.'
+    );
+  } else if (multiLine) {
+    const byLine = palas.map(p => p.nombre + ' (' + (p.linea||'') + ')').join(', ');
+    parts.push('Las palas en esta comparación vienen de distintas líneas: ' + byLine + '. Cada una cubre un perfil diferente dentro de la gama Bullpadel.');
+  } else {
+    // Same line — differentiate by style/feel
+    if (powerPalas.length > 0 && controlPalas.length > 0) {
+      parts.push('Dentro de la misma línea, ' +
+        powerPalas.map(p=>p.nombre).join(' y ') + ' apunta más al ataque, mientras que ' +
+        controlPalas.map(p=>p.nombre).join(' y ') + ' prioriza el control y la defensa.');
+    } else if (comfortPalas.length > 0 && comfortPalas.length < palas.length) {
+      parts.push('Las palas son similares en línea y nivel, pero ' +
+        comfortPalas.map(p=>p.nombre).join(' y ') + ' tiene una sensación más cómoda y amable al impacto.');
+    } else {
+      parts.push('Las palas tienen perfiles técnicos similares. Las diferencias clave están en balance, materiales y sensación de juego.');
+    }
+  }
+
+  // Closing advice
+  if (powerPalas.length > 0 && easyPalas.length > 0) {
+    parts.push('Según el perfil del cliente, una puede servir para generar más definición en ataque y la otra para priorizar facilidad y control.');
+  } else if (prolinePalas.length > 0 && prolinePalas.length < palas.length) {
+    parts.push('Si el cliente tiene margen para una opción de mayor prestación, la PROLINE puede funcionar como propuesta aspiracional dentro de la conversación.');
+  }
+
+  return parts.join(' ');
+}
+
+/* Build key difference chips — max 4, no duplicates */
+function buildCompareHighlights(palas) {
+  const seen       = new Set();
+  const highlights = [];
+
+  function addH(label, nombre) {
+    if (highlights.length >= 4) return;
+    if (seen.has(label)) return;
+    seen.add(label);
+    highlights.push({ label, nombre });
+  }
+
+  // 1. Premier / PROLINE
+  const prolinePalas = palas.filter(isProlinePala);
+  if (prolinePalas.length === 1) addH('Mayor prestación', prolinePalas[0].nombre);
+
+  // 2. Power
+  const powered = palas.filter(isPowerPala);
+  if (powered.length === 1) addH('Más ofensiva', powered[0].nombre);
+
+  // 3. Control (only if not already covered by power)
+  const ctrl = palas.filter(p => isControlPala(p) && !isPowerPala(p));
+  if (ctrl.length === 1) addH('Más orientada al control', ctrl[0].nombre);
+
+  // 4. Comfort
+  const comf = palas.filter(isComfortPala);
+  if (comf.length === 1) addH('Más confortable', comf[0].nombre);
+
+  // 5. Easy (only if comfort not already shown for same pala)
+  const easy = palas.filter(isEasyPala);
+  if (easy.length === 1 && !(comf.length === 1 && comf[0].id === easy[0].id)) {
+    addH('Más fácil de usar', easy[0].nombre);
+  }
+
+  // 6. Balance
+  const highBal = palas.filter(p => compNormalizeText(p.balance||'').includes('alto') || compNormalizeText(p.balance||'').includes('26'));
+  if (highBal.length === 1) addH('Balance más alto', highBal[0].nombre);
+
+  // 7. Lightest (only if meaningful difference)
+  const weights = palas.map(p => ({ p, w: parseInt((p.peso||'400').replace(/[^0-9]/g,'')) || 400 }));
+  const minW = Math.min(...weights.map(x => x.w));
+  const maxW = Math.max(...weights.map(x => x.w));
+  if (maxW - minW >= 10) {
+    const lightest = weights.find(x => x.w === minW);
+    if (lightest) addH('Más liviana', lightest.p.nombre);
+  }
+
+  return highlights;
+}
+
+/* Commercial label for each pala in context */
+function getPalaCommercialLabel(pala, palas) {
+  if (isProlinePala(pala) && !palas.every(isProlinePala)) return 'Opción de mayor prestación';
+  if (isPowerPala(pala) && !palas.every(isPowerPala)) return 'Opción más ofensiva';
+  if (isControlPala(pala) && !isPowerPala(pala)) return 'Opción más orientada al control';
+  if (isComfortPala(pala)) return 'Opción más confortable';
+  if (isEasyPala(pala)) return 'Opción más fácil de usar';
+  if (compNormalizeText(pala.estilo||'').includes('polivalente')) return 'Opción más equilibrada';
+  return 'Alternativa complementaria';
+}
+
+/* Sales phrase aligned with commercial label */
+function buildPalaSalesPhrase(pala, palas) {
+  const label = getPalaCommercialLabel(pala, palas);
+
+  if (label === 'Opción de mayor prestación') {
+    return 'Esta opción funciona como alternativa de mayor prestación. La mostraría a un jugador que busca una pala más técnica, con mayor respuesta y más recursos dentro de la gama Bullpadel.';
+  }
+  if (label === 'Opción más ofensiva') {
+    return 'Esta opción encaja mejor con un jugador que quiere tomar la iniciativa, acelerar la bola y buscar mayor definición en el ataque.';
+  }
+  if (label === 'Opción más orientada al control') {
+    return 'Esta opción tiene sentido para un jugador que prioriza control, seguridad y buena respuesta desde el fondo de la pista.';
+  }
+  if (label === 'Opción más confortable') {
+    return 'Esta opción puede servir si el cliente busca una sensación más cómoda, amable en el golpe y menos exigente al impacto.';
+  }
+  if (label === 'Opción más fácil de usar') {
+    return 'Esta opción tiene sentido como alternativa más fácil de usar. La mostraría a un jugador que prioriza manejabilidad, versatilidad y una adaptación más simple al juego.';
+  }
+  if (label === 'Opción más equilibrada') {
+    return 'Esta opción es versátil y responde bien en distintas situaciones. Buena para un jugador que no quiere limitarse a un solo estilo.';
+  }
+  // Fallback — generic but role-neutral
+  return 'Esta opción complementa bien las otras alternativas. El detalle que marca la diferencia está en su balance, materiales y sensación de juego particular.';
+}
+
+/* ── Main renderComp ───────────────────────────────────────────────────── */
+function renderComp() {
+  const palas = getSelectedComparePalas();
+  const r     = document.getElementById('comp-result');
+
+  if (palas.length < 2) {
+    r.innerHTML = '<div class="comp-empty">' +
+      '<div class="comp-empty-title">Seleccioná 2 o 3 palas para comparar</div>' +
+      '<div class="comp-empty-sub">Elegí las palas en los selectores de arriba y el comparador generará un análisis técnico y comercial.</div>' +
+    '</div>';
+    return;
+  }
+
+  // ── Summary ────────────────────────────────────────────────────────────
+  const summary = buildCompareSummary(palas);
+  const summaryHtml = '<div class="comp-summary">' +
+    '<div class="comp-summary-label">Resumen de comparación</div>' +
+    summary +
+  '</div>';
+
+  // ── Highlights ─────────────────────────────────────────────────────────
+  const highlights = buildCompareHighlights(palas);
+  const highlightsHtml = highlights.length ? (
+    '<div class="comp-highlights-title">Diferencias clave</div>' +
+    '<div class="comp-highlights">' +
+      highlights.map(h =>
+        '<div class="comp-highlight-chip">' +
+          '<span class="chip-label">' + h.label + '</span>' +
+          h.nombre +
+        '</div>'
+      ).join('') +
+    '</div>'
+  ) : '';
+
+  // ── Table ──────────────────────────────────────────────────────────────
+  const matNombres = p => (p.materiales||[]).map(cod => {
+    const m = MATERIALES.find(m => m.cod===cod||m.id===cod);
+    return m ? m.nombre : cod;
+  }).join(', ') || '—';
+
+  const rows = [
+    ['Nivel',            p => p.nivel   || '—'],
+    ['Estilo',           p => '<span class="estilo-pill ' + estiloClass(p.estilo||'') + '">' + (p.estilo||'—') + '</span>'],
+    ['Forma',            p => p.forma   || '—'],
+    ['Peso',             p => p.peso    || '—'],
+    ['Perfil',           p => p.perfil  || '—'],
+    ['Balance',          p => p.balance || '—'],
+    ['Comp. exterior',   p => p.exterior|| '—'],
+    ['Núcleo',           p => p.interior|| '—'],
+    ['Materiales',       p => matNombres(p)],
+    ['Tecnologías',      p => '<div class="comp-chips-cell">' + (p.tecnologias||[]).slice(0,5).map(t=>'<span class="comp-tech-chip">'+t+'</span>').join('') + '</div>'],
+    ['Sensación',        p => p.sensacionJuego ? p.sensacionJuego.split('.')[0]+'.' : '—'],
+    ['Perfil jugador',   p => p.perfilJugador  ? p.perfilJugador.split('.')[0]+'.'  : '—'],
+    ['Argumento venta',  p => p.argumentoVenta  ? p.argumentoVenta.split('.')[0]+'.' : '—'],
+  ];
+
+  const tableHtml = '<div class="comp-table-wrap"><table class="comp-table">' +
+    '<thead><tr>' +
+      '<th>Especificación</th>' +
+      palas.map(p =>
+        '<th class="pala-col">' +
+          '<img class="comp-pala-img" src="' + (IMGS[p.id]||'') + '" alt="' + p.nombre + '" onclick="openLightbox(this.src,this.alt)">' +
+          '<div class="comp-pala-nombre">' + p.nombre + '</div>' +
+          '<div class="comp-pala-linea"><span class="linea-tag tag-' + (p.linea||'') + '">' + (p.linea||'') + '</span></div>' +
+        '</th>'
+      ).join('') +
+    '</tr></thead><tbody>' +
+    rows.map(([label, fn]) => {
+      const vals = palas.map(fn);
+      const rawVals = palas.map(p => {
+        const v = fn(p); return v.replace ? v.replace(/<[^>]+>/g,'').trim() : String(v).trim();
+      });
+      const allSame = rawVals.every(v => v === rawVals[0]);
+      return '<tr>' +
+        '<td class="row-label">' + label + '</td>' +
+        vals.map(v => '<td class="' + (allSame?'':'diff') + '">' + v + '</td>').join('') +
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div>' +
+    '<p style="font-size:11px;color:#aaa;margin-top:6px;margin-bottom:20px">Celdas destacadas indican diferencias entre las palas seleccionadas.</p>';
+
+  // ── How to explain ──────────────────────────────────────────────────────
+  const explainHtml = '<div class="comp-explain">' +
+    '<div class="comp-explain-title">Cómo explicar cada opción</div>' +
+    '<div class="comp-explain-cards">' +
+      palas.map(p => {
+        const label = getPalaCommercialLabel(p, palas);
+        const frase = buildPalaSalesPhrase(p, palas);
+        return '<div class="comp-explain-card ' + (isProlinePala(p)?'proline':'') + '">' +
+          '<div class="comp-explain-card-nombre">' + p.nombre + '</div>' +
+          '<div class="comp-explain-card-etiqueta">' + label + '</div>' +
+          '<div class="comp-explain-card-frase">' + frase + '</div>' +
+        '</div>';
+      }).join('') +
+    '</div></div>';
+
+  r.innerHTML = summaryHtml + highlightsHtml + tableHtml + explainHtml;
+}
+
 
 function renderTabla(){
   const tbody=document.getElementById('tabla-body');
@@ -6039,7 +6447,7 @@ function toggleQuizBlock(headEl) {
    RECOMENDADOR BULLPADEL — Run 10B
    ═══════════════════════════════════════════════════ */
 
-let recAnswers = {};
+let recAnswers = { 0: 'indistinto' }; // Q0 defaults to indistinto
 let _recResultIds = []; // tracks current recommendation ids
 
 function recSelect(qNum, value, el) {
@@ -6066,6 +6474,7 @@ function scorePala(pala, ans) {
   let score = 0;
   const rawChips = [];
 
+  const genero    = ans[0] || '';
   const nivel     = ans[1] || '';
   const prioridad = ans[2] || '';
   const estilo    = ans[3] || '';
@@ -6082,6 +6491,17 @@ function scorePala(pala, ans) {
 
   const estiloN = normalizarTexto(pala.estilo || '');
   const nivelN  = normalizarTexto(pala.nivel  || '');
+  // ── Q0: Tipo de pala (soft signal — suma, nunca excluye) ─────────────────
+  const tipoBuscado = genero; // ans[0] reutilizado como tipo
+  if (tipoBuscado === 'w') {
+    if (pala.tipo_pala === 'w') { score += 18; rawChips.push('linea w'); }
+    // También boost si pala es liviana/cómoda aunque no sea W
+    if (hayPalabra(textoTotal, ['liviana','ligera','manejable','facil','comoda'])) { score += 6; }
+  }
+  if (tipoBuscado === 'standard') {
+    if (pala.tipo_pala === 'standard') { score += 10; rawChips.push('estandar adulto'); }
+  }
+  // tipoBuscado === 'indistinto' o sin respuesta → sin ajuste
 
   // ── Q1: Nivel ───────────────────────────────────────────────────────────
   if (nivel && pala.nivel) {
@@ -6197,6 +6617,8 @@ function scorePala(pala, ans) {
     'carbono de alto rendimiento':'Material de alto rendimiento',
     'peso ligero':                'Peso ligero',
     'nivel':                      null, // internal only
+    'linea w':                    'Línea W',
+    'estandar adulto':            'Estándar / adulto',
   };
   const seen = new Set();
   const chips = [];
@@ -6215,13 +6637,107 @@ function scorePala(pala, ans) {
 }
 
 /* ── Rank ───────────────────────────────────────────────────────────────── */
+
+/**
+ * Define el pool de candidatas para la recomendación principal según nivel.
+ * Devuelve un array de líneas permitidas.
+ */
+function poolPrincipalPorNivel(nivel) {
+  switch (nivel) {
+    case 'Profesional': return ['PROLINE'];
+    case 'Avanzado':    return ['PROLINE'];
+    case 'Intermedio':  return ['PROLINE','NEXT','ADVANCE'];
+    case 'Amateur':     return ['TOUR','ADVANCE','NEXT','PROLINE'];
+    case 'Iniciación':  return ['TOUR','ADVANCE','NEXT'];
+    case 'Junior':      return ['JUNIOR','ADVANCE'];
+    default:            return null; // null = sin restricción de pool
+  }
+}
+
 function recomendarPalas(ans, n) {
   n = n || 3;
-  return PALAS.map(p => {
+  const nivel       = ans[1] || '';
+  const tipoBuscado = ans[0] || 'indistinto';
+
+  // Score all palas
+  const ranked = PALAS.map(p => {
     const r = scorePala(p, ans);
-    return { pala: p, score: r.score, chips: r.chips };
-  }).sort((a, b) => b.score - a.score).slice(0, n);
+    return { pala: p, score: r.score, chips: r.chips, forcedProline: false };
+  }).sort((a, b) => b.score - a.score);
+
+  // ── Apply tipo_pala soft pool for secondary ordering ────────────────────
+  let orderedForSlots;
+  if (tipoBuscado === 'w') {
+    const wPool  = ranked.filter(r => r.pala.tipo_pala === 'w');
+    const rest   = ranked.filter(r => r.pala.tipo_pala !== 'w');
+    orderedForSlots = [...wPool, ...rest];
+  } else if (tipoBuscado === 'standard') {
+    const stdPool = ranked.filter(r => r.pala.tipo_pala === 'standard');
+    const rest    = ranked.filter(r => r.pala.tipo_pala !== 'standard');
+    orderedForSlots = [...stdPool, ...rest];
+  } else {
+    orderedForSlots = ranked;
+  }
+
+  // ── Slot 0: recomendación principal ────────────────────────────────────
+  const allowedLines = poolPrincipalPorNivel(nivel);
+  let principal;
+
+  if (allowedLines) {
+    // Pick best-scoring pala whose linea is in the allowed pool
+    principal = orderedForSlots.find(r => allowedLines.includes(r.pala.linea));
+    // Fallback: if no match in pool (edge case), take overall best
+    if (!principal) principal = orderedForSlots[0];
+  } else {
+    principal = orderedForSlots[0];
+  }
+
+  // ── Slots 1-2: alternativas ────────────────────────────────────────────
+  const usedIds = new Set([principal.pala.id]);
+  const rest = orderedForSlots.filter(r => !usedIds.has(r.pala.id));
+
+  // For Avanzado/Profesional: try to fill slot 1 also from PROLINE
+  let slot1, slot2;
+  if (['Avanzado','Profesional'].includes(nivel)) {
+    slot1 = rest.find(r => r.pala.linea === 'PROLINE') || rest[0];
+    usedIds.add(slot1.pala.id);
+    slot2 = rest.find(r => !usedIds.has(r.pala.id));
+  } else {
+    slot1 = rest[0];
+    usedIds.add(slot1.pala.id);
+    slot2 = rest.find(r => !usedIds.has(r.pala.id));
+  }
+
+  const top = [principal, slot1, slot2].filter(Boolean);
+
+  // ── Ensure at least one PROLINE in final top ──────────────────────────
+  const hasProline = top.some(r => r.pala.linea === 'PROLINE');
+  if (!hasProline) {
+    const topIds     = new Set(top.map(r => r.pala.id));
+    const prolinePool = (tipoBuscado === 'w')
+      ? ranked.filter(r => r.pala.linea === 'PROLINE' &&
+          (r.pala.tipo_pala === 'w' ||
+           hayPalabra([r.pala.sensacionJuego, r.pala.perfilJugador].join(' '), ['liviana','ligera','comoda'])) &&
+          !topIds.has(r.pala.id))
+      : ranked.filter(r => r.pala.linea === 'PROLINE' && !topIds.has(r.pala.id));
+
+    const bestProline = prolinePool[0] ||
+      ranked.find(r => r.pala.linea === 'PROLINE' && !topIds.has(r.pala.id));
+
+    if (bestProline && top.length >= n) {
+      bestProline.forcedProline = true;
+      bestProline.chips = [...new Set(['PROLINE', 'Mayor prestación', ...bestProline.chips])].slice(0, 4);
+      top[n - 1] = bestProline;
+    } else if (bestProline) {
+      bestProline.forcedProline = true;
+      bestProline.chips = [...new Set(['PROLINE', 'Mayor prestación', ...bestProline.chips])].slice(0, 4);
+      top.push(bestProline);
+    }
+  }
+
+  return top.slice(0, n);
 }
+
 
 /* ── Detect if a pala is "premium" relative to the user's level ─────────── */
 function esPremiumParaNivel(pala, nivel) {
@@ -6230,15 +6746,17 @@ function esPremiumParaNivel(pala, nivel) {
 }
 
 /* ── Labels for alt cards ────────────────────────────────────────────────── */
-function etiquetaAlternativa(pala, ans, idx) {
+function etiquetaAlternativa(pala, ans, idx, forcedProline) {
   if (idx === 0) return { label: 'Recomendación principal', cls: 'top' };
-  const nivel     = ans[1] || '';
+
+  // Forced PROLINE slot — clear label
+  if (forcedProline) return { label: 'Alternativa PROLINE', cls: 'premium' };
+
   const prioridad = ans[2] || '';
   const estiloN   = normalizarTexto(pala.estilo || '');
   const textoN    = normalizarTexto([pala.descTecnica, pala.sensacionJuego, pala.perfilJugador].join(' '));
-  const premium   = esPremiumParaNivel(pala, nivel);
 
-  if (premium && idx >= 1) return { label: 'Alternativa premium', cls: 'premium' };
+  // Descriptive label based on pala profile — no premium badge for organic top-3
   if (prioridad === 'confort' || hayPalabra(textoN, ['comod','suave','elastic','cloud'])) return { label: 'Alternativa más confortable', cls: 'alt' };
   if (estiloN.includes('polivalente')) return { label: 'Alternativa más equilibrada', cls: 'alt' };
   if (estiloN.includes('ofensivo'))    return { label: 'Alternativa más técnica', cls: 'alt' };
@@ -6249,11 +6767,14 @@ function etiquetaAlternativa(pala, ans, idx) {
 /* ── Perfil resumen ──────────────────────────────────────────────────────── */
 function generarResumenPerfil(ans) {
   const partes = [];
+  const mapGenero = { 'w':'prefiere línea W / más liviana', 'standard':'prefiere pala estándar / adulto', 'indistinto':null };
   const mapNivel  = { 'Iniciación':'jugador en iniciación', 'Amateur':'jugador amateur', 'Intermedio':'jugador intermedio', 'Avanzado':'jugador avanzado', 'Profesional':'jugador profesional / competitivo', 'Junior':'jugador junior' };
   const mapPrior  = { 'potencia':'busca potencia', 'control':'busca control', 'confort':'busca confort', 'polivalencia':'busca polivalencia', 'salida':'busca buena salida de bola', 'manejabilidad':'busca manejabilidad' };
   const mapEstilo = { 'Ofensivo':'estilo ofensivo', 'Defensivo':'estilo defensivo', 'Polivalente':'estilo polivalente', 'no_sabe':'estilo a definir' };
   const mapSens   = { 'facil':'sensación fácil de manejar', 'equilibrada':'sensación equilibrada', 'firme':'sensación firme y precisa', 'comoda':'sensación cómoda' };
   const mapNec    = { 'mas_potencia':'necesita más potencia', 'mas_control':'necesita más control en defensa', 'salida_bola':'necesita mejor salida de bola', 'menos_vibracion':'necesita sensación más cómoda al impacto', 'mas_efecto':'necesita más efecto', 'no_sabe':null };
+  const genLabel = ans[0] && mapGenero[ans[0]];
+  if (genLabel) partes.push(genLabel);
   if (ans[1] && mapNivel[ans[1]])  partes.push(mapNivel[ans[1]]);
   if (ans[2] && mapPrior[ans[2]])  partes.push(mapPrior[ans[2]]);
   if (ans[3] && mapEstilo[ans[3]]) partes.push(mapEstilo[ans[3]]);
@@ -6264,7 +6785,7 @@ function generarResumenPerfil(ans) {
 }
 
 /* ── Explicación ─────────────────────────────────────────────────────────── */
-function explicarRecomendacion(pala, ans, chips, idx) {
+function explicarRecomendacion(pala, ans, chips, idx, forcedProline) {
   const nivel     = ans[1] || '';
   const prioridad = ans[2] || '';
   const estilo    = ans[3] || '';
@@ -6273,14 +6794,18 @@ function explicarRecomendacion(pala, ans, chips, idx) {
 
   let base = '';
 
-  if (premium && idx >= 1) {
+  if (forcedProline) {
     // Premium explanation for basic-level user
     const razon = prioridad === 'confort'      ? 'combina una sensación cómoda y amable al impacto con buen rendimiento'
                 : prioridad === 'control'      ? 'ofrece un nivel de control y precisión difícil de encontrar en gamas básicas'
                 : prioridad === 'salida'       ? 'tiene una reacción de núcleo que la hace muy accesible y con gran salida de bola'
                 : prioridad === 'polivalencia' ? 'responde bien en defensa y ataque sin exigir una técnica muy afinada'
                 : 'su combinación de materiales y tecnologías la hace más accesible de lo que su línea sugiere';
-    base = 'Si bien es una pala de mayores prestaciones, puede tener sentido para este perfil porque ' + razon + '. La presentaría como una opción para quien quiere dar un salto de calidad sin cambiar su estilo de juego.';
+    if (forcedProline) {
+      base = 'Además de las opciones más alineadas al perfil, esta pala aparece como alternativa PROLINE para mostrar una opción de mayor prestación. Puede tener sentido si el jugador quiere dar un salto de calidad y acceder a una pala con más tecnología y rendimiento.';
+    } else {
+      base = 'Si bien es una pala de mayores prestaciones, puede tener sentido para este perfil porque ' + razon + '. La presentaría como una opción para quien quiere dar un salto de calidad sin cambiar su estilo de juego.';
+    }
   } else {
     // Standard explanation
     const coincidencias = chips.slice(0,3).join(', ').toLowerCase();
@@ -6298,13 +6823,14 @@ function explicarRecomendacion(pala, ans, chips, idx) {
 }
 
 /* ── Frase de venta ──────────────────────────────────────────────────────── */
-function fraseVenta(pala, ans, idx) {
+function fraseVenta(pala, ans, idx, forcedProline) {
   const prioridad = ans[2] || '';
   const premium   = esPremiumParaNivel(pala, ans[1] || '');
 
-  if (premium && idx >= 1) {
-    return 'Si querés ir a una opción de mayor prestación, esta pala puede acompañarte muy bien. Suma tecnología y rendimiento con una sensación más accesible de lo que parece a primera vista.';
+  if (forcedProline) {
+    return 'Si querés ofrecer una opción premium dentro de Bullpadel, esta PROLINE puede funcionar como alternativa de mayor prestación, manteniendo relación con la necesidad indicada por el jugador.';
   }
+
 
   const mapaFrases = {
     potencia:     'Por lo que me contás, esta pala te puede dar la potencia que buscás — genera un golpe contundente y con dirección.',
@@ -6330,10 +6856,10 @@ function renderResultadosRecomendador(resultados) {
   const resumen = generarResumenPerfil(recAnswers);
   const resumenHtml = '<div class="rec-perfil-resumen"><span class="rec-perfil-label">Perfil detectado:</span> ' + resumen + '</div>';
 
-  const cards = resultados.map(({ pala, score, chips }, idx) => {
-    const { label, cls } = etiquetaAlternativa(pala, recAnswers, idx);
-    const why   = explicarRecomendacion(pala, recAnswers, chips, idx);
-    const frase = fraseVenta(pala, recAnswers, idx);
+  const cards = resultados.map(({ pala, score, chips, forcedProline }, idx) => {
+    const { label, cls } = etiquetaAlternativa(pala, recAnswers, idx, forcedProline);
+    const why   = explicarRecomendacion(pala, recAnswers, chips, idx, forcedProline);
+    const frase = fraseVenta(pala, recAnswers, idx, forcedProline);
     const imgSrc = IMGS[pala.id] ? IMGS[pala.id] : '';
     const imgHtml = imgSrc
       ? '<img src="'+imgSrc+'" alt="'+pala.nombre+'" style="max-height:120px;max-width:100%;object-fit:contain">'
@@ -6431,8 +6957,11 @@ function recAgregarComparador(palaId) {
 }
 
 function limpiarRecomendador() {
-  recAnswers = {};
+  recAnswers = { 0: 'indistinto' };
   document.querySelectorAll('.rec-option').forEach(o => o.classList.remove('selected'));
+  // Re-select Indistinto default
+  const defOpt = document.querySelector('#rec-q0 .rec-option');
+  if (defOpt) defOpt.classList.add('selected');
   document.getElementById('rec-results').innerHTML = '';
 }
 
