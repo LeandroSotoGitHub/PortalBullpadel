@@ -2983,16 +2983,16 @@ input:focus, select:focus, textarea:focus {
       <button class="subnav-btn" onclick="showCapTab('guia',this)">Guía de venta</button>
     </div>
     <div class="subview active" id="cap-tab-modulos">
-    <div class="cap-progress-bar-wrap" id="cap-overall-progress" style="display:none">
-      <div class="cap-progress-label" id="cap-progress-label">Progreso del curso</div>
-      <div class="cap-progress-track"><div class="cap-progress-fill" id="cap-progress-fill" style="width:0%"></div></div>
-      <div class="cap-progress-pct" id="cap-progress-pct">0%</div>
+      <div class="cap-progress-bar-wrap" id="cap-overall-progress" style="display:none">
+        <div class="cap-progress-label" id="cap-progress-label">Progreso del curso</div>
+        <div class="cap-progress-track"><div class="cap-progress-fill" id="cap-progress-fill" style="width:0%"></div></div>
+        <div class="cap-progress-pct" id="cap-progress-pct">0%</div>
+      </div>
+      <div class="cap-layout">
+        <div class="cap-sidebar" id="cap-sidebar"></div>
+        <div class="cap-main" id="cap-main"></div>
+      </div>
     </div>
-    <div class="cap-layout">
-      <div class="cap-sidebar" id="cap-sidebar"></div>
-      <div class="cap-main" id="cap-main"></div>
-    </div>
-  
     <div class="subview" id="cap-tab-guia"></div>
   </section>
 
@@ -5742,13 +5742,11 @@ function mountPortal() {
   renderAdmin();
   // Render home stats
   renderHomeStats();
-  // Mount catalogo and guia tabs into subviews
-  setTimeout(function() {
-    _mountCatalogoTab('palas');
-    _mountCatalogoTab('tabla');
-    _mountCatalogoTab('glosario');
-    _mountGuiaTab();
-  }, 0);
+  // Mount catalogo and guia tabs into subviews (synchronous — runs once)
+  _mountCatalogoTab('palas');
+  _mountCatalogoTab('tabla');
+  _mountCatalogoTab('glosario');
+  _mountGuiaTab();
   // Show onboarding on first visit
   if (!hasSeenOnboarding()) {
     setTimeout(openOnboarding, 400);
@@ -7776,7 +7774,7 @@ function _mountCatalogoTab(tab) {
   const srcMap = { palas: 'sec-palas', tabla: 'sec-tabla', glosario: 'sec-glosario' };
   const srcId  = srcMap[tab];
   const src    = document.getElementById(srcId);
-  if (!src) return;
+  if (!src) { subview.dataset.mounted = '1'; return; }
 
   // Move all children (not the section itself — keep it in DOM for compat)
   // Clone and append content; mark original as hidden proxy
@@ -7811,7 +7809,7 @@ function _mountGuiaTab() {
   if (!subview || subview.dataset.mounted) return;
 
   const src = document.getElementById('sec-guia');
-  if (!src) return;
+  if (!src) { subview.dataset.mounted = '1'; return; }
   subview.innerHTML = '';
   while (src.firstChild) subview.appendChild(src.firstChild);
   src.style.display = 'none';
@@ -7822,11 +7820,8 @@ function _mountGuiaTab() {
 /* Navigate directly to a subsection — used from Home cards */
 function showSectionTab(section, tab) {
   showSection(section, null);
-  // Small delay so section is visible before switching tab
-  setTimeout(() => {
-    if (section === 'catalogo') showCatalogoTab(tab, null);
-    if (section === 'capacitaciones') showCapTab(tab, null);
-  }, 50);
+  if (section === 'catalogo') showCatalogoTab(tab, null);
+  if (section === 'capacitaciones') showCapTab(tab, null);
 }
 
 function showSection(id,btn){
@@ -7840,10 +7835,8 @@ function showSection(id,btn){
     var parentId = legacyMap[id];
     var tabId    = legacyTab[id];
     showSection(parentId, null);
-    setTimeout(function() {
-      if (parentId === 'catalogo')       showCatalogoTab(tabId, null);
-      if (parentId === 'capacitaciones') showCapTab(tabId === 'guia' ? 'guia' : 'modulos', null);
-    }, 50);
+    if (parentId === 'catalogo')       showCatalogoTab(tabId, null);
+    if (parentId === 'capacitaciones') showCapTab(tabId === 'guia' ? 'guia' : 'modulos', null);
     return;
   }
 
