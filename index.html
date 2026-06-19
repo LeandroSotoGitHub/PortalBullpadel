@@ -2077,6 +2077,551 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .comp-explain-cards { grid-template-columns: 1fr; }
 }
 
+
+/* Comparador — perfil detectado desde recomendador */
+.comp-context-block {
+  background: var(--negro); color: #ccc;
+  border-radius: var(--radio-lg); padding: 12px 18px;
+  margin-bottom: 14px; font-size: 12px; line-height: 1.6;
+  display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap;
+}
+.comp-context-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--rojo);
+  white-space: nowrap; margin-top: 2px;
+}
+.comp-context-text { flex: 1; }
+
+
+/* ═══════════════════════════════════════════════════
+   RUN 14D-1 — UI POLISH
+   CSS-only: variables, transitions, cards, buttons,
+   nav, modals, sections, reduced-motion
+   ═══════════════════════════════════════════════════ */
+
+/* ── Extended design tokens ─────────────────────────────────────────────── */
+:root {
+  --shadow-soft:   0 2px 8px rgba(0,0,0,.06);
+  --shadow-card:   0 4px 16px rgba(0,0,0,.10);
+  --shadow-modal:  0 24px 64px rgba(0,0,0,.22);
+  --shadow-hover:  0 8px 24px rgba(0,0,0,.14);
+  --transition-fast:  all .12s ease;
+  --transition-base:  all .2s ease;
+  --transition-slow:  all .35s ease;
+}
+
+/* ── Section fade-in ─────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section.visible {
+  animation: fadeInUp .25s ease both;
+}
+
+/* ── Unified card base ───────────────────────────────────────────────────── */
+.pala-card,
+.home-card,
+.rec-card,
+.item-card,
+.admin-card,
+.admin-stat,
+.cap-recursos,
+.comp-explain-card,
+.home-stat,
+.home-ruta {
+  transition: var(--transition-base);
+}
+
+/* Hover elevation for clickable cards */
+.pala-card:hover,
+.home-card:hover,
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+.rec-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Unified button base ─────────────────────────────────────────────────── */
+button, .btn, .rec-btn-primary, .rec-btn-secondary,
+.home-hero-btn, .home-card-btn, .cap-mark-btn,
+.cap-quiz-btn, .cap-recurso-btn, .catalogo-dl-btn,
+.rec-card-btn, .comp-explain-card, .ob-btn,
+.admin-btn-compare-all, .rec-compare-all-btn {
+  transition: var(--transition-fast);
+}
+
+/* Primary button unified hover */
+.btn-primary:hover,
+.rec-btn-primary:hover,
+.home-hero-btn.primary:hover,
+.home-card-btn:hover,
+.cap-mark-btn.mark:hover,
+.cap-quiz-btn.submit:hover,
+.catalogo-dl-btn:hover,
+.rec-card-btn.primary:hover,
+.login-btn:hover,
+.ob-btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200,16,46,.25);
+}
+
+button:active,
+.btn:active {
+  transform: translateY(0) !important;
+  filter: brightness(.96) !important;
+}
+
+/* Focus visible — accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--rojo);
+  outline-offset: 2px;
+}
+
+/* ── Navigation improvements ─────────────────────────────────────────────── */
+.nav-btn {
+  transition: color .15s, border-color .15s, background .15s;
+  border-radius: var(--radio) var(--radio) 0 0;
+}
+.nav-btn:hover {
+  color: #fff;
+  background: rgba(255,255,255,.06);
+}
+.nav-btn.active {
+  color: var(--rojo);
+  border-bottom-color: var(--rojo);
+  font-weight: 700;
+}
+
+/* ── Header polish ───────────────────────────────────────────────────────── */
+.header {
+  box-shadow: 0 2px 16px rgba(0,0,0,.4);
+}
+.header-title {
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+/* ── Section head ────────────────────────────────────────────────────────── */
+.sec-head {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gris-borde);
+}
+.sec-head h1 {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -.02em;
+  color: var(--negro);
+  margin-bottom: 6px;
+}
+.sec-head p {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* ── Modal entrance animations ───────────────────────────────────────────── */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(.97) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.pala-modal-bg.open .pala-modal,
+.detail-modal-bg.open .detail-modal,
+.ob-bg.open .ob-modal,
+.admin-modal-bg.open .admin-modal {
+  animation: modalFadeIn .2s ease both;
+}
+.pala-modal-bg,
+.detail-modal-bg,
+.ob-bg,
+.admin-modal-bg {
+  transition: opacity .2s;
+}
+
+/* ── Inputs & selects polish ──────────────────────────────────────────────── */
+input, select, textarea {
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(200,16,46,.12);
+}
+
+/* ── Filter pills (recomendador Q options) ───────────────────────────────── */
+.rec-option {
+  transition: var(--transition-fast);
+}
+.rec-option:hover:not(.selected) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+.rec-option.selected {
+  box-shadow: 0 2px 8px rgba(200,16,46,.2);
+}
+
+/* ── Progress bar animation ──────────────────────────────────────────────── */
+.cap-progress-fill {
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Lightbox entrance ────────────────────────────────────────────────────── */
+#lightbox {
+  transition: opacity .15s;
+}
+#lightbox img {
+  animation: modalFadeIn .2s ease both;
+}
+
+/* ── Tabla hover rows ─────────────────────────────────────────────────────── */
+.tabla-main tbody tr {
+  transition: background .1s;
+}
+.tabla-main tbody tr:hover td {
+  background: #f9f9f9;
+}
+.admin-table tbody tr {
+  transition: background .1s;
+}
+
+/* ── Login screen polish ──────────────────────────────────────────────────── */
+.login-box {
+  animation: fadeInUp .3s ease both;
+}
+
+/* ── Home hero accent line ────────────────────────────────────────────────── */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+}
+.home-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rojo), transparent);
+  opacity: .5;
+}
+
+/* ── Checklist item hover ─────────────────────────────────────────────────── */
+.cap-checklist-item {
+  transition: background .1s;
+  border-radius: var(--radio);
+}
+
+/* ── Quiz option hover ────────────────────────────────────────────────────── */
+.cap-quiz-option {
+  transition: var(--transition-fast);
+}
+.cap-quiz-option:hover:not(.answered) {
+  transform: translateX(2px);
+}
+
+/* ── Onboarding dots animation ────────────────────────────────────────────── */
+.ob-dot {
+  transition: width .25s ease, background .25s ease;
+}
+
+/* ── Sidebar module buttons ────────────────────────────────────────────────── */
+.cap-mod-btn {
+  transition: var(--transition-fast);
+}
+.cap-unit-btn {
+  transition: background .1s, color .1s;
+}
+
+/* ── Reduced motion support ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   RUN 14D-2 — UI Polish por sección
+   ═══════════════════════════════════════════════════ */
+
+/* ── CATÁLOGO ─────────────────────────────────────────────────────────────── */
+
+/* Filter row responsive */
+.filters-wrap { margin-bottom: 16px; }
+.filters-row,
+.filters-row-2 {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.filters-row select,
+.filters-row-2 select {
+  flex: 1 1 130px; max-width: 190px;
+}
+@media(max-width:600px) {
+  .filters-row,
+  .filters-row-2 { flex-direction: column; align-items: stretch; }
+  .filters-row select,
+  .filters-row-2 select { max-width: 100%; }
+  .btn-clear-filters { width: 100%; text-align: center; }
+}
+
+/* Pala card body padding */
+.pala-card-body { padding: 14px 16px 16px; }
+
+/* Specs grid tighter */
+.specs-grid { gap: 6px 12px; }
+
+/* ── TABLA GAMA COMPLETA ──────────────────────────────────────────────────── */
+.tabla-wrap { overflow-x: auto; border-radius: var(--radio-lg); }
+
+.tabla-main thead th {
+  position: sticky !important; top: 0 !important; z-index: 2;
+  background: var(--negro) !important; color: #fff !important;
+  font-size: 10px; font-weight: 800 !important;
+  text-transform: uppercase; letter-spacing: .07em;
+  padding: 10px 14px; white-space: nowrap;
+}
+.tabla-main thead th:first-child {
+  width: 32px; /* thumbnail col */
+}
+.tabla-main tbody tr { transition: background .1s; }
+.tabla-main tbody tr:hover td { background: #f7f7f7; }
+.tabla-main tbody td { font-size: 12px; padding: 8px 14px; }
+
+/* ── GUÍA DE VENTA ────────────────────────────────────────────────────────── */
+.guia-nav-btn {
+  transition: color .15s, border-color .15s, background .15s;
+}
+.guia-nav-btn:hover { background: rgba(200,16,46,.06); border-radius: var(--radio); }
+.guia-nav-btn.active {
+  background: rgba(200,16,46,.10);
+  color: var(--rojo);
+  font-weight: 700;
+  border-radius: var(--radio);
+}
+
+.guia-step-panel { transition: opacity .2s; }
+.guia-step-panel:not(.active) { opacity: 0; pointer-events: none; position: absolute; }
+.guia-step-panel.active { opacity: 1; pointer-events: auto; position: relative; }
+
+/* ── MATERIALES Y TECNOLOGÍAS ─────────────────────────────────────────────── */
+.item-card {
+  border-radius: var(--radio-lg);
+  transition: var(--transition-base);
+}
+.item-card .item-card-hint {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--rojo);
+  opacity: 0; transition: opacity .15s;
+  text-align: right; padding: 4px 12px 8px;
+}
+.item-card:hover .item-card-hint { opacity: .8; }
+
+/* ── CAPACITACIONES ───────────────────────────────────────────────────────── */
+
+/* Panel fade between units */
+.cap-unit-panel { transition: opacity .2s; }
+.cap-unit-panel:not(.active) { opacity: 0; }
+.cap-unit-panel.active { opacity: 1; }
+
+/* Mod button active line */
+.cap-mod-btn.active {
+  border-left-color: var(--rojo);
+  background: rgba(200,16,46,.08);
+}
+
+/* Unit button active */
+.cap-unit-btn.active {
+  color: var(--rojo);
+  font-weight: 700;
+  border-left-color: var(--rojo);
+}
+
+/* Cap layout mobile */
+@media(max-width:700px) {
+  .cap-layout {
+    flex-direction: column;
+  }
+  .cap-sidebar {
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 2px solid var(--rojo);
+  }
+  .cap-panel { padding: 20px 16px; }
+  .cap-video-ratio { border-radius: var(--radio); }
+}
+
+/* Checklist hover */
+.cap-checklist-item:hover { background: #f9f9f9; }
+
+/* Quiz option focus */
+.cap-quiz-option:focus-visible { outline: 2px solid var(--rojo); }
+
+/* Resources card hover */
+.cap-recurso-btn {
+  transition: var(--transition-fast);
+}
+
+/* ── RECOMENDADOR ─────────────────────────────────────────────────────────── */
+
+/* Question cards enter animation */
+.rec-questions .rec-q {
+  animation: fadeInUp .2s ease both;
+}
+.rec-questions .rec-q:nth-child(2) { animation-delay: .04s; }
+.rec-questions .rec-q:nth-child(3) { animation-delay: .08s; }
+.rec-questions .rec-q:nth-child(4) { animation-delay: .12s; }
+.rec-questions .rec-q:nth-child(5) { animation-delay: .16s; }
+.rec-questions .rec-q:nth-child(6) { animation-delay: .20s; }
+
+/* Result cards stagger */
+.rec-card {
+  animation: fadeInUp .25s ease both;
+}
+.rec-cards .rec-card:nth-child(2) { animation-delay: .08s; }
+.rec-cards .rec-card:nth-child(3) { animation-delay: .16s; }
+
+/* Profile summary */
+.rec-perfil-resumen {
+  border-left: 3px solid var(--rojo);
+  border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
+  padding: 12px 18px;
+}
+
+/* ── COMPARADOR ───────────────────────────────────────────────────────────── */
+
+/* Summary block */
+.comp-summary {
+  border-left: 3px solid var(--rojo);
+  border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
+  padding: 16px 20px;
+}
+
+/* Context block */
+.comp-context-block {
+  border-left: 3px solid var(--rojo);
+  border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
+}
+
+/* Highlight chips hover */
+.comp-highlight-chip {
+  transition: var(--transition-fast);
+}
+.comp-highlight-chip:hover {
+  border-color: var(--rojo);
+  background: #fff5f5;
+}
+
+/* Table header sticky */
+.comp-table thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: #fff;
+  border-bottom: 2px solid var(--gris-borde);
+}
+
+/* Explain cards hover */
+.comp-explain-card {
+  transition: var(--transition-fast);
+}
+.comp-explain-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ── ADMINISTRACIÓN ────────────────────────────────────────────────────────── */
+
+/* Stat cards */
+.admin-stat { transition: var(--transition-fast); }
+.admin-stat:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Table row hover already handled by admin-table in 14D-1 */
+
+/* ── HOME ──────────────────────────────────────────────────────────────────── */
+
+/* Stats stagger */
+.home-stats .home-stat:nth-child(1) { animation: fadeInUp .2s .05s ease both; }
+.home-stats .home-stat:nth-child(2) { animation: fadeInUp .2s .10s ease both; }
+.home-stats .home-stat:nth-child(3) { animation: fadeInUp .2s .15s ease both; }
+.home-stats .home-stat:nth-child(4) { animation: fadeInUp .2s .20s ease both; }
+
+/* Cards stagger */
+.home-cards .home-card { animation: fadeInUp .2s ease both; }
+.home-cards .home-card:nth-child(2) { animation-delay: .05s; }
+.home-cards .home-card:nth-child(3) { animation-delay: .10s; }
+.home-cards .home-card:nth-child(4) { animation-delay: .15s; }
+.home-cards .home-card:nth-child(5) { animation-delay: .20s; }
+.home-cards .home-card:nth-child(6) { animation-delay: .25s; }
+
+/* Ruta steps */
+.home-ruta-step { transition: background .15s; border-radius: var(--radio); }
+.home-ruta-step:hover { background: #fafafa; }
+
+/* ── LOGIN SCREEN ─────────────────────────────────────────────────────────── */
+.login-field input:focus {
+  box-shadow: 0 0 0 3px rgba(200,16,46,.14);
+}
+.login-error {
+  animation: fadeInUp .15s ease both;
+}
+
+/* ── GLOBAL RESPONSIVE FIXES ─────────────────────────────────────────────── */
+@media(max-width:480px) {
+  .sec-head h1 { font-size: 20px; }
+  .home-hero-title { font-size: 20px; }
+  .home-hero-actions { flex-direction: column; }
+  .home-hero-actions button { width: 100%; }
+  .rec-actions { flex-direction: column; }
+  .rec-actions button { width: 100%; }
+  .pala-modal-body { grid-template-columns: 1fr; }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   RUN 14E — Subnav tabs
+   ═══════════════════════════════════════════════════ */
+.subnav {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--gris-borde);
+  padding-bottom: 0;
+}
+.subnav-btn {
+  padding: 9px 18px;
+  font-size: 13px; font-weight: 600;
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  color: #888; cursor: pointer;
+  transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.subnav-btn:hover { color: var(--negro); }
+.subnav-btn.active {
+  color: var(--rojo);
+  border-bottom-color: var(--rojo);
+  font-weight: 700;
+}
+.subview { display: none; }
+.subview.active { display: block; }
+
+@media(max-width:600px) {
+  .subnav { flex-wrap: nowrap; overflow-x: auto; }
+  .subnav-btn { font-size: 12px; padding: 8px 14px; }
+}
+
 </style>
 </head>
 <body>
@@ -2165,13 +2710,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
      ═══════════════════════════════════════════════════ -->
 <nav class="nav-bar" id="nav-bar">
   <button class="nav-btn active" onclick="showSection('inicio',this)">Inicio</button>
-  <button class="nav-btn" onclick="showSection('palas',this)">Catálogo de palas</button>
-  <button class="nav-btn" onclick="showSection('glosario',this)">Materiales y tecnologías</button>
-  <button class="nav-btn" onclick="showSection('comparador',this)">Comparador</button>
-  <button class="nav-btn" onclick="showSection('tabla',this)">Vista gama completa</button>
-  <button class="nav-btn" onclick="showSection('guia',this)">Guía de venta</button>
-  <button class="nav-btn" onclick="showSection('capacitaciones',this)">Capacitaciones</button>
+  <button class="nav-btn" onclick="showSection('catalogo',this)">Catálogo</button>
   <button class="nav-btn" onclick="showSection('recomendador',this)">Recomendador</button>
+  <button class="nav-btn" onclick="showSection('comparador',this)">Comparador</button>
+  <button class="nav-btn" onclick="showSection('capacitaciones',this)">Capacitaciones</button>
   <button class="nav-btn" id="nav-admin" onclick="showSection('admin',this)">Administración</button>
 </nav>
 
@@ -2191,7 +2733,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="home-hero-sub">Herramienta de consulta, capacitación y recomendación para vendedores y distribuidores. Accedé al catálogo técnico, compará palas, capacitáte y encontrá la recomendación adecuada según el perfil de cada jugador.</div>
         <div class="home-hero-actions">
           <button class="home-hero-btn primary" onclick="showSection('recomendador', this)">Ir al recomendador</button>
-          <button class="home-hero-btn ghost" onclick="showSection('palas', this)">Ver catálogo</button>
+          <button class="home-hero-btn ghost" onclick="showSection('catalogo', this)">Ver catálogo</button>
           <button class="home-hero-btn ghost" onclick="showSection('capacitaciones', this)">Capacitaciones</button>
         </div>
       </div>
@@ -2233,18 +2775,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="home-card-btn" onclick="event.stopPropagation();showSection('capacitaciones',null)">Ver capacitaciones</button>
       </div>
 
-      <div class="home-card" onclick="showSection('glosario',null)">
+      <div class="home-card" onclick="showSectionTab('catalogo','glosario')">
         <div class="home-card-icon">MAT</div>
         <div class="home-card-name">Materiales y tecnologías</div>
         <div class="home-card-desc">Entendé cada material y tecnología en lenguaje simple para explicarlo mejor en el mostrador.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSection('glosario',null)">Explorar materiales</button>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSectionTab('catalogo','glosario')">Explorar materiales</button>
       </div>
 
-      <div class="home-card" onclick="showSection('guia',null)">
+      <div class="home-card" onclick="showSectionTab('capacitaciones','guia')">
         <div class="home-card-icon">GVT</div>
         <div class="home-card-name">Guía de venta</div>
         <div class="home-card-desc">Recorré una metodología simple para asesorar mejor al cliente desde el primer contacto.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSection('guia',null)">Ver guía</button>
+        <button class="home-card-btn" onclick="event.stopPropagation();showSectionTab('capacitaciones','guia')">Ver guía</button>
       </div>
 
     </div>
@@ -2271,6 +2813,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </button>
     </div>
 
+  </section>
+
+  <!-- 4.0 Catálogo (módulo madre) -->
+  <section id="sec-catalogo" class="section">
+    <div class="sec-head" style="margin-bottom:0;border-bottom:none;padding-bottom:12px">
+      <h1>Catálogo Bullpadel 2026</h1>
+      <p>Consultá palas, vista gama completa, materiales y tecnologías.</p>
+    </div>
+    <div class="subnav" id="subnav-catalogo">
+      <button class="subnav-btn active" onclick="showCatalogoTab('palas',this)">Palas</button>
+      <button class="subnav-btn" onclick="showCatalogoTab('tabla',this)">Vista gama completa</button>
+      <button class="subnav-btn" onclick="showCatalogoTab('glosario',this)">Materiales y tecnologías</button>
+    </div>
+    <div class="subview active" id="catalogo-tab-palas"></div>
+    <div class="subview" id="catalogo-tab-tabla"></div>
+    <div class="subview" id="catalogo-tab-glosario"></div>
   </section>
 
   <!-- 4.1 Catálogo de palas -->
@@ -2348,15 +2906,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="comp-selects">
       <div class="comp-select-group">
         <label>Pala 1</label>
-        <select id="c1" onchange="renderComp()"><option value="">— elegir pala —</option></select>
+        <select id="c1" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
       </div>
       <div class="comp-select-group">
         <label>Pala 2</label>
-        <select id="c2" onchange="renderComp()"><option value="">— elegir pala —</option></select>
+        <select id="c2" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
       </div>
       <div class="comp-select-group">
         <label>Pala 3 (opcional)</label>
-        <select id="c3" onchange="renderComp()"><option value="">— elegir pala —</option></select>
+        <select id="c3" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
       </div>
     </div>
     <div id="comp-result"></div>
@@ -2416,10 +2974,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <!-- 4.6 Capacitaciones -->
   <section id="sec-capacitaciones" class="section">
-    <div class="sec-head">
-      <h1>Capacitaciones</h1>
-      <p>Formación completa para el equipo de ventas Bullpadel — de la marca al mostrador</p>
+    <div class="sec-head" style="margin-bottom:0;border-bottom:none;padding-bottom:12px">
+      <h1>Capacitaciones Bullpadel</h1>
+      <p>Formación comercial para vendedores y distribuidores. Avanzá a tu ritmo.</p>
     </div>
+    <div class="subnav" id="subnav-cap" style="margin-bottom:16px">
+      <button class="subnav-btn active" onclick="showCapTab('modulos',this)">Módulos</button>
+      <button class="subnav-btn" onclick="showCapTab('guia',this)">Guía de venta</button>
+    </div>
+    <div class="subview active" id="cap-tab-modulos">
     <div class="cap-progress-bar-wrap" id="cap-overall-progress" style="display:none">
       <div class="cap-progress-label" id="cap-progress-label">Progreso del curso</div>
       <div class="cap-progress-track"><div class="cap-progress-fill" id="cap-progress-fill" style="width:0%"></div></div>
@@ -2429,6 +2992,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="cap-sidebar" id="cap-sidebar"></div>
       <div class="cap-main" id="cap-main"></div>
     </div>
+  
+    <div class="subview" id="cap-tab-guia"></div>
   </section>
 
   <!-- 4.7 Administración de usuarios -->
@@ -5177,9 +5742,16 @@ function mountPortal() {
   renderAdmin();
   // Render home stats
   renderHomeStats();
+  // Mount catalogo and guia tabs into subviews
+  setTimeout(function() {
+    _mountCatalogoTab('palas');
+    _mountCatalogoTab('tabla');
+    _mountCatalogoTab('glosario');
+    _mountGuiaTab();
+  }, 0);
   // Show onboarding on first visit
   if (!hasSeenOnboarding()) {
-    setTimeout(openOnboarding, 400); // small delay so portal renders first
+    setTimeout(openOnboarding, 400);
   }
 }
 
@@ -5190,15 +5762,12 @@ function applyRolePermissions() {
 
   // Map nav button text → permission key
   const navMap = [
-    { text: 'Inicio',                   perm: 'verCatalogo' }, // Inicio visible for all logged users
-    { text: 'Catálogo de palas',        perm: 'verCatalogo' },
-    { text: 'Materiales y tecnologías', perm: 'verMateriales' },
-    { text: 'Comparador',               perm: 'verComparador' },
-    { text: 'Vista gama completa',      perm: 'verTablaGama' },
-    { text: 'Guía de venta',            perm: 'verGuiaVenta' },
-    { text: 'Capacitaciones',           perm: 'verCapacitaciones' },
-    { text: 'Recomendador',             perm: 'verRecomendador' },
-    { text: 'Administración',           perm: 'verAdminPanel' },
+    { text: 'Inicio',          perm: 'verCatalogo' },
+    { text: 'Catálogo',        perm: 'verCatalogo' },
+    { text: 'Recomendador',    perm: 'verRecomendador' },
+    { text: 'Comparador',      perm: 'verComparador' },
+    { text: 'Capacitaciones',  perm: 'verCapacitaciones' },
+    { text: 'Administración',  perm: 'verAdminPanel' },
   ];
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -5511,7 +6080,26 @@ function isTechnicalPala(p){ return (p.linea==='PROLINE') && compHasText(p,['car
 
 /* Build executive summary */
 function buildCompareSummary(palas) {
-  // Classify each pala by its dominant role in this comparison
+  // If coming from recomendador, open with profile context
+  if (compareContext && compareContext.profileText) {
+    const ctx     = compareContext.profileText;
+    const prolineP = palas.filter(isProlinePala);
+    const easyP    = palas.filter(isEasyPala);
+    const comfP    = palas.filter(isComfortPala);
+    let opener = 'Para el perfil cargado (' + ctx + '), esta comparación ayuda a diferenciar ';
+    if (prolineP.length > 0 && prolineP.length < palas.length) {
+      opener += 'una opción de mayor prestación (' + prolineP[0].nombre + ')';
+      const rest = palas.filter(p => !isProlinePala(p));
+      if (easyP.some(p => !isProlinePala(p))) opener += ', una alternativa más fácil de manejar';
+      if (comfP.some(p => !isProlinePala(p))) opener += ' y una opción más confortable';
+      opener += '. La idea es que el vendedor pueda explicar qué cambia entre cada una según el nivel, el estilo y la necesidad del jugador.';
+    } else {
+      opener += 'las diferencias en balance, materiales y sensación de juego entre las palas seleccionadas.';
+    }
+    return opener;
+  }
+
+  // Standalone mode (no recomendador context)
   const prolinePalas = palas.filter(isProlinePala);
   const easyPalas    = palas.filter(isEasyPala);
   const comfortPalas = palas.filter(isComfortPala);
@@ -5623,21 +6211,23 @@ function getPalaCommercialLabel(pala, palas) {
 /* Sales phrase aligned with commercial label */
 function buildPalaSalesPhrase(pala, palas) {
   const label = getPalaCommercialLabel(pala, palas);
+  const ctx   = compareContext && compareContext.profileText ? compareContext.profileText : null;
+  const pfx   = ctx ? 'Para este perfil, ' : '';
 
   if (label === 'Opción de mayor prestación') {
-    return 'Esta opción funciona como alternativa de mayor prestación. La mostraría a un jugador que busca una pala más técnica, con mayor respuesta y más recursos dentro de la gama Bullpadel.';
+    return pfx + 'esta opción funciona como alternativa de mayor prestación. La mostraría a un jugador que quiere sostener control y sumar una pala más técnica dentro de la gama Bullpadel.';
   }
   if (label === 'Opción más ofensiva') {
     return 'Esta opción encaja mejor con un jugador que quiere tomar la iniciativa, acelerar la bola y buscar mayor definición en el ataque.';
   }
   if (label === 'Opción más orientada al control') {
-    return 'Esta opción tiene sentido para un jugador que prioriza control, seguridad y buena respuesta desde el fondo de la pista.';
+    return pfx + 'esta opción tiene sentido para un jugador que prioriza control, seguridad y buena respuesta desde el fondo de la pista.';
   }
   if (label === 'Opción más confortable') {
-    return 'Esta opción puede servir si el cliente busca una sensación más cómoda, amable en el golpe y menos exigente al impacto.';
+    return pfx + 'esta opción puede servir si el cliente busca una sensación más cómoda, amable en el golpe y menos exigente al impacto.';
   }
   if (label === 'Opción más fácil de usar') {
-    return 'Esta opción tiene sentido como alternativa más fácil de usar. La mostraría a un jugador que prioriza manejabilidad, versatilidad y una adaptación más simple al juego.';
+    return pfx + 'esta opción tiene sentido como alternativa más fácil de usar, especialmente si el jugador prioriza manejabilidad y seguridad en defensa.';
   }
   if (label === 'Opción más equilibrada') {
     return 'Esta opción es versátil y responde bien en distintas situaciones. Buena para un jugador que no quiere limitarse a un solo estilo.';
@@ -5742,7 +6332,15 @@ function renderComp() {
       }).join('') +
     '</div></div>';
 
-  r.innerHTML = summaryHtml + highlightsHtml + tableHtml + explainHtml;
+  // Context block (only when coming from recomendador)
+  const contextHtml = (compareContext && compareContext.profileText)
+    ? '<div class="comp-context-block">' +
+        '<div class="comp-context-label">Perfil detectado</div>' +
+        '<div class="comp-context-text">' + compareContext.profileText + '</div>' +
+      '</div>'
+    : '';
+
+  r.innerHTML = contextHtml + summaryHtml + highlightsHtml + tableHtml + explainHtml;
 }
 
 
@@ -6450,6 +7048,10 @@ function toggleQuizBlock(headEl) {
 let recAnswers = { 0: 'indistinto' }; // Q0 defaults to indistinto
 let _recResultIds = []; // tracks current recommendation ids
 
+// Context passed from recomendador to comparador
+let compareContext = null;
+let _isProgrammaticCompare = false; // prevents select onChange from clearing context
+
 function recSelect(qNum, value, el) {
   recAnswers[qNum] = value;
   el.closest('.rec-options').querySelectorAll('.rec-option')
@@ -6913,27 +7515,40 @@ function renderResultadosRecomendador(resultados) {
 
 /* ── Comparar las 3 recomendaciones ─────────────────────────────────────── */
 function goToComparadorConPalas(ids) {
-  // ids: array of pala ids (up to 3)
   const selIds = ['c1', 'c2', 'c3'];
-  // Clear existing selections first
+
+  // Build compareContext from current recomendador state
+  const profileText = generarResumenPerfil(recAnswers);
+  compareContext = {
+    source:      'recomendador',
+    profileText: profileText && profileText !== 'Perfil no especificado' ? profileText : null,
+    answers:     Object.assign({}, recAnswers)
+  };
+
+  // Flag: programmatic update — prevents select onChange from clearing context
+  _isProgrammaticCompare = true;
+
+  // Clear selects
   selIds.forEach(id => {
     const sel = document.getElementById(id);
     if (sel) sel.value = '';
   });
-  // Load each pala id into the corresponding select
+  // Load palas
   ids.forEach((palaId, idx) => {
     if (!palaId || idx >= selIds.length) return;
     const sel = document.getElementById(selIds[idx]);
-    // Verify pala exists in PALAS before setting
     const exists = PALAS.some(p => p.id === palaId);
     if (sel && exists) sel.value = palaId;
   });
-  // Render comparador
+
+  // Render and navigate
   renderComp();
-  // Navigate to comparador section
   const btn = [...document.querySelectorAll('.nav-btn')]
     .find(b => b.textContent.trim() === 'Comparador');
   if (btn) btn.click();
+
+  // Reset flag after render cycle
+  setTimeout(() => { _isProgrammaticCompare = false; }, 100);
 }
 
 function calcularRecomendacion() {
@@ -7109,6 +7724,15 @@ document.addEventListener('keydown', function(e) {
 
 
 
+
+/* ── Clear compareContext on manual select change ── */
+function onCompSelectChange() {
+  if (!_isProgrammaticCompare && compareContext) {
+    compareContext = null;
+  }
+  renderComp();
+}
+
 /* ═══════════════════════════════════════════════════
    JS · 6. EVENTOS E INTERACCIONES
    showSection · lightbox · guia navigation · capacitaciones navigation
@@ -7119,19 +7743,116 @@ function toggleMobileNav() {
   if (nav) nav.classList.toggle('open');
 }
 
+
+/* ═══════════════════════════════════════════════════
+   RUN 14E — Navigation helpers
+   ═══════════════════════════════════════════════════ */
+
+/* Show a tab inside Catálogo */
+function showCatalogoTab(tab, btn) {
+  // Update subnav buttons
+  document.querySelectorAll('#subnav-catalogo .subnav-btn')
+    .forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const target = [...document.querySelectorAll('#subnav-catalogo .subnav-btn')]
+      .find(b => b.textContent.trim().toLowerCase().includes(tab === 'palas' ? 'pala' : tab === 'tabla' ? 'gama' : 'material'));
+    if (target) target.classList.add('active');
+  }
+  // Show subview
+  document.querySelectorAll('#sec-catalogo .subview')
+    .forEach(v => v.classList.remove('active'));
+  const sv = document.getElementById('catalogo-tab-' + tab);
+  if (sv) sv.classList.add('active');
+
+  // Lazy-mount content: move section content into subview if not yet mounted
+  _mountCatalogoTab(tab);
+}
+
+function _mountCatalogoTab(tab) {
+  const subview = document.getElementById('catalogo-tab-' + tab);
+  if (!subview || subview.dataset.mounted) return;
+
+  const srcMap = { palas: 'sec-palas', tabla: 'sec-tabla', glosario: 'sec-glosario' };
+  const srcId  = srcMap[tab];
+  const src    = document.getElementById(srcId);
+  if (!src) return;
+
+  // Move all children (not the section itself — keep it in DOM for compat)
+  // Clone and append content; mark original as hidden proxy
+  subview.innerHTML = '';
+  // Move children
+  while (src.firstChild) subview.appendChild(src.firstChild);
+  src.style.display = 'none';
+  src.dataset.proxy = 'catalogo-tab-' + tab;
+  subview.dataset.mounted = '1';
+}
+
+/* Show a tab inside Capacitaciones */
+function showCapTab(tab, btn) {
+  document.querySelectorAll('#subnav-cap .subnav-btn')
+    .forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const target = [...document.querySelectorAll('#subnav-cap .subnav-btn')]
+      .find(b => b.textContent.trim().toLowerCase().includes(tab === 'modulos' ? 'módulo' : 'guía'));
+    if (target) target.classList.add('active');
+  }
+  document.querySelectorAll('#sec-capacitaciones .subview')
+    .forEach(v => v.classList.remove('active'));
+  const sv = document.getElementById('cap-tab-' + tab);
+  if (sv) sv.classList.add('active');
+
+  if (tab === 'guia') _mountGuiaTab();
+}
+
+function _mountGuiaTab() {
+  const subview = document.getElementById('cap-tab-guia');
+  if (!subview || subview.dataset.mounted) return;
+
+  const src = document.getElementById('sec-guia');
+  if (!src) return;
+  subview.innerHTML = '';
+  while (src.firstChild) subview.appendChild(src.firstChild);
+  src.style.display = 'none';
+  src.dataset.proxy = 'cap-tab-guia';
+  subview.dataset.mounted = '1';
+}
+
+/* Navigate directly to a subsection — used from Home cards */
+function showSectionTab(section, tab) {
+  showSection(section, null);
+  // Small delay so section is visible before switching tab
+  setTimeout(() => {
+    if (section === 'catalogo') showCatalogoTab(tab, null);
+    if (section === 'capacitaciones') showCapTab(tab, null);
+  }, 50);
+}
+
 function showSection(id,btn){
   var nav2 = document.getElementById('nav-bar');
   if (nav2) nav2.classList.remove('open');
+
+  // Legacy redirects: old section IDs → new module parents
+  var legacyMap = { 'palas':'catalogo', 'glosario':'catalogo', 'tabla':'catalogo', 'guia':'capacitaciones' };
+  var legacyTab = { 'palas':'palas', 'glosario':'glosario', 'tabla':'tabla', 'guia':'guia' };
+  if (legacyMap[id]) {
+    var parentId = legacyMap[id];
+    var tabId    = legacyTab[id];
+    showSection(parentId, null);
+    setTimeout(function() {
+      if (parentId === 'catalogo')       showCatalogoTab(tabId, null);
+      if (parentId === 'capacitaciones') showCapTab(tabId === 'guia' ? 'guia' : 'modulos', null);
+    }, 50);
+    return;
+  }
+
   // Allow btn to be null (called from home cards)
   if (!btn) {
-    // Find matching nav button and activate it
+    var sectionMap = { 'inicio':'Inicio','catalogo':'Catálogo','comparador':'Comparador',
+      'capacitaciones':'Capacitaciones','recomendador':'Recomendador','admin':'Administración' };
     btn = [...document.querySelectorAll('.nav-btn')]
-      .find(b => {
-        var sectionMap = { 'inicio':'Inicio','palas':'Catálogo de palas','glosario':'Materiales y tecnologías',
-          'comparador':'Comparador','tabla':'Vista gama completa','guia':'Guía de venta',
-          'capacitaciones':'Capacitaciones','recomendador':'Recomendador','admin':'Administración' };
-        return b.textContent.trim() === (sectionMap[id] || '');
-      }) || null;
+      .find(b => b.textContent.trim() === (sectionMap[id] || '')) || null;
   }
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('visible'));
   document.getElementById('sec-'+id).classList.add('visible');
