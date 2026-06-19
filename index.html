@@ -2622,6 +2622,245 @@ input:focus, select:focus, textarea:focus {
   .subnav-btn { font-size: 12px; padding: 8px 14px; }
 }
 
+
+/* ═══════════════════════════════════════════════════
+   MAPA COMPETITIVO — RUN 15B
+   ═══════════════════════════════════════════════════ */
+
+.mapa-selectors {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.mapa-selectors select {
+  flex: 1 1 220px; max-width: 320px;
+  padding: 10px 14px; font-size: 13px;
+  border: 1px solid var(--gris-borde); border-radius: var(--radio);
+  background: #fff; color: var(--negro); cursor: pointer;
+}
+
+.mapa-empty {
+  padding: 56px 24px; text-align: center;
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg);
+}
+.mapa-empty-title { font-size: 15px; font-weight: 700; color: var(--negro); margin-bottom: 8px; }
+.mapa-empty-sub   { font-size: 13px; color: #888; max-width: 480px; margin: 0 auto 4px; line-height: 1.6; }
+.mapa-empty-note  { font-size: 11px; color: #aaa; margin-top: 12px; font-style: italic; }
+
+/* Pending validation badge + note */
+.mapa-pending-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px;
+  background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+}
+.mapa-validated-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px;
+  background: #f0fdf4; border: 1px solid #86efac; color: #166534;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+}
+.mapa-pending-note {
+  font-size: 11px; color: #92400e; background: #fffbeb;
+  border-left: 3px solid #fde68a; border-radius: 0 var(--radio) var(--radio) 0;
+  padding: 8px 14px; margin-top: 8px; line-height: 1.5;
+}
+
+/* Competidor ficha */
+.mapa-competidor-card {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); padding: 22px;
+  margin-bottom: 20px;
+}
+.mapa-competidor-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+}
+.mapa-competidor-marca {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--rojo); margin-bottom: 4px;
+}
+.mapa-competidor-modelo {
+  font-size: 18px; font-weight: 800; color: var(--negro);
+}
+.mapa-competidor-meta {
+  font-size: 12px; color: #999; margin-top: 4px;
+}
+.mapa-specs-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+  gap: 10px 16px; margin-bottom: 14px;
+}
+.mapa-spec-item .label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: #999; margin-bottom: 2px;
+}
+.mapa-spec-item .val { font-size: 13px; font-weight: 600; color: var(--negro); }
+.mapa-tech-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.mapa-tech-chip {
+  font-size: 10px; padding: 3px 8px; border-radius: 4px;
+  background: #f5f5f5; color: #555; border: 1px solid var(--gris-borde);
+}
+.mapa-source-link {
+  font-size: 11px; color: var(--rojo); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
+}
+.mapa-source-link:hover { text-decoration: underline; }
+
+/* Section labels */
+.mapa-section-label {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .1em; color: #aaa; margin: 22px 0 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.mapa-section-label::after { content:''; flex:1; height:1px; background: var(--gris-borde); }
+
+/* Alternativas grid */
+.mapa-alt-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 14px; margin-bottom: 8px;
+}
+.mapa-alt-card {
+  background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: var(--radio-lg); overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.mapa-alt-img-wrap {
+  height: 110px; background: #f9f9f9; display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--gris-borde); padding: 10px;
+}
+.mapa-alt-img-wrap img { max-height: 95px; max-width: 100%; object-fit: contain; cursor: zoom-in; }
+.mapa-alt-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.mapa-alt-nombre { font-size: 13px; font-weight: 800; color: var(--negro); }
+.mapa-alt-specs { font-size: 11px; color: #888; }
+.mapa-alt-actions { display: flex; gap: 6px; padding: 0 14px 14px; }
+.mapa-alt-btn {
+  flex: 1; padding: 7px 8px; font-size: 11px; font-weight: 700;
+  border-radius: var(--radio); border: none; cursor: pointer; text-align: center;
+}
+.mapa-alt-btn.primary { background: var(--rojo); color: #fff; }
+.mapa-alt-btn.secondary { background: #fff; color: #555; border: 1px solid var(--gris-borde); }
+.mapa-alt-missing {
+  padding: 14px; font-size: 12px; color: #b03030; background: #fdf6f6;
+  border-radius: var(--radio); border: 1px dashed #e0a0a0; text-align: center;
+}
+
+/* Motivo / argumento blocks */
+.mapa-text-block {
+  background: var(--gris-claro); border-radius: var(--radio-lg);
+  padding: 16px 18px; margin-bottom: 16px; font-size: 13px; color: #444; line-height: 1.65;
+}
+.mapa-text-block-title {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--rojo); margin-bottom: 8px;
+}
+
+.mapa-compare-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px; font-size: 13px; font-weight: 700;
+  background: var(--negro); color: #fff; border: 2px solid var(--rojo);
+  border-radius: var(--radio); cursor: pointer; transition: var(--transition-fast);
+  margin-top: 8px;
+}
+.mapa-compare-btn:hover { background: var(--rojo); }
+
+@media(max-width:600px) {
+  .mapa-selectors { flex-direction: column; }
+  .mapa-selectors select { max-width: 100%; }
+}
+
+
+.mapa-alt-mini-exp {
+  font-size: 11px; color: #777; line-height: 1.5;
+  font-style: italic; margin-top: 2px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   MAPA COMPETITIVO — Ajuste fino (Run 15B.2)
+   Jerarquía visual de alternativas + bloque inferior
+   ═══════════════════════════════════════════════════ */
+
+/* Alternativas: más peso visual */
+.mapa-alt-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.mapa-alt-card {
+  position: relative;
+  border-width: 1.5px;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-base);
+}
+.mapa-alt-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+.mapa-alt-card.principal {
+  border-color: var(--rojo);
+  border-width: 2px;
+  box-shadow: 0 4px 18px rgba(200,16,46,.12);
+}
+.mapa-alt-tag {
+  position: absolute; top: -1px; left: -2px;
+  background: var(--rojo); color: #fff;
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .06em; padding: 4px 10px;
+  border-radius: var(--radio-lg) 0 var(--radio) 0;
+  z-index: 1;
+}
+.mapa-alt-img-wrap { height: 130px; }
+.mapa-alt-img-wrap img { max-height: 110px; }
+
+.mapa-alt-rol {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--rojo);
+  margin-bottom: 4px; line-height: 1.3;
+}
+.mapa-alt-nombre { font-size: 15px; }
+.mapa-alt-sep { margin: 0 2px; color: #ccc; }
+.mapa-alt-specs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+.mapa-alt-explicacion {
+  font-size: 12px; color: #555; line-height: 1.55;
+  margin-top: 6px; padding-top: 8px;
+  border-top: 1px dashed var(--gris-borde);
+}
+
+/* Lectura comercial — bloque inferior unificado */
+.mapa-lectura-comercial {
+  margin-top: 28px;
+  background: var(--negro);
+  border-radius: var(--radio-lg);
+  overflow: hidden;
+}
+.mapa-lectura-head {
+  padding: 16px 22px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.mapa-lectura-title {
+  font-size: 13px; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 4px;
+}
+.mapa-lectura-sub { font-size: 12px; color: #999; }
+.mapa-lectura-body {
+  padding: 18px 22px 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.mapa-lectura-block-title {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--rojo); margin-bottom: 8px;
+}
+.mapa-lectura-block-text {
+  font-size: 13px; color: #ccc; line-height: 1.65;
+}
+
+@media(max-width:680px) {
+  .mapa-lectura-body { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -2899,25 +3138,50 @@ input:focus, select:focus, textarea:focus {
 
   <!-- 4.3 Comparador -->
   <section id="sec-comparador" class="section">
-    <div class="sec-head">
+    <div class="sec-head" style="margin-bottom:0;border-bottom:none;padding-bottom:12px">
       <h1>Comparador Bullpadel</h1>
       <p>Analizá diferencias técnicas y comerciales entre las palas seleccionadas.</p>
     </div>
-    <div class="comp-selects">
-      <div class="comp-select-group">
-        <label>Pala 1</label>
-        <select id="c1" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
-      </div>
-      <div class="comp-select-group">
-        <label>Pala 2</label>
-        <select id="c2" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
-      </div>
-      <div class="comp-select-group">
-        <label>Pala 3 (opcional)</label>
-        <select id="c3" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
-      </div>
+    <div class="subnav" id="subnav-comparador" style="margin-bottom:20px">
+      <button class="subnav-btn active" onclick="showComparadorTab('bullpadel',this)">Comparador Bullpadel</button>
+      <button class="subnav-btn" onclick="showComparadorTab('mapa',this)">Mapa competitivo</button>
     </div>
-    <div id="comp-result"></div>
+
+    <!-- Tab: Comparador Bullpadel -->
+    <div class="subview active" id="comparador-tab-bullpadel">
+      <div class="comp-selects">
+        <div class="comp-select-group">
+          <label>Pala 1</label>
+          <select id="c1" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+        </div>
+        <div class="comp-select-group">
+          <label>Pala 2</label>
+          <select id="c2" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+        </div>
+        <div class="comp-select-group">
+          <label>Pala 3 (opcional)</label>
+          <select id="c3" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+        </div>
+      </div>
+      <div id="comp-result"></div>
+    </div>
+
+    <!-- Tab: Mapa competitivo -->
+    <div class="subview" id="comparador-tab-mapa">
+      <div class="mapa-selectors">
+        <select id="mapa-marca" onchange="onMapaMarcaChange()">
+          <option value="">Filtrar por marca</option>
+          <option value="NOX">NOX</option>
+          <option value="Adidas">Adidas</option>
+          <option value="Babolat">Babolat</option>
+        </select>
+        <select id="mapa-modelo" onchange="onMapaModeloChange()">
+          <option value="">— elegir modelo —</option>
+        </select>
+      </div>
+      <div id="mapa-result"></div>
+    </div>
+
   </section>
 
   <!-- 4.4 Tabla gama completa -->
@@ -5775,6 +6039,21 @@ function applyRolePermissions() {
     }
   });
 
+  // Mapa competitivo: solo visible para owner/vendedor (perm verCompetencia)
+  const mapaTabBtn = [...document.querySelectorAll('#subnav-comparador .subnav-btn')]
+    .find(b => b.textContent.trim() === 'Mapa competitivo');
+  if (mapaTabBtn) {
+    const puedeVerMapa = perms.verCompetencia !== false;
+    mapaTabBtn.style.display = puedeVerMapa ? '' : 'none';
+    // Si el usuario sin permiso quedó parado en la tab Mapa, volver a Comparador Bullpadel
+    if (!puedeVerMapa) {
+      const mapaTabPanel = document.getElementById('comparador-tab-mapa');
+      if (mapaTabPanel && mapaTabPanel.classList.contains('active')) {
+        showComparadorTab('bullpadel', null);
+      }
+    }
+  }
+
   // If active section is hidden, switch to first visible
   const activeSection = document.querySelector('.section.visible');
   if (activeSection) {
@@ -7512,16 +7791,22 @@ function renderResultadosRecomendador(resultados) {
 
 
 /* ── Comparar las 3 recomendaciones ─────────────────────────────────────── */
-function goToComparadorConPalas(ids) {
+function goToComparadorConPalas(ids, source) {
   const selIds = ['c1', 'c2', 'c3'];
+  source = source || 'recomendador';
 
-  // Build compareContext from current recomendador state
-  const profileText = generarResumenPerfil(recAnswers);
-  compareContext = {
-    source:      'recomendador',
-    profileText: profileText && profileText !== 'Perfil no especificado' ? profileText : null,
-    answers:     Object.assign({}, recAnswers)
-  };
+  // Build compareContext only when coming from recomendador
+  if (source === 'recomendador') {
+    const profileText = generarResumenPerfil(recAnswers);
+    compareContext = {
+      source:      'recomendador',
+      profileText: profileText && profileText !== 'Perfil no especificado' ? profileText : null,
+      answers:     Object.assign({}, recAnswers)
+    };
+  } else {
+    // Coming from another flow (e.g. Mapa competitivo) — no recomendador profile
+    compareContext = null;
+  }
 
   // Flag: programmatic update — prevents select onChange from clearing context
   _isProgrammaticCompare = true;
@@ -7544,6 +7829,8 @@ function goToComparadorConPalas(ids) {
   const btn = [...document.querySelectorAll('.nav-btn')]
     .find(b => b.textContent.trim() === 'Comparador');
   if (btn) btn.click();
+  // Ensure Comparador Bullpadel tab is active (not Mapa) after navigating
+  setTimeout(() => { if (typeof showComparadorTab === 'function') showComparadorTab('bullpadel', null); }, 30);
 
   // Reset flag after render cycle
   setTimeout(() => { _isProgrammaticCompare = false; }, 100);
@@ -7730,6 +8017,333 @@ function onCompSelectChange() {
   }
   renderComp();
 }
+
+
+/* ═══════════════════════════════════════════════════
+   MAPA COMPETITIVO — RUN 15B
+   ═══════════════════════════════════════════════════ */
+
+let _mapaSelectedId = null;
+
+/* Comparador subnav (Bullpadel / Mapa) */
+function showComparadorTab(tab, btn) {
+  // Guard: bloquear acceso a Mapa competitivo si el rol no tiene permiso
+  if (tab === 'mapa') {
+    const perms = (currentUser && ROLES[currentUser.rol]?.permisos) || {};
+    if (perms.verCompetencia === false) {
+      tab = 'bullpadel';
+      btn = null;
+    }
+  }
+  document.querySelectorAll('#subnav-comparador .subnav-btn')
+    .forEach(b => b.classList.remove('active'));
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const targetText = tab === 'mapa' ? 'Mapa competitivo' : 'Comparador Bullpadel';
+    const targetBtn = [...document.querySelectorAll('#subnav-comparador .subnav-btn')]
+      .find(b => b.textContent.trim() === targetText);
+    if (targetBtn) targetBtn.classList.add('active');
+  }
+  document.querySelectorAll('#sec-comparador .subview')
+    .forEach(v => v.classList.remove('active'));
+  const sv = document.getElementById('comparador-tab-' + tab);
+  if (sv) sv.classList.add('active');
+  if (tab === 'mapa') populateMapaMarcaSelect();
+}
+
+/* Populate marca → modelo selects */
+function populateMapaMarcaSelect() {
+  const modeloSel = document.getElementById('mapa-modelo');
+  if (!modeloSel || modeloSel.dataset.populated) return;
+  onMapaMarcaChange(); // populate modelo list for current marca filter
+  modeloSel.dataset.populated = '1';
+}
+
+function onMapaMarcaChange() {
+  const marca = document.getElementById('mapa-marca').value;
+  const modeloSel = document.getElementById('mapa-modelo');
+  const filtered = marca ? PALAS_COMPETENCIA.filter(p => p.marca === marca) : PALAS_COMPETENCIA;
+
+  modeloSel.innerHTML = '<option value="">— elegir modelo —</option>' +
+    filtered.map(p => '<option value="' + p.id + '">' + p.marca + ' ' + p.modelo + '</option>').join('');
+
+  _mapaSelectedId = null;
+  renderMapaResult();
+}
+
+function onMapaModeloChange() {
+  _mapaSelectedId = document.getElementById('mapa-modelo').value || null;
+  // Sync marca select to reflect the chosen model's brand (avoids "Filtrar por marca" looking stale)
+  if (_mapaSelectedId) {
+    const comp = PALAS_COMPETENCIA.find(p => p.id === _mapaSelectedId);
+    if (comp) {
+      const marcaSel = document.getElementById('mapa-marca');
+      if (marcaSel && marcaSel.value !== comp.marca) marcaSel.value = comp.marca;
+    }
+  }
+  renderMapaResult();
+}
+
+/* Find a Bullpadel pala by exact name match */
+function findPalaPorNombre(nombre) {
+  if (!nombre) return null;
+  return PALAS.find(p => p.nombre === nombre) || null;
+}
+
+/* ── Mini explicación por alternativa (RUN 15B.1) ───────────────────────── */
+function explicarAlternativaMapa(pala, comp) {
+  if (!pala) return { rol: '', explicacion: '' };
+
+  const linea   = pala.linea || '';
+  const nivel   = (pala.nivel || '').toLowerCase();
+  const estilo  = (pala.estilo || '').toLowerCase();
+  const forma   = (pala.forma || '').toLowerCase();
+  const balance = (pala.balance || '').toLowerCase();
+  const nombreN = normalizarTexto(pala.nombre || '');
+  const esPremiumNivel = nivel.includes('avanzado') || nivel.includes('profesional');
+  const esConfort = nombreN.includes('comfort') || nombreN.includes('cloud');
+  const esHibrida = forma.includes('h\u00edbrida') || forma.includes('hibrida') || forma.includes('l\u00e1grima') || forma.includes('lagrima');
+  const esAccesible = linea === 'NEXT' || linea === 'ADVANCE' || linea === 'TOUR' || balance.includes('bajo');
+
+  let rol = '';
+  let explicacion = '';
+
+  // ── PROLINE + nivel alto: la lectura premium/t\u00e9cnica ─────────────────
+  if (linea === 'PROLINE' && esPremiumNivel && estilo.includes('ofensivo')) {
+    rol = 'Opci\u00f3n PROLINE m\u00e1s ofensiva';
+    explicacion = 'Sirve para mostrar una opci\u00f3n de mayor prestaci\u00f3n si el cliente prioriza potencia y quiere definir el punto con m\u00e1s contundencia.';
+  } else if (linea === 'PROLINE' && esPremiumNivel && (estilo.includes('defensiv') || estilo.includes('control'))) {
+    rol = 'Opci\u00f3n PROLINE m\u00e1s t\u00e9cnica';
+    explicacion = 'Conviene mostrarla cuando el cliente busca control con una respuesta m\u00e1s precisa, sin resignar prestaciones dentro de la gama alta.';
+  } else if (linea === 'PROLINE' && esPremiumNivel && estilo.includes('polivalente')) {
+    rol = 'Alternativa premium m\u00e1s vers\u00e1til';
+    explicacion = 'Es una buena alternativa si quer\u00e9s abrir la conversaci\u00f3n hacia una pala que no obliga a elegir entre ataque y defensa.';
+  } else if (linea === 'PROLINE' && esConfort) {
+    rol = 'Lectura m\u00e1s c\u00f3moda dentro de PROLINE';
+    explicacion = 'Permite ofrecer una opci\u00f3n de mayor prestaci\u00f3n con una sensaci\u00f3n menos exigente al impacto, sin bajar de gama.';
+  } else if (linea === 'PROLINE') {
+    rol = 'Opci\u00f3n de mayor prestaci\u00f3n';
+    explicacion = 'Funciona como alternativa t\u00e9cnica dentro de Bullpadel cuando el cliente busca dar un salto de calidad respecto al modelo que est\u00e1 mirando.';
+
+  // ── Estilo ofensivo (no necesariamente PROLINE) ─────────────────────────
+  } else if (estilo.includes('ofensivo') || estilo.includes('ataque')) {
+    rol = 'Alternativa orientada al ataque';
+    explicacion = 'Tiene sentido mostrarla si el cliente prioriza potencia y golpes de definici\u00f3n por encima de la versatilidad.';
+
+  // ── Estilo defensivo/control ─────────────────────────────────────────────
+  } else if (estilo.includes('defensiv') || estilo.includes('control')) {
+    rol = esAccesible ? 'Alternativa de control m\u00e1s accesible' : 'Alternativa m\u00e1s orientada a control';
+    explicacion = esAccesible
+      ? 'Conviene mostrarla cuando el cliente prioriza control pero busca una opci\u00f3n m\u00e1s f\u00e1cil de adaptar al juego.'
+      : 'Sirve para sostener la conversaci\u00f3n en control y precisi\u00f3n, manteniendo una propuesta de mayor prestaci\u00f3n.';
+
+  // ── Polivalente ───────────────────────────────────────────────────────────
+  } else if (estilo.includes('polivalente')) {
+    rol = 'Lectura m\u00e1s polivalente';
+    explicacion = 'Es \u00fatil cuando el cliente todav\u00eda no tiene definido su estilo de juego o busca una pala que acompa\u00f1e ambas fases.';
+
+  // ── Forma h\u00edbrida/l\u00e1grima como se\u00f1al secundaria ───────────
+  } else if (esHibrida) {
+    rol = 'Alternativa h\u00edbrida de mayor prestaci\u00f3n';
+    explicacion = 'Combina potencia y manejo, \u00fatil para abrir la conversaci\u00f3n hacia una opci\u00f3n vers\u00e1til dentro de la gama alta.';
+
+  // ── Confort como se\u00f1al secundaria ───────────────────────────────────
+  } else if (esConfort) {
+    rol = 'Lectura m\u00e1s c\u00f3moda dentro de Bullpadel';
+    explicacion = 'Permite responder a una necesidad similar con una sensaci\u00f3n m\u00e1s amable al impacto, sin perder rendimiento.';
+
+  // ── Accesible / balance bajo ──────────────────────────────────────────────
+  } else if (esAccesible) {
+    rol = 'Opci\u00f3n m\u00e1s accesible';
+    explicacion = 'Es una buena puerta de entrada si el cliente quiere algo f\u00e1cil de adaptar antes de pensar en una pala m\u00e1s exigente.';
+
+  // ── Fallback gen\u00e9rico pero todav\u00eda con criterio ─────────────────
+  } else {
+    rol = 'Alternativa comparable por perfil';
+    explicacion = 'Puede responder a una necesidad similar a la del modelo que el cliente est\u00e1 mirando, seg\u00fan nivel y estilo de juego.';
+  }
+
+  return { rol, explicacion };
+}
+
+/* Render the alternativa card (or missing notice) */
+function renderMapaAltCard(nombreEquivalente, comp, idx) {
+  if (!nombreEquivalente) return '';
+  const pala = findPalaPorNombre(nombreEquivalente);
+  if (!pala) {
+    return '<div class="mapa-alt-missing">Modelo Bullpadel no encontrado en cat\u00e1logo: "' + nombreEquivalente + '"</div>';
+  }
+  const imgSrc = IMGS[pala.id] || '';
+  const { rol, explicacion } = explicarAlternativaMapa(pala, comp);
+  const isPrincipal = idx === 0;
+  return '<div class="mapa-alt-card' + (isPrincipal ? ' principal' : '') + '">' +
+    (isPrincipal ? '<div class="mapa-alt-tag">Primera lectura sugerida</div>' : '') +
+    '<div class="mapa-alt-img-wrap">' +
+      (imgSrc ? '<img src="' + imgSrc + '" alt="' + pala.nombre + '" onclick="openLightbox(this.src,this.alt)">' : '') +
+    '</div>' +
+    '<div class="mapa-alt-body">' +
+      (rol ? '<div class="mapa-alt-rol">' + rol + '</div>' : '') +
+      '<div class="mapa-alt-nombre">' + pala.nombre + '</div>' +
+      '<div class="mapa-alt-specs">' +
+        '<span class="linea-tag tag-' + (pala.linea||'') + '">' + (pala.linea||'\u2014') + '</span>' +
+        '<span class="mapa-alt-sep">\u00b7</span>' + (pala.nivel||'\u2014') +
+      '</div>' +
+      '<div class="mapa-alt-specs">' + (pala.estilo||'\u2014') + ' \u00b7 ' + (pala.forma||'\u2014') + ' \u00b7 ' + (pala.balance||'\u2014') + '</div>' +
+      (explicacion ? '<div class="mapa-alt-explicacion">' + explicacion + '</div>' : '') +
+    '</div>' +
+    '<div class="mapa-alt-actions">' +
+      '<button class="mapa-alt-btn primary" onclick="openPalaModal(\'' + pala.id + '\')">Ver ficha</button>' +
+      '<button class="mapa-alt-btn secondary" onclick="recAgregarComparador(\'' + pala.id + '\')">Comparar</button>' +
+    '</div>' +
+  '</div>';
+}
+
+/* Get valid Bullpadel equivalent ids for a competitor record */
+function getMapaEquivalentIds(comp) {
+  const nombres = [comp.bullpadelEquivalente1, comp.bullpadelEquivalente2, comp.bullpadelEquivalente3];
+  return nombres
+    .map(n => findPalaPorNombre(n))
+    .filter(Boolean)
+    .map(p => p.id);
+}
+
+/* Compare all valid Bullpadel alternatives for current competitor */
+function compararAlternativasBullpadel() {
+  if (!_mapaSelectedId) return;
+  const comp = PALAS_COMPETENCIA.find(p => p.id === _mapaSelectedId);
+  if (!comp) return;
+  const ids = getMapaEquivalentIds(comp);
+  if (!ids.length) {
+    alert('No se encontraron alternativas Bullpadel válidas para comparar.');
+    return;
+  }
+  goToComparadorConPalas(ids, 'mapa');
+}
+
+/* Main render */
+function renderMapaResult() {
+  const el = document.getElementById('mapa-result');
+  if (!el) return;
+
+  if (!_mapaSelectedId) {
+    el.innerHTML = '<div class="mapa-empty">' +
+      '<div class="mapa-empty-title">Eleg\u00ed una marca y un modelo de competencia</div>' +
+      '<div class="mapa-empty-sub">Vas a ver alternativas Bullpadel sugeridas, el motivo de la equivalencia y un argumento comercial neutral para explicarla.</div>' +
+      '<div class="mapa-empty-note">Este m\u00f3dulo est\u00e1 pensado como apoyo comercial interno. Las equivalencias deben validarse con el equipo de ventas.</div>' +
+    '</div>';
+    return;
+  }
+
+  const comp = PALAS_COMPETENCIA.find(p => p.id === _mapaSelectedId);
+  if (!comp) { el.innerHTML = ''; return; }
+
+  const na = v => (v === null || v === undefined || v === '') ? 'No informado' : v;
+
+  // Pending / validated badge
+  const isPending = comp.estadoEquivalenciaBullpadel && comp.estadoEquivalenciaBullpadel.toLowerCase().includes('pendiente');
+  const badgeHtml = isPending
+    ? '<span class="mapa-pending-badge">Pendiente validaci\u00f3n comercial</span>'
+    : (comp.validadoPor ? '<span class="mapa-validated-badge">Validado</span>' : '');
+
+  // Fecha de validación SOLO se muestra como tal si ya hay validadoPor real.
+  // Si está pendiente, la fecha del Excel es carga/revisión de base, no validación comercial.
+  const validadoLine = comp.validadoPor ? ('Validado por: ' + comp.validadoPor) : '';
+  const fechaLine     = (comp.validadoPor && comp.fechaValidacion)
+    ? ('Fecha de validaci\u00f3n: ' + comp.fechaValidacion)
+    : '';
+  const fechaCargaLine = (!comp.validadoPor && comp.fechaValidacion)
+    ? ('Fecha de carga / revisi\u00f3n de base: ' + comp.fechaValidacion)
+    : '';
+
+  // Ficha competidor
+  const specs = [
+    ['Temporada', comp.temporada],
+    ['Gama', comp.gama],
+    ['Nivel', na(comp.nivel)],
+    ['Estilo', na(comp.estilo)],
+    ['Forma', na(comp.forma)],
+    ['Balance', comp.balance ? comp.balance : (comp.balanceNota ? 'A completar (' + comp.balanceNota + ')' : 'No informado')],
+    ['Peso', na(comp.peso)],
+    ['Superficie', na(comp.superficie)],
+    ['N\u00facleo', na(comp.nucleo)],
+    ['Tacto / sensaci\u00f3n', na(comp.tactoSensacion)],
+  ];
+
+  const specsHtml = specs.map(([label, val]) =>
+    '<div class="mapa-spec-item"><div class="label">' + label + '</div><div class="val">' + val + '</div></div>'
+  ).join('');
+
+  const techChips = comp.tecnologias.length
+    ? '<div class="mapa-tech-chips">' + comp.tecnologias.map(t => '<span class="mapa-tech-chip">' + t + '</span>').join('') + '</div>'
+    : '<div class="mapa-tech-chips"><span class="mapa-tech-chip">No informado</span></div>';
+
+  const fortChips = comp.fortalezas.length
+    ? '<div class="mapa-tech-chips">' + comp.fortalezas.map(t => '<span class="mapa-tech-chip">' + t + '</span>').join('') + '</div>'
+    : '';
+
+  const fuenteHtml = comp.fuenteOficialUrl
+    ? '<a class="mapa-source-link" href="' + comp.fuenteOficialUrl + '" target="_blank" rel="noopener noreferrer">Ver ficha oficial \u2192</a>'
+    : '';
+
+  const fichaHtml = '<div class="mapa-competidor-card">' +
+    '<div class="mapa-competidor-head">' +
+      '<div>' +
+        '<div class="mapa-competidor-marca">' + comp.marca + '</div>' +
+        '<div class="mapa-competidor-modelo">' + comp.modelo + '</div>' +
+      '</div>' +
+      badgeHtml +
+    '</div>' +
+    '<div class="mapa-specs-grid">' + specsHtml + '</div>' +
+    techChips +
+    fortChips +
+    fuenteHtml +
+    (isPending ? '<div class="mapa-pending-note">' +
+        'Estas equivalencias son sugeridas y est\u00e1n pendientes de validaci\u00f3n comercial interna.' +
+        (fechaCargaLine ? '<br><span style="opacity:.8">' + fechaCargaLine + '</span>' : '') +
+      '</div>' : '') +
+    ((validadoLine || fechaLine) ? '<div class="mapa-pending-note" style="background:#f0fdf4;border-left-color:#86efac;color:#166534">' + [validadoLine, fechaLine].filter(Boolean).join(' \u00b7 ') + '</div>' : '') +
+  '</div>';
+
+  // Alternativas
+  const ids = getMapaEquivalentIds(comp);
+  const altCardsHtml = [comp.bullpadelEquivalente1, comp.bullpadelEquivalente2, comp.bullpadelEquivalente3]
+    .map((nombre, idx) => renderMapaAltCard(nombre, comp, idx)).join('');
+
+  const compareBtnHtml = ids.length
+    ? '<button class="mapa-compare-btn" onclick="compararAlternativasBullpadel()">Comparar alternativas Bullpadel</button>'
+    : '';
+
+  // Lectura comercial unificada (motivo + argumento agrupados)
+  const tieneMotivoOArgumento = comp.motivoEquivalencia || comp.argumentoComercialNeutro;
+  const lecturaComercialHtml = tieneMotivoOArgumento
+    ? '<div class="mapa-lectura-comercial">' +
+        '<div class="mapa-lectura-head">' +
+          '<div class="mapa-lectura-title">Lectura comercial de la equivalencia</div>' +
+          '<div class="mapa-lectura-sub">Para tener clara la conversaci\u00f3n antes de mostrar las alternativas.</div>' +
+        '</div>' +
+        '<div class="mapa-lectura-body">' +
+          (comp.motivoEquivalencia ?
+            '<div class="mapa-lectura-block">' +
+              '<div class="mapa-lectura-block-title">Qu\u00e9 tienen en com\u00fan estas alternativas</div>' +
+              '<div class="mapa-lectura-block-text">' + comp.motivoEquivalencia + '</div>' +
+            '</div>' : '') +
+          (comp.argumentoComercialNeutro ?
+            '<div class="mapa-lectura-block">' +
+              '<div class="mapa-lectura-block-title">C\u00f3mo llevar la conversaci\u00f3n</div>' +
+              '<div class="mapa-lectura-block-text">' + comp.argumentoComercialNeutro + '</div>' +
+            '</div>' : '') +
+        '</div>' +
+      '</div>'
+    : '';
+
+  el.innerHTML = fichaHtml +
+    '<div class="mapa-section-label">Alternativas Bullpadel sugeridas</div>' +
+    '<div class="mapa-alt-cards">' + altCardsHtml + '</div>' +
+    compareBtnHtml +
+    lecturaComercialHtml;
+}
+
 
 /* ═══════════════════════════════════════════════════
    JS · 6. EVENTOS E INTERACCIONES
@@ -8449,6 +9063,472 @@ function togglePwdVisibility(inputId, btn) {
   btn.textContent = show ? 'Ocultar' : 'Ver';
 }
 
+
+// ── PALAS_COMPETENCIA (RUN 15B — base Excel NOX/Adidas/Babolat 2026) ──────
+const PALAS_COMPETENCIA = [
+  {
+    id:"nox-at10-luxury-genius-18k-alum-2026", marca:"NOX", modelo:"AT10 Luxury Genius 18K Alum 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"AT10",
+    forma:"Lágrima / Drop", balance:null, balanceNota:"ajustable por Weight Balance", peso:"360-375 g",
+    nivel:"Profesional", estilo:"Polivalente",
+    superficie:"Carbon Fiber 18K Alum", nucleo:"MLD Black EVA", tactoSensacion:"Intermedia",
+    tecnologias:["Weight Balance", "Chromic Paint", "Dual Spin", "Carbon 18K Alum", "MLD Black EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador que busca una pala de alto rendimiento, polivalente, con balance configurable y buena generación de efecto.",
+    fortalezas:["Polivalencia", "ajuste de balance", "efecto", "combinación potencia/control"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/pala-at10-genius-18k-alum-2026-by-agustin-tapia",
+    bullpadelEquivalente1:"Vertex 05",
+    bullpadelEquivalente2:"Hack 04 Hybrid 26",
+    bullpadelEquivalente3:"Neuron 02",
+    motivoEquivalencia:"Equivalencia sugerida por perfil premium polivalente: Vertex 05 cubre potencia/control de alto rendimiento; Hack 04 Hybrid suma alternativa de contraataque con balance más manejable; Neuron 02 cubre el ángulo de control técnico PROLINE.",
+    argumentoComercialNeutro:"Si el cliente llega mirando una AT10 polivalente premium, conviene mostrar primero Vertex 05 como opción completa PROLINE y luego abrir la comparación con Hack Hybrid o Neuron según si prioriza contraataque o control.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX. Equivalencias Bullpadel pendientes de validación interna."
+  },
+  {
+    id:"nox-at10-luxury-genius-attack-18k-alum-2026", marca:"NOX", modelo:"AT10 Luxury Genius ATTACK 18K Alum 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"AT10",
+    forma:"Diamante", balance:"Alto / ataque", balanceNota:null, peso:"360-375 g",
+    nivel:"Profesional", estilo:"Ofensivo / agresivo",
+    superficie:"Carbon Fiber 18K Alum", nucleo:"MLD Black EVA", tactoSensacion:"Intermedia",
+    tecnologias:["Weight Balance", "Chromic Paint", "Dual Spin", "Carbon 18K Alum", "MLD Black EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador que prioriza potencia, pegada y juego agresivo, con precisión en golpes de definición.",
+    fortalezas:["Potencia", "ataque", "balance alto", "precisión", "efecto"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/pala-at10-genius-attack-18k-alum-2026-by-agustin-tapia",
+    bullpadelEquivalente1:"XPLO 26",
+    bullpadelEquivalente2:"Hack 04 26",
+    bullpadelEquivalente3:"Vertex 05 Geo",
+    motivoEquivalencia:"Equivalencia sugerida por ataque, formato diamante/balance alto y búsqueda de máxima prestación. XPLO 26 es la opción Bullpadel más orientada a potencia; Hack 04 26 cubre potencia dinámica; Vertex 05 Geo aporta potencia con mayor área de contacto.",
+    argumentoComercialNeutro:"Para un jugador que pide una pala de ataque premium, la terna lógica en Bullpadel es XPLO, Hack y Vertex Geo: tres formas distintas de construir potencia dentro de PROLINE.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX. Equivalencias Bullpadel pendientes de validación interna."
+  },
+  {
+    id:"nox-at10-luxury-genius-12k-alum-xtrem-2026", marca:"NOX", modelo:"AT10 Luxury Genius 12K Alum XTREM 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"AT10",
+    forma:"Lágrima / Drop", balance:null, balanceNota:"ajustable por Weight Balance", peso:"360-375 g",
+    nivel:"Profesional", estilo:"Polivalente",
+    superficie:"Carbon Fiber 12K Alum XTREM", nucleo:"HR3 Black EVA", tactoSensacion:"Intermedia-dura",
+    tecnologias:["Weight Balance", "Chromic Paint", "Dual Spin", "Carbon 12K Alum XTREM", "HR3 Black EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador que busca equilibrio entre potencia y control con una sensación más firme que la versión 18K.",
+    fortalezas:["Potencia/control", "efecto", "sensación firme", "estabilidad"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/pala-at10-genius-12k-alum-xtrem-2026-by-agustin-tapia",
+    bullpadelEquivalente1:"Vertex 05",
+    bullpadelEquivalente2:"Neuron 02 Edge",
+    bullpadelEquivalente3:"Hack 04 Hybrid 26",
+    motivoEquivalencia:"Equivalencia sugerida por pala premium polivalente de sensación firme. Vertex 05 es la alternativa completa; Neuron 02 Edge suma control técnico con potencia; Hack 04 Hybrid agrega una opción PROLINE más estable y manejable para contraataque.",
+    argumentoComercialNeutro:"Si busca una AT10 12K firme y equilibrada, mostraría Vertex 05 como opción principal y después Neuron Edge o Hack Hybrid según si el cliente habla más de precisión o de defensa/contraataque.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media-Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX. Balance final a validar por sistema ajustable Weight Balance."
+  },
+  {
+    id:"nox-at10-luxury-genius-12k-alum-xtrem-lite-2026", marca:"NOX", modelo:"AT10 Luxury Genius 12K Alum XTREM Lite 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"AT10",
+    forma:"Lágrima / Drop", balance:null, balanceNota:"ajustable por Weight Balance", peso:"355-365 g",
+    nivel:"Profesional", estilo:"Polivalente",
+    superficie:"Carbon Fiber 12K Alum XTREM", nucleo:"HR3 White EVA", tactoSensacion:"Blanda / Soft",
+    tecnologias:["Weight Balance", "Dual Spin", "Carbon 12K Alum XTREM", "HR3 White EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Versión más liviana orientada a balance potencia/control con mayor facilidad de manejo.",
+    fortalezas:["Maniobrabilidad", "control", "potencia", "efecto", "peso más bajo"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/pala-at10-genius-12k-alum-xtrem-lite-2026-by-agustin-tapia",
+    bullpadelEquivalente1:"Vertex 05 W",
+    bullpadelEquivalente2:"Wonder",
+    bullpadelEquivalente3:"Pearl 26",
+    motivoEquivalencia:"Equivalencia sugerida por peso más bajo, maniobrabilidad y perfil premium. Vertex 05 W y Wonder cubren rendimiento PROLINE liviano/polivalente; Pearl 26 suma una alternativa liviana con perfil más ofensivo.",
+    argumentoComercialNeutro:"Para un cliente que quiere una pala premium más liviana, estas opciones Bullpadel permiten hablar de velocidad de mano, manejabilidad y rendimiento sin llevarlo a una pala pesada.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX. Equivalencias Bullpadel pendientes."
+  },
+  {
+    id:"nox-ea10-ventus-hybrid-12k-xtrem-2026", marca:"NOX", modelo:"EA10 Ventus Hybrid 12K XTREM 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Ventus / EA10",
+    forma:"Lágrima / Drop", balance:"Equilibrado", balanceNota:null, peso:"360-375 g",
+    nivel:"Profesional", estilo:"Polivalente",
+    superficie:"Carbon Fiber 12K XTREM", nucleo:"MLD Black EVA", tactoSensacion:"Intermedia-dura",
+    tecnologias:["Dual Spin", "Carbon 12K XTREM", "MLD Black EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador versátil que busca equilibrio entre agilidad, potencia y control.",
+    fortalezas:["Agilidad", "equilibrio", "potencia/control", "efecto"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/ea10-ventus-hybrid-12k-xtrem-by-edu-alonso",
+    bullpadelEquivalente1:"Vertex 05 Hybrid",
+    bullpadelEquivalente2:"Neuron 02",
+    bullpadelEquivalente3:"Hack 04 Hybrid 26",
+    motivoEquivalencia:"Equivalencia sugerida por perfil híbrido/polivalente de alta prestación. Vertex 05 Hybrid se acerca por balance más manejable y control; Neuron 02 por precisión; Hack 04 Hybrid por contraataque y estabilidad.",
+    argumentoComercialNeutro:"Si el cliente busca una pala híbrida premium para adaptarse a distintas situaciones, conviene comparar Vertex Hybrid, Neuron y Hack Hybrid para mostrar tres lecturas de control/rendimiento.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX."
+  },
+  {
+    id:"nox-ea10-ventus-attack-12k-xtrem-2026", marca:"NOX", modelo:"EA10 Ventus Attack 12K XTREM 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Ventus / EA10",
+    forma:"Diamante", balance:"Alto / ataque", balanceNota:null, peso:"360-375 g",
+    nivel:"Profesional", estilo:"Ofensivo / agresivo",
+    superficie:"Carbon Fiber 12K XTREM", nucleo:"MLD Black EVA", tactoSensacion:"Intermedia-dura",
+    tecnologias:["Dual Spin", "Carbon 12K XTREM", "MLD Black EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador de ataque que busca potencia y precisión con formato diamante y balance alto.",
+    fortalezas:["Potencia", "ataque", "precisión", "efecto", "balance alto"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/ea10-ventus-attack-12k-xtrem-by-edu-alonso",
+    bullpadelEquivalente1:"XPLO 26",
+    bullpadelEquivalente2:"Hack 04 26",
+    bullpadelEquivalente3:"Vertex 05 Geo",
+    motivoEquivalencia:"Equivalencia sugerida por ataque de alta prestación, formato diamante y balance alto. XPLO 26 cubre máxima potencia; Hack 04 26 potencia dinámica; Vertex 05 Geo potencia con mayor zona de contacto.",
+    argumentoComercialNeutro:"Para un jugador ofensivo que busca definir, Bullpadel tiene una escalera muy clara: XPLO si quiere explosividad, Hack si quiere potencia dinámica y Vertex Geo si quiere potencia con dirección.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX."
+  },
+  {
+    id:"nox-ml10-ventus-control-3k-2026", marca:"NOX", modelo:"ML10 Ventus Control 3K 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Ventus / ML10",
+    forma:"Redonda", balance:"Equilibrado", balanceNota:null, peso:"360-375 g",
+    nivel:"Profesional", estilo:"Control / precisión",
+    superficie:"Carbon Fiber 3K", nucleo:"HR3 Color EVA", tactoSensacion:"Intermedia",
+    tecnologias:["Dual Spin", "Carbon 3K", "HR3 Color EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador que busca control, punto dulce amplio y una respuesta equilibrada.",
+    fortalezas:["Control", "precisión", "punto dulce amplio", "estabilidad"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/pala-ml10-ventus-3k-by-miguel-lamperti",
+    bullpadelEquivalente1:"Neuron 02",
+    bullpadelEquivalente2:"Vertex 05 Hybrid",
+    bullpadelEquivalente3:"Ionic Control 26",
+    motivoEquivalencia:"Equivalencia sugerida por control y punto dulce. Neuron 02 es la opción PROLINE más técnica de control; Vertex 05 Hybrid suma control/manejabilidad en gama alta; Ionic Control 26 funciona como alternativa NEXT más accesible para jugador intermedio.",
+    argumentoComercialNeutro:"Si el cliente mira una ML10 de control, la conversación Bullpadel puede ir hacia Neuron si quiere PROLINE, Vertex Hybrid si quiere control con más prestación o Ionic Control si busca algo más accesible.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media-Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX."
+  },
+  {
+    id:"nox-vk10-ventus-2026", marca:"NOX", modelo:"VK10 Ventus 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Ventus / VK10",
+    forma:"Redonda", balance:"Equilibrado", balanceNota:null, peso:"360-375 g",
+    nivel:"Profesional", estilo:"Control / precisión",
+    superficie:"Carbon Fiber 12K", nucleo:"MLD Black EVA", tactoSensacion:"Intermedia-dura",
+    tecnologias:["Dual Spin", "Carbon 12K", "MLD Black EVA", "Carbon Frame", "EOS Tunnel", "Smartstrap", "Custom Grip", "Pulse System", "DCS"],
+    perfilJugador:"Jugador que busca control, punto dulce amplio y sensación firme/intermedia-dura.",
+    fortalezas:["Control", "punto dulce amplio", "precisión", "estabilidad"],
+    fuenteOficialUrl:"https://noxsport.com/en/products/pala-vk10-ventus-12k-by-aranzazu-osoro",
+    bullpadelEquivalente1:"Neuron 02",
+    bullpadelEquivalente2:"Vertex 05 Hybrid",
+    bullpadelEquivalente3:"Hack 02 Advance",
+    motivoEquivalencia:"Equivalencia sugerida por control firme y formato redondo/orientado a precisión. Neuron 02 cubre el segmento PROLINE técnico; Vertex 05 Hybrid cubre control de alta gama con forma híbrida; Hack 02 Advance ofrece lectura redonda y más accesible.",
+    argumentoComercialNeutro:"Para un jugador que pide control premium, arrancaría por Neuron. Si busca algo más manejable en PROLINE, Vertex Hybrid; si quiere bajar exigencia, Hack 02 Advance.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos técnicos tomados de ficha oficial NOX."
+  },
+  {
+    id:"adidas-metalbone-2026", marca:"Adidas", modelo:"Metalbone 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Metalbone",
+    forma:"Diamante", balance:"Alto / Head Heavy", balanceNota:null, peso:"345-360 g + hasta 11,2 g ajustables",
+    nivel:"PRO", estilo:"Ataque",
+    superficie:"Carbon Aluminized 16K", nucleo:"Soft Performance EVA", tactoSensacion:null,
+    tecnologias:["Weight & Balance System", "Power Groove", "Extra Power Grip", "Octagonal Structure", "Low Poly", "Spin Blade Decal", "Smart Holes Curve", "Structural Reinforcement"],
+    perfilJugador:"Jugador ofensivo que busca personalización de peso/balance, potencia y rendimiento alto.",
+    fortalezas:["Potencia", "personalización", "efecto", "rigidez estructural"],
+    fuenteOficialUrl:"https://www.adidas.com/us/metalbone-2026/KL2612.html",
+    bullpadelEquivalente1:"XPLO 26",
+    bullpadelEquivalente2:"Hack 04 26",
+    bullpadelEquivalente3:"Vertex 05 Geo",
+    motivoEquivalencia:"Equivalencia sugerida por pala premium de ataque con posibilidad de ajuste/personalización. XPLO 26 es la referencia Bullpadel por potencia y Custom Weight; Hack 04 26 cubre potencia dinámica; Vertex 05 Geo suma potencia con área de impacto ampliada.",
+    argumentoComercialNeutro:"Si el cliente viene por Metalbone, XPLO es la alternativa Bullpadel más directa por potencia y sistema de peso; Hack y Vertex Geo completan la comparación como opciones PROLINE de ataque.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"La web oficial Adidas confirma modelo; fuente secundaria All For Padel es licensee oficial y aporta ficha técnica completa."
+  },
+  {
+    id:"adidas-metalbone-ctrl-2026", marca:"Adidas", modelo:"Metalbone CTRL 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Metalbone",
+    forma:"Redonda", balance:"Equilibrado / Even", balanceNota:null, peso:"345-360 g + hasta 11,2 g ajustables",
+    nivel:"PRO", estilo:"Control",
+    superficie:"Carbon Aluminized 16K", nucleo:"Soft Performance EVA", tactoSensacion:null,
+    tecnologias:["Weight & Balance System", "Power Groove", "Extra Power Grip", "Octagonal Structure", "Low Poly", "Spin Blade Decal", "Smart Holes Curve", "Structural Reinforcement"],
+    perfilJugador:"Jugador que busca control, estabilidad y personalización del balance dentro de gama alta.",
+    fortalezas:["Control", "estabilidad", "personalización", "precisión"],
+    fuenteOficialUrl:"https://www.adidas.com/us/metalbone-ctrl-2026/KL2613.html",
+    bullpadelEquivalente1:"Neuron 02",
+    bullpadelEquivalente2:"Vertex 05 Hybrid",
+    bullpadelEquivalente3:"Hack 04 Hybrid 26",
+    motivoEquivalencia:"Equivalencia sugerida por control premium y personalización de peso/balance. Neuron 02 representa control técnico PROLINE; Vertex 05 Hybrid suma manejo y control; Hack 04 Hybrid abre una alternativa de mayor potencia con balance más manejable.",
+    argumentoComercialNeutro:"Para una Metalbone CTRL, no vendería potencia pura: mostraría Neuron como referencia de control y luego Vertex Hybrid/Hack Hybrid según si el cliente quiere más manejo o más salida ofensiva.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"La web oficial Adidas confirma modelo; fuente secundaria licensee aporta ficha técnica completa."
+  },
+  {
+    id:"adidas-metalbone-hrd-2026", marca:"Adidas", modelo:"Metalbone HRD+ 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Metalbone",
+    forma:"Diamante", balance:"Alto / Head Heavy", balanceNota:null, peso:"345-360 g + hasta 11,2 g ajustables",
+    nivel:"PRO", estilo:"Ataque",
+    superficie:"Carbon Aluminized 16K (validar: descripción menciona 15K en una fuente)", nucleo:"High Memory EVA", tactoSensacion:"Dura / alta memoria",
+    tecnologias:["Weight & Balance System", "Power Groove", "Extra Power Grip", "Octagonal Structure", "Low Poly", "Spin Blade Decal", "Smart Holes Curve", "Structural Reinforcement"],
+    perfilJugador:"Jugador ofensivo que busca mayor rigidez, potencia y una respuesta más exigente.",
+    fortalezas:["Potencia", "rigidez", "ataque", "personalización de peso/balance"],
+    fuenteOficialUrl:"https://allforpadel.com/en/padel-rackets/7522-padel-racket-adidas-metalbone-hrd-2026-ale-galan-8435739405826.html",
+    bullpadelEquivalente1:"Hack 04 26",
+    bullpadelEquivalente2:"XPLO 26",
+    bullpadelEquivalente3:"Icon 26",
+    motivoEquivalencia:"Equivalencia sugerida por ataque premium, tacto firme y alta exigencia. Hack 04 26 encaja por potencia dinámica y sensación más técnica; XPLO 26 por máxima potencia; Icon 26 por perfil ofensivo PROLINE con identidad premium.",
+    argumentoComercialNeutro:"Si el cliente busca una pala dura de ataque, Hack 04 26 es la primera comparación. XPLO e Icon permiten mostrar dos alternativas de potencia dentro de Bullpadel.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media-Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"A validar con ficha oficial Adidas si se requiere fuente 100% de dominio adidas. La ficha consultada muestra discrepancia 15K/16K entre descripción y detalle."
+  },
+  {
+    id:"adidas-metalbone-team-2026", marca:"Adidas", modelo:"Metalbone Team 2026",
+    temporada:"2026", gama:"Media / Alta", linea:"Metalbone",
+    forma:"Diamante", balance:"Alto / High Balance", balanceNota:null, peso:"360-375 g",
+    nivel:null, estilo:"Ataque",
+    superficie:"Fiberglass", nucleo:"Low-density EVA", tactoSensacion:"Soft touch / salida de bola",
+    tecnologias:["Extra Power Grip", "Low Poly", "Spin Blade Gritt", "Octagonal Structure"],
+    perfilJugador:"Jugador que busca potencia en ataque con tacto más amable por fibra de vidrio y EVA de baja densidad.",
+    fortalezas:["Potencia", "salida de bola", "tacto más suave", "uso frecuente"],
+    fuenteOficialUrl:"https://www.adidas.com/om/en/metalbone-team-2026-padel-racket/KL2622.html",
+    bullpadelEquivalente1:"Ionic Power 26",
+    bullpadelEquivalente2:"Vertex Advance",
+    bullpadelEquivalente3:"XPLO Comfort 26",
+    motivoEquivalencia:"Equivalencia sugerida por pala de ataque más accesible y tacto amable. Ionic Power 26 cubre potencia NEXT para intermedio; Vertex Advance es alternativa ADVANCE con forma diamante; XPLO Comfort funciona como opción PROLINE aspiracional de mayor prestación pero más accesible que XPLO.",
+    argumentoComercialNeutro:"Para un jugador que quiere potencia pero no necesariamente una pala ultra técnica, Ionic Power y Vertex Advance son opciones naturales; XPLO Comfort queda como salto premium.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de web oficial Adidas. Nivel exacto queda A COMPLETAR porque la fuente habla de high-level/frequent use."
+  },
+  {
+    id:"adidas-cross-it-carbon-2026", marca:"Adidas", modelo:"Cross It Carbon 2026",
+    temporada:"2026", gama:"Media / Alta", linea:"Cross It",
+    forma:"Diamante oversize", balance:"Alto / High Balance", balanceNota:null, peso:"360-375 g",
+    nivel:null, estilo:"Ataque / potencia",
+    superficie:"Carbon 6K", nucleo:"Low-density EVA", tactoSensacion:null,
+    tecnologias:["Dynamic Air Flow", "Extra Power Grip", "11 Thirteen", "Spin Blade Decal", "Smart Holes Curve", "Structural Reinforcement"],
+    perfilJugador:"Jugador frecuente de alto nivel que busca potencia, rigidez y respuesta con construcción carbono 6K.",
+    fortalezas:["Potencia", "rigidez", "efecto", "durabilidad", "alto rendimiento"],
+    fuenteOficialUrl:"https://www.adidas.com/om/en/cross-it-carbon-2026-padel-racket/KL2617.html",
+    bullpadelEquivalente1:"XPLO 26",
+    bullpadelEquivalente2:"Vertex 05 Geo",
+    bullpadelEquivalente3:"Hack 04 26",
+    motivoEquivalencia:"Equivalencia sugerida por potencia, formato diamante/oversize y rendimiento alto. XPLO 26 cubre máxima explosividad; Vertex 05 Geo aporta área de contacto y lanzamiento; Hack 04 26 cubre potencia dinámica y rigidez.",
+    argumentoComercialNeutro:"Para Cross It Carbon, iría con una comparación de potencia PROLINE: XPLO, Vertex Geo y Hack, explicando que cada una construye la potencia de manera distinta.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de web oficial Adidas. Algunos campos comerciales quedan pendientes de curaduría."
+  },
+  {
+    id:"adidas-cross-it-team-2026", marca:"Adidas", modelo:"Cross It Team 2026",
+    temporada:"2026", gama:"Media / Alta", linea:"Cross It",
+    forma:"Diamante oversize", balance:"Alto / High Balance", balanceNota:null, peso:"360-375 g",
+    nivel:null, estilo:"Ataque / potencia",
+    superficie:"Fiberglass", nucleo:"Low-density EVA", tactoSensacion:null,
+    tecnologias:["Dynamic Air Flow", "Extra Power Grip", "11 Thirteen", "Spin Blade Decal"],
+    perfilJugador:"Jugador frecuente que busca potencia y salida de bola con construcción más amable en fibra de vidrio.",
+    fortalezas:["Potencia", "salida de bola", "comodidad", "uso frecuente"],
+    fuenteOficialUrl:"https://www.adidas.com/om/en/cross-it-team-2026-padel-racket/KL2624.html",
+    bullpadelEquivalente1:"Ionic Power 26",
+    bullpadelEquivalente2:"Vertex Advance",
+    bullpadelEquivalente3:"XPLO Comfort 26",
+    motivoEquivalencia:"Equivalencia sugerida por potencia con construcción más amable y uso frecuente. Ionic Power 26 es la alternativa NEXT; Vertex Advance cubre un perfil amateur con forma diamante; XPLO Comfort suma opción PROLINE de mayor prestación con enfoque más accesible.",
+    argumentoComercialNeutro:"Para una Cross It Team, la conversación comercial es potencia usable: Ionic Power o Vertex Advance como opciones accesibles y XPLO Comfort como alternativa premium.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de web oficial Adidas. Nivel exacto pendiente."
+  },
+  {
+    id:"babolat-technical-viper-30-2026", marca:"Babolat", modelo:"Technical Viper 3.0 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Viper / Technical",
+    forma:"Diamante", balance:"270 mm", balanceNota:null, peso:"370 g +/- 10 g",
+    nivel:null, estilo:"Ataque / potencia",
+    superficie:"3K Carbon", nucleo:"Hard EVA", tactoSensacion:"Firme / alta respuesta",
+    tecnologias:["Dynamic Stability System", "3K Carbon", "Hard EVA", "A COMPLETAR"],
+    perfilJugador:"Jugador técnico-ofensivo que busca potencia, respuesta firme y precisión en golpes de definición.",
+    fortalezas:["Potencia", "alta respuesta", "precisión", "estabilidad"],
+    fuenteOficialUrl:"https://www.babolat.com/us/technical-viper-3.0/150175.html",
+    bullpadelEquivalente1:"Hack 04 26",
+    bullpadelEquivalente2:"XPLO 26",
+    bullpadelEquivalente3:"Vertex 05 Geo",
+    motivoEquivalencia:"Equivalencia sugerida por pala técnica-ofensiva, formato diamante y respuesta firme. Hack 04 26 se acerca por potencia dinámica y exigencia; XPLO 26 por potencia máxima; Vertex 05 Geo por potencia con mayor zona de impacto.",
+    argumentoComercialNeutro:"Si el cliente mira Technical Viper, mostraría Hack 04 como comparación principal y luego XPLO/Vertex Geo si quiere más explosividad o más área útil de golpeo.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de ficha oficial Babolat. Balance indicado en mm por la marca."
+  },
+  {
+    id:"babolat-viper-30-2026", marca:"Babolat", modelo:"Viper 3.0 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Viper",
+    forma:"Diamante", balance:null, balanceNota:null, peso:"370 g",
+    nivel:null, estilo:"Ataque / potencia",
+    superficie:"3K Carbon + Added Carbon Power Layer", nucleo:"Hard EVA", tactoSensacion:"Firme / responsive",
+    tecnologias:["Added Carbon Power Layer", "3K Carbon", "A COMPLETAR"],
+    perfilJugador:"Jugador profesional/ofensivo que prioriza potencia máxima, estabilidad y respuesta sólida.",
+    fortalezas:["Potencia", "estabilidad", "precisión", "respuesta sólida"],
+    fuenteOficialUrl:"https://www.babolat.com/us/padel-technical-collection-2026.html",
+    bullpadelEquivalente1:"XPLO 26",
+    bullpadelEquivalente2:"Hack 04 26",
+    bullpadelEquivalente3:"Vertex 05 Geo",
+    motivoEquivalencia:"Equivalencia sugerida por perfil profesional/ofensivo de máxima potencia. XPLO 26 es la alternativa Bullpadel más directa por explosividad; Hack 04 26 por potencia dinámica; Vertex 05 Geo por potencia y geometría ofensiva.",
+    argumentoComercialNeutro:"Para una Viper orientada a potencia, la terna Bullpadel debe ser 100% PROLINE ofensiva: XPLO, Hack y Vertex Geo.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"La colección oficial 2026 aporta la descripción técnica general; completar si se consigue ficha individual."
+  },
+  {
+    id:"babolat-technical-viper-soft-30-2026", marca:"Babolat", modelo:"Technical Viper Soft 3.0 2026",
+    temporada:"2026", gama:"Alta / Pro", linea:"Viper / Technical",
+    forma:"Diamante", balance:null, balanceNota:null, peso:"365 g",
+    nivel:null, estilo:"Ataque / potencia con confort",
+    superficie:"3K Soft Carbon / Soft Carbon", nucleo:"Black EVA", tactoSensacion:"Más cómoda / reactiva",
+    tecnologias:["Dynamic Stability System", "3K Soft Carbon", "Comfort Power Layer", "A COMPLETAR"],
+    perfilJugador:"Jugador ofensivo que busca potencia y una sensación más cómoda que una pala de tacto duro.",
+    fortalezas:["Potencia", "confort", "respuesta", "control en ataque"],
+    fuenteOficialUrl:"https://www.babolat.com/us/technical-viper-soft-3.0/150179.html",
+    bullpadelEquivalente1:"XPLO Comfort 26",
+    bullpadelEquivalente2:"Hack 04 Comfort 26",
+    bullpadelEquivalente3:"Vertex 05 Comfort",
+    motivoEquivalencia:"Equivalencia sugerida por ataque premium con sensación menos exigente. XPLO Comfort y Hack Comfort mantienen perfil ofensivo con una respuesta más amable; Vertex 05 Comfort suma alternativa polivalente PROLINE con foco en confort/rendimiento.",
+    argumentoComercialNeutro:"Si el cliente quiere potencia pero pide una sensación más cómoda, las versiones Comfort permiten comparar rendimiento PROLINE sin llevarlo directo a la opción más exigente.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media-Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de fuentes oficiales Babolat. No usar claims médicos en el portal."
+  },
+  {
+    id:"babolat-veron-juan-lebrn-30-2026", marca:"Babolat", modelo:"Veron Juan Lebrón 3.0 2026",
+    temporada:"2026", gama:"Alta", linea:"Veron / Juan Lebrón",
+    forma:"Diamante", balance:null, balanceNota:null, peso:"360 g",
+    nivel:null, estilo:"Ataque / potencia",
+    superficie:"Carbon Flex", nucleo:"Black EVA", tactoSensacion:"Confort / jugabilidad",
+    tecnologias:["Carbon Flex", "A COMPLETAR"],
+    perfilJugador:"Jugador ofensivo que busca potencia, confort y efecto con construcción Carbon Flex.",
+    fortalezas:["Potencia", "confort", "efecto", "jugabilidad"],
+    fuenteOficialUrl:"https://www.babolat.com/us/padel/racquets.html",
+    bullpadelEquivalente1:"Hack 04 Comfort 26",
+    bullpadelEquivalente2:"XPLO Comfort 26",
+    bullpadelEquivalente3:"Vertex 05 Comfort",
+    motivoEquivalencia:"Equivalencia sugerida por pala ofensiva jugable con construcción Carbon Flex/Black EVA. Hack Comfort y XPLO Comfort cubren potencia con sensación más accesible; Vertex 05 Comfort suma equilibrio polivalente con foco en comodidad.",
+    argumentoComercialNeutro:"Para una Veron de Juan Lebrón, no iría a la opción más dura: mostraría Comforts de Bullpadel para hablar de potencia, jugabilidad y mayor prestación con sensación más amable.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de página oficial Babolat racquets. Completar ficha individual si se requiere más detalle."
+  },
+  {
+    id:"babolat-air-viper-26", marca:"Babolat", modelo:"Air Viper 2.6",
+    temporada:"2026", gama:"Alta / Pro", linea:"Viper / Air",
+    forma:"Lágrima / Teardrop", balance:"265 mm", balanceNota:null, peso:"355 g",
+    nivel:null, estilo:"Maniobrabilidad / ataque",
+    superficie:"16K Carbon", nucleo:"X-EVA", tactoSensacion:"Alta respuesta",
+    tecnologias:["16K Carbon", "X-EVA", "A COMPLETAR"],
+    perfilJugador:"Jugador rápido que busca maniobrabilidad, respuesta alta y capacidad de acelerar el juego.",
+    fortalezas:["Maniobrabilidad", "respuesta", "velocidad", "confort"],
+    fuenteOficialUrl:"https://www.babolat.com/us/air-viper-2.6/150176.html",
+    bullpadelEquivalente1:"Pearl 26",
+    bullpadelEquivalente2:"Vertex 05 W",
+    bullpadelEquivalente3:"Flow Legend",
+    motivoEquivalencia:"Equivalencia sugerida por maniobrabilidad, peso reducido y ataque rápido. Pearl 26 aporta potencia liviana; Vertex 05 W suma rendimiento PROLINE con peso optimizado; Flow Legend cubre potencia/ligereza en una pala ágil.",
+    argumentoComercialNeutro:"Si el cliente busca velocidad de mano y ataque rápido, Pearl, Vertex W y Flow Legend permiten mostrar Bullpadel desde la agilidad y no solo desde la potencia bruta.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de ficha oficial Babolat y página de racquets."
+  },
+  {
+    id:"babolat-air-veron-26", marca:"Babolat", modelo:"Air Veron 2.6",
+    temporada:"2026", gama:"Alta", linea:"Veron / Air",
+    forma:"Lágrima / Teardrop", balance:null, balanceNota:null, peso:"355 g",
+    nivel:null, estilo:"Maniobrabilidad / polivalente ofensiva",
+    superficie:"Carbon Flex", nucleo:"Black EVA", tactoSensacion:"Jugabilidad / confort",
+    tecnologias:["Carbon Flex", "A COMPLETAR"],
+    perfilJugador:"Jugador que busca maniobrabilidad, jugabilidad y sensación cómoda en una pala rápida.",
+    fortalezas:["Maniobrabilidad", "jugabilidad", "confort", "velocidad"],
+    fuenteOficialUrl:"https://www.babolat.com/us/padel/racquets.html",
+    bullpadelEquivalente1:"Wonder",
+    bullpadelEquivalente2:"Elite W",
+    bullpadelEquivalente3:"Ionic Light 26",
+    motivoEquivalencia:"Equivalencia sugerida por maniobrabilidad, jugabilidad y perfil polivalente. Wonder y Elite W cubren opciones PROLINE livianas y completas; Ionic Light 26 es alternativa NEXT versátil para jugador intermedio.",
+    argumentoComercialNeutro:"Para una Air Veron, la conversación puede enfocarse en facilidad para acelerar y manejar la pala: Wonder/Elite como opciones premium y Ionic Light como alternativa más accesible.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de página oficial Babolat racquets. Completar ficha individual si se requiere."
+  },
+  {
+    id:"babolat-counter-veron-26", marca:"Babolat", modelo:"Counter Veron 2.6",
+    temporada:"2026", gama:"Alta", linea:"Veron / Counter",
+    forma:"Redonda", balance:null, balanceNota:null, peso:"365 g",
+    nivel:null, estilo:"Control / precisión",
+    superficie:"Carbon Flex", nucleo:"Black EVA", tactoSensacion:"Jugabilidad / confort",
+    tecnologias:["Carbon Flex", "A COMPLETAR"],
+    perfilJugador:"Jugador que busca precisión, jugabilidad y confort en una pala de formato redondo.",
+    fortalezas:["Precisión", "control", "jugabilidad", "confort"],
+    fuenteOficialUrl:"https://www.babolat.com/us/padel/racquets.html",
+    bullpadelEquivalente1:"Neuron 02 Cloud",
+    bullpadelEquivalente2:"Vertex 05 Hybrid",
+    bullpadelEquivalente3:"Ionic Control 26",
+    motivoEquivalencia:"Equivalencia sugerida por control, precisión y sensación confortable. Neuron 02 Cloud representa control PROLINE con sensación más blanda; Vertex 05 Hybrid suma manejo y control de alta prestación; Ionic Control 26 es alternativa NEXT de control.",
+    argumentoComercialNeutro:"Para un cliente que quiere control y jugabilidad, mostraría Neuron Cloud como opción premium, Vertex Hybrid como opción PROLINE más técnica y Ionic Control como alternativa más simple.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de página oficial Babolat racquets. Completar ficha individual si se requiere."
+  },
+  {
+    id:"babolat-air-vertuo-26", marca:"Babolat", modelo:"Air Vertuo 2.6",
+    temporada:"2026", gama:"Media", linea:"Vertuo / Air",
+    forma:"Lágrima / Teardrop", balance:null, balanceNota:null, peso:"345 g",
+    nivel:null, estilo:"Maniobrabilidad / confort",
+    superficie:"Fiberglass", nucleo:"Black EVA", tactoSensacion:"Confort / salida de bola",
+    tecnologias:[],
+    perfilJugador:"Jugador que busca una pala liviana, manejable, cómoda y con buena salida de bola.",
+    fortalezas:["Maniobrabilidad", "confort", "facilidad de uso", "salida de bola"],
+    fuenteOficialUrl:"https://www.babolat.com/us/padel/racquets.html",
+    bullpadelEquivalente1:"Ionic Light 26",
+    bullpadelEquivalente2:"Indiga W 26",
+    bullpadelEquivalente3:"Indiga CTR 26",
+    motivoEquivalencia:"Equivalencia sugerida por facilidad de uso, peso bajo, manejabilidad y salida de bola. Ionic Light 26 cubre una opción NEXT versátil; Indiga W 26 e Indiga CTR 26 cubren alternativas TOUR de iniciación/control.",
+    argumentoComercialNeutro:"Para una Air Vertuo, conviene mantener la comparación en facilidad: Ionic Light si quiere subir de gama, Indiga W o CTR si prioriza comodidad, control y manejo simple.",
+    estadoEquivalenciaBullpadel:"Sugerida - pendiente validación comercial",
+    confianzaSugerida:"Media-Alta",
+    validadoPor:null,
+    fechaValidacion:"2026-06-18",
+    notasInternas:"Datos tomados de página oficial Babolat racquets. Completar tecnologías específicas."
+  },
+];
 </script>
 
 <!-- Lightbox de imágenes -->
