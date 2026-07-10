@@ -131,6 +131,7 @@ function mountPortal() {
   renderAdmin();
   // Render home stats
   renderHomeStats();
+  renderHomeQuickAccess();
   // Mount catalogo and guia tabs into subviews (synchronous — runs once)
   _mountCatalogoTab('palas');
   _mountCatalogoTab('tabla');

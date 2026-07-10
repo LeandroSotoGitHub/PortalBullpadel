@@ -92,11 +92,21 @@ function renderPalas(){
         </div>
         ${p.tecnologias&&p.tecnologias.length?`<div class="techs-row">${p.tecnologias.map(t=>`<span class="tech-chip">${t}</span>`).join('')}</div>`:''}
         ${p.nota?`<span class="nota-tag">⚠ ${p.nota}</span>`:''}
+        <button class="pala-card-btn" onclick="event.stopPropagation();openPalaModal('${p.id}')">Ver ficha completa</button>
       </div>
     </article>
   `).join('');
 }
 
+
+function toggleCatalogoFiltros() {
+  const row = document.getElementById('filters-row');
+  const btn = document.getElementById('btn-toggle-filtros');
+  if (!row || !btn) return;
+  const open = row.style.display !== 'none';
+  row.style.display = open ? 'none' : 'flex';
+  btn.classList.toggle('open', !open);
+}
 
 function clearFilters() {
   document.getElementById('search-palas').value = '';
@@ -126,8 +136,8 @@ function renderItems(){
         <div class="item-card" onclick="openDetailModal('${i.cod}')" title="Ver detalle de ${i.nom}">
           <div class="item-hero">
             <div class="item-hero-left">
-              <div class="item-icon-sym" style="color:${i.tc||'#C8102E'}">${i.cod}</div>
-              <div class="item-icon-label" style="color:${i.tc||'#C8102E'}">${i.nom.split(' ')[0].toUpperCase()}</div>
+              <div class="item-icon-sym" style="color:${i.tc||'var(--rojo)'}">${i.cod}</div>
+              <div class="item-icon-label" style="color:${i.tc||'var(--rojo)'}">${i.nom.split(' ')[0].toUpperCase()}</div>
               <div class="item-redbar"></div>
               <div class="item-fullname">${i.nom}</div>
               <span class="item-tipo-badge ${i.tipo==='mat'?'badge-mat':'badge-tech'}">${i.tipo==='mat'?'Material':'Tecnología'}</span>

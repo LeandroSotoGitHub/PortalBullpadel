@@ -1364,9 +1364,9 @@ const GUIA_STEPS = [
         <div class="cross-cat">
           <div class="cross-cat-title">Performance</div>
           <div class="cross-tags">
-            <span class="cross-tag" style="background:#FDE8EA;color:#A32D2D">Hesacore</span>
-            <span class="cross-tag" style="background:#FDE8EA;color:#A32D2D">Ease Vibes</span>
-            <span class="cross-tag" style="background:#FDE8EA;color:#A32D2D">Custom Weight</span>
+            <span class="cross-tag" style="background:var(--rojo-soft);color:#A32D2D">Hesacore</span>
+            <span class="cross-tag" style="background:var(--rojo-soft);color:#A32D2D">Ease Vibes</span>
+            <span class="cross-tag" style="background:var(--rojo-soft);color:#A32D2D">Custom Weight</span>
           </div>
         </div>
       </div>

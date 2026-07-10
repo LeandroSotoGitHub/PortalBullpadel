@@ -4,8 +4,14 @@
     {
       "name": "static-server",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8531"],
-      "port": 8531
+      "runtimeArgs": ["scripts/nocache-server.py", "8537"],
+      "port": 8537
+    },
+    {
+      "name": "design-prototype-server",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8532", "--directory", "C:\\Users\\lsoto\\Downloads"],
+      "port": 8532
     }
   ]
 }

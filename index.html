@@ -15,6 +15,9 @@
      - Credenciales asignadas manualmente por Bullpadel
      ═══════════════════════════════════════════════════ -->
 <div id="login-screen">
+  <div class="login-dot login-dot-1"></div>
+  <div class="login-dot login-dot-2"></div>
+  <div class="login-dot login-dot-3"></div>
   <div class="login-box">
     <div class="login-logo">
       <div class="login-logo-mark">
@@ -42,8 +45,11 @@
       <button class="login-btn" type="submit">Ingresar</button>
     </form>
     <div class="login-note">
-      El acceso es por invitación.<br>
-      Si no tenés credenciales, contactá al equipo Bullpadel.
+      <div class="login-note-title">¿Problemas para ingresar?</div>
+      <div class="login-note-body">
+        El acceso es por invitación.<br>
+        Si no tenés credenciales, contactá al equipo Bullpadel.
+      </div>
     </div>
   </div>
 </div>
@@ -109,76 +115,32 @@
 
     <!-- Hero -->
     <div class="home-hero">
-      <div>
-        <div class="home-hero-eyebrow">Portal técnico · Distribuidores</div>
-        <div class="home-hero-title">Portal Bullpadel 2026</div>
-        <div class="home-hero-sub">Herramienta de consulta, capacitación y recomendación para vendedores y distribuidores. Accedé al catálogo técnico, compará palas, capacitáte y encontrá la recomendación adecuada según el perfil de cada jugador.</div>
-        <div class="home-hero-actions">
-          <button class="home-hero-btn primary" onclick="showSection('recomendador', this)">Ir al recomendador</button>
-          <button class="home-hero-btn ghost" onclick="showSection('catalogo', this)">Ver catálogo</button>
-          <button class="home-hero-btn ghost" onclick="showSection('capacitaciones', this)">Capacitaciones</button>
+      <div class="home-hero-dot home-hero-dot-1"></div>
+      <div class="home-hero-dot home-hero-dot-2"></div>
+      <div class="home-hero-grid">
+        <div>
+          <div class="home-hero-eyebrow">Portal técnico · Distribuidores</div>
+          <div class="home-hero-title">Portal Bullpadel 2026</div>
+          <div class="home-hero-sub">Herramienta de consulta, capacitación y recomendación para vendedores y distribuidores. Accedé al catálogo técnico, compará palas, capacitáte y encontrá la recomendación adecuada según el perfil de cada jugador.</div>
+          <div class="home-hero-actions">
+            <button class="home-hero-btn primary" onclick="showSection('recomendador', this)">Ir al recomendador</button>
+            <button class="home-hero-btn ghost" onclick="showSection('catalogo', this)">Ver catálogo</button>
+          </div>
+        </div>
+        <div class="home-hero-card">
+          <div class="home-hero-card-label">Resumen del catálogo</div>
+          <div class="home-stats" id="home-stats"></div>
         </div>
       </div>
-      <div class="home-hero-badge">Temporada 2026</div>
     </div>
-
-    <!-- Stats -->
-    <div class="home-stats" id="home-stats"></div>
 
     <!-- Accesos rápidos -->
-    <div class="home-section-label">Accesos rápidos</div>
-    <div class="home-cards">
-
-      <div class="home-card" onclick="showSection('recomendador',null)">
-        <div class="home-card-icon">REC</div>
-        <div class="home-card-name">Recomendador Bullpadel</div>
-        <div class="home-card-desc">Respondé algunas preguntas y encontrá las palas más adecuadas según nivel, estilo y necesidad del jugador.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSection('recomendador',null)">Usar recomendador</button>
-      </div>
-
-      <div class="home-card" onclick="showSection('palas',null)">
-        <div class="home-card-icon">CAT</div>
-        <div class="home-card-name">Catálogo de palas</div>
-        <div class="home-card-desc">Consultá fichas técnicas, materiales, tecnologías, sensación de juego y perfil recomendado.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSection('palas',null)">Ver catálogo</button>
-      </div>
-
-      <div class="home-card" onclick="showSection('comparador',null)">
-        <div class="home-card-icon">VS</div>
-        <div class="home-card-name">Comparador</div>
-        <div class="home-card-desc">Compará hasta 3 palas lado a lado para entender diferencias clave entre modelos.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSection('comparador',null)">Ir al comparador</button>
-      </div>
-
-      <div class="home-card" onclick="showSection('capacitaciones',null)">
-        <div class="home-card-icon">CAP</div>
-        <div class="home-card-name">Capacitaciones</div>
-        <div class="home-card-desc">Formación comercial con videos, infografías, checklist, progreso y quiz por módulo.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSection('capacitaciones',null)">Ver capacitaciones</button>
-      </div>
-
-      <div class="home-card" onclick="showSectionTab('catalogo','glosario')">
-        <div class="home-card-icon">MAT</div>
-        <div class="home-card-name">Materiales y tecnologías</div>
-        <div class="home-card-desc">Entendé cada material y tecnología en lenguaje simple para explicarlo mejor en el mostrador.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSectionTab('catalogo','glosario')">Explorar materiales</button>
-      </div>
-
-      <div class="home-card" onclick="showSectionTab('capacitaciones','guia')">
-        <div class="home-card-icon">GVT</div>
-        <div class="home-card-name">Guía de venta</div>
-        <div class="home-card-desc">Recorré una metodología simple para asesorar mejor al cliente desde el primer contacto.</div>
-        <button class="home-card-btn" onclick="event.stopPropagation();showSectionTab('capacitaciones','guia')">Ver guía</button>
-      </div>
-
-    </div>
+    <div class="home-section-label">Accesos para vos</div>
+    <div class="home-cards" id="home-cards"></div>
 
     <!-- Ruta sugerida -->
-    <div class="home-section-label">Para vendedores y distribuidores</div>
     <div class="home-ruta">
-      <div class="home-ruta-head">
-        <div class="home-ruta-title">Ruta sugerida para vendedores</div>
-      </div>
+      <div class="home-ruta-title">Ruta sugerida</div>
       <div class="home-ruta-steps">
         <div class="home-ruta-step"><div class="home-ruta-num">1</div><div class="home-ruta-text">Capacitáte con los módulos principales del portal.</div></div>
         <div class="home-ruta-step"><div class="home-ruta-num">2</div><div class="home-ruta-text">Usá el recomendador según el perfil del jugador.</div></div>
@@ -203,14 +165,18 @@
       <h1>Catálogo Bullpadel 2026</h1>
       <p>Consultá palas, vista gama completa, materiales y tecnologías.</p>
     </div>
-    <div class="subnav" id="subnav-catalogo">
-      <button class="subnav-btn active" onclick="showCatalogoTab('palas',this)">Palas</button>
-      <button class="subnav-btn" onclick="showCatalogoTab('tabla',this)">Vista gama completa</button>
-      <button class="subnav-btn" onclick="showCatalogoTab('glosario',this)">Materiales y tecnologías</button>
+    <div class="tab-card">
+      <div class="subnav" id="subnav-catalogo">
+        <button class="subnav-btn active" onclick="showCatalogoTab('palas',this)">Palas</button>
+        <button class="subnav-btn" onclick="showCatalogoTab('tabla',this)">Vista gama completa</button>
+        <button class="subnav-btn" onclick="showCatalogoTab('glosario',this)">Materiales y tecnologías</button>
+      </div>
+      <div class="tab-card-body">
+        <div class="subview active" id="catalogo-tab-palas"></div>
+        <div class="subview" id="catalogo-tab-tabla"></div>
+        <div class="subview" id="catalogo-tab-glosario"></div>
+      </div>
     </div>
-    <div class="subview active" id="catalogo-tab-palas"></div>
-    <div class="subview" id="catalogo-tab-tabla"></div>
-    <div class="subview" id="catalogo-tab-glosario"></div>
   </section>
 
   <!-- 4.1 Catálogo de palas -->
@@ -221,14 +187,19 @@
     </div>
     <!-- Filtros Run 8 -->
     <div class="filters-wrap">
-      <!-- Fila 1: búsqueda + línea + nivel + estilo -->
-      <div class="search-bar" style="margin-bottom:8px">
-        <input type="text" id="search-palas"
-               placeholder="Buscar por nombre, tecnología, material, sensación…"
-               oninput="renderPalas()">
-        <span class="search-icon">&#9906;</span>
+      <!-- Fila 1: búsqueda + botón Filtros -->
+      <div class="search-filters-row">
+        <div class="search-bar">
+          <input type="text" id="search-palas"
+                 placeholder="Buscar por nombre, tecnología, material, sensación…"
+                 oninput="renderPalas()">
+          <span class="search-icon">&#9906;</span>
+        </div>
+        <button class="btn-toggle-filtros" id="btn-toggle-filtros" onclick="toggleCatalogoFiltros()">
+          <span class="filtros-hamb">☰</span> Filtros <span class="filtros-caret">▾</span>
+        </button>
       </div>
-      <div class="filters-row">
+      <div class="filters-row" id="filters-row" style="display:none">
         <select id="f-linea" onchange="renderPalas()">
           <option value="">Todas las líneas</option>
           <option>PROLINE</option><option>NEXT</option><option>ADVANCE</option>
@@ -257,7 +228,8 @@
     </div>
     <!-- Contador + tags de filtros activos -->
     <div class="filter-count-bar">
-      <div>
+      <div class="filter-count-dot-row">
+        <span class="filter-count-dot"></span>
         <span class="filter-count-main" id="count-main"></span>
         <span class="filter-count-sub" id="count-sub"></span>
       </div>
@@ -285,44 +257,47 @@
       <h1>Comparador Bullpadel</h1>
       <p>Analizá diferencias técnicas y comerciales entre las palas seleccionadas.</p>
     </div>
-    <div class="subnav" id="subnav-comparador" style="margin-bottom:20px">
-      <button class="subnav-btn active" onclick="showComparadorTab('bullpadel',this)">Comparador Bullpadel</button>
-      <button class="subnav-btn" onclick="showComparadorTab('mapa',this)">Mapa competitivo</button>
-    </div>
+    <div class="tab-card">
+      <div class="subnav" id="subnav-comparador">
+        <button class="subnav-btn active" onclick="showComparadorTab('bullpadel',this)">Comparador Bullpadel</button>
+        <button class="subnav-btn" onclick="showComparadorTab('mapa',this)">Mapa competitivo</button>
+      </div>
+      <div class="tab-card-body">
+        <!-- Tab: Comparador Bullpadel -->
+        <div class="subview active" id="comparador-tab-bullpadel">
+          <div class="comp-selects">
+            <div class="comp-select-group">
+              <label>Pala 1</label>
+              <select id="c1" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+            </div>
+            <div class="comp-select-group">
+              <label>Pala 2</label>
+              <select id="c2" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+            </div>
+            <div class="comp-select-group">
+              <label>Pala 3 (opcional)</label>
+              <select id="c3" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+            </div>
+          </div>
+          <div id="comp-result"></div>
+        </div>
 
-    <!-- Tab: Comparador Bullpadel -->
-    <div class="subview active" id="comparador-tab-bullpadel">
-      <div class="comp-selects">
-        <div class="comp-select-group">
-          <label>Pala 1</label>
-          <select id="c1" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
-        </div>
-        <div class="comp-select-group">
-          <label>Pala 2</label>
-          <select id="c2" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
-        </div>
-        <div class="comp-select-group">
-          <label>Pala 3 (opcional)</label>
-          <select id="c3" onchange="onCompSelectChange()"><option value="">— elegir pala —</option></select>
+        <!-- Tab: Mapa competitivo -->
+        <div class="subview" id="comparador-tab-mapa">
+          <div class="mapa-selectors">
+            <select id="mapa-marca" onchange="onMapaMarcaChange()">
+              <option value="">Filtrar por marca</option>
+              <option value="NOX">NOX</option>
+              <option value="Adidas">Adidas</option>
+              <option value="Babolat">Babolat</option>
+            </select>
+            <select id="mapa-modelo" onchange="onMapaModeloChange()">
+              <option value="">— elegir modelo —</option>
+            </select>
+          </div>
+          <div id="mapa-result"></div>
         </div>
       </div>
-      <div id="comp-result"></div>
-    </div>
-
-    <!-- Tab: Mapa competitivo -->
-    <div class="subview" id="comparador-tab-mapa">
-      <div class="mapa-selectors">
-        <select id="mapa-marca" onchange="onMapaMarcaChange()">
-          <option value="">Filtrar por marca</option>
-          <option value="NOX">NOX</option>
-          <option value="Adidas">Adidas</option>
-          <option value="Babolat">Babolat</option>
-        </select>
-        <select id="mapa-modelo" onchange="onMapaModeloChange()">
-          <option value="">— elegir modelo —</option>
-        </select>
-      </div>
-      <div id="mapa-result"></div>
     </div>
 
   </section>
@@ -410,7 +385,7 @@
       <p>Gestión de usuarios del portal Bullpadel</p>
     </div>
     <div id="admin-restricted" class="admin-restricted" style="display:none">
-      <div class="admin-restricted-icon" style="font-size:32px;font-weight:900;color:var(--rojo)">✕</div>
+      <div class="admin-restricted-icon" style="font-size:20px;font-weight:700;color:var(--rojo)">✕</div>
       <h2>Acceso restringido</h2>
       <p>No tenés permisos para acceder a esta sección.</p>
     </div>
