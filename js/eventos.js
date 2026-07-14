@@ -113,6 +113,9 @@ function showSection(id,btn){
   document.getElementById('sec-'+id).classList.add('visible');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
+
+  // Tip contextual por módulo (capa independiente del modal de onboarding) — noop si el módulo no tiene tip
+  if (typeof maybeShowModuleTip === 'function') maybeShowModuleTip(id);
 }
 
 function openLightbox(src, alt) {

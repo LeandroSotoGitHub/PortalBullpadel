@@ -8,6 +8,13 @@
       "port": 8537
     },
     {
+      "name": "static-server-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["scripts/nocache-server.py"],
+      "port": 8538,
+      "autoPort": true
+    },
+    {
       "name": "design-prototype-server",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8532", "--directory", "C:\\Users\\lsoto\\Downloads"],

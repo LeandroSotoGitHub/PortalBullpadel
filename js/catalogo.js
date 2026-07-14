@@ -74,25 +74,26 @@ function renderPalas(){
       <div class="pala-body">
         <span class="linea-tag tag-${p.linea}">${p.linea}</span>
         <div class="pala-name">${p.nombre}</div>
-        
-        ${p.descTecnica?`<div class="pala-desc">${p.descTecnica}</div>`:''}
-        ${p.sensacionJuego?`<details class="pala-sensacion-wrap"><summary>Descripción para el jugador</summary><div class="pala-sensacion">${p.sensacionJuego}</div></details>`:''}
         <div class="estilo-row">
           <span class="estilo-pill ${estiloClass(p.estilo)}">${p.estilo}</span>
           <span class="jugador-badge ${nivelClass(p.nivel)}">${p.nivel}</span>
         </div>
-        <div class="specs-grid">
-          <div class="spec-item"><div class="label">Peso</div><div class="val">${p.peso}</div></div>
-          <div class="spec-item"><div class="label">Perfil</div><div class="val">${p.perfil}</div></div>
-          <div class="spec-item"><div class="label">Forma</div><div class="val">${p.forma}</div></div>
-          <div class="spec-item"><div class="label">Balance</div><div class="val">${p.balance}</div></div>
-          <div class="spec-item"><div class="label">Comp. exterior</div><div class="val">${p.exterior}</div></div>
-          <div class="spec-item"><div class="label">Núcleo</div><div class="val">${p.interior}</div></div>
-          ${p.jugador?`<div class="spec-item" style="grid-column:span 2"><div class="label">Jugador</div><div class="val">${p.jugador}</div></div>`:''}
+        <div class="pala-card-extra">
+          ${p.descTecnica?`<div class="pala-desc">${p.descTecnica}</div>`:''}
+          ${p.sensacionJuego?`<details class="pala-sensacion-wrap"><summary>Descripción para el jugador</summary><div class="pala-sensacion">${p.sensacionJuego}</div></details>`:''}
+          <div class="specs-grid">
+            <div class="spec-item"><div class="label">Peso</div><div class="val">${p.peso}</div></div>
+            <div class="spec-item"><div class="label">Perfil</div><div class="val">${p.perfil}</div></div>
+            <div class="spec-item"><div class="label">Forma</div><div class="val">${p.forma}</div></div>
+            <div class="spec-item"><div class="label">Balance</div><div class="val">${p.balance}</div></div>
+            <div class="spec-item"><div class="label">Comp. exterior</div><div class="val">${p.exterior}</div></div>
+            <div class="spec-item"><div class="label">Núcleo</div><div class="val">${p.interior}</div></div>
+            ${p.jugador?`<div class="spec-item" style="grid-column:span 2"><div class="label">Jugador</div><div class="val">${p.jugador}</div></div>`:''}
+          </div>
+          ${p.tecnologias&&p.tecnologias.length?`<div class="techs-row">${p.tecnologias.map(t=>`<span class="tech-chip">${t}</span>`).join('')}</div>`:''}
+          ${p.nota?`<span class="nota-tag">⚠ ${p.nota}</span>`:''}
+          <button class="pala-card-btn" onclick="event.stopPropagation();openPalaModal('${p.id}')">Ver ficha completa</button>
         </div>
-        ${p.tecnologias&&p.tecnologias.length?`<div class="techs-row">${p.tecnologias.map(t=>`<span class="tech-chip">${t}</span>`).join('')}</div>`:''}
-        ${p.nota?`<span class="nota-tag">⚠ ${p.nota}</span>`:''}
-        <button class="pala-card-btn" onclick="event.stopPropagation();openPalaModal('${p.id}')">Ver ficha completa</button>
       </div>
     </article>
   `).join('');

@@ -4,27 +4,72 @@ const OB_STEPS = [
   {
     icon: 'BP',
     title: 'Bienvenido al Portal Bullpadel 2026',
-    text: 'Esta es tu herramienta de consulta, capacitaci\u00f3n y recomendaci\u00f3n para vender mejor la gama Bullpadel.'
+    text: 'Esta es tu herramienta de consulta, capacitación y recomendación para vender mejor la gama Bullpadel.',
+    illustration:
+      '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
+        '<ellipse cx="32" cy="25" rx="18" ry="19" fill="#fff" stroke="var(--rojo)" stroke-width="3"/>' +
+        '<circle cx="24" cy="18" r="1.6" fill="var(--rojo)"/><circle cx="32" cy="15" r="1.6" fill="var(--rojo)"/><circle cx="40" cy="18" r="1.6" fill="var(--rojo)"/>' +
+        '<circle cx="19" cy="25" r="1.6" fill="var(--rojo)"/><circle cx="32" cy="25" r="1.6" fill="var(--rojo)"/><circle cx="45" cy="25" r="1.6" fill="var(--rojo)"/>' +
+        '<circle cx="24" cy="32" r="1.6" fill="var(--rojo)"/><circle cx="32" cy="35" r="1.6" fill="var(--rojo)"/><circle cx="40" cy="32" r="1.6" fill="var(--rojo)"/>' +
+        '<rect x="29" y="41" width="6" height="17" rx="3" fill="var(--negro)"/>' +
+      '</svg>'
   },
   {
     icon: 'RUTA',
     title: 'Un flujo pensado para vender mejor',
-    text: 'Capacit\u00e1te, consult\u00e1 el cat\u00e1logo, us\u00e1 el recomendador, compar\u00e1 opciones y abr\u00ed la ficha t\u00e9cnica para cerrar con un argumento claro.'
+    text: 'Capacitáte, consultá el catálogo, usá el recomendador, compará opciones y abrí la ficha técnica para cerrar con un argumento claro.',
+    illustration:
+      '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
+        '<line x1="10" y1="32" x2="54" y2="32" stroke="var(--gris-borde)" stroke-width="3"/>' +
+        '<circle cx="13" cy="32" r="6" fill="var(--negro)"/>' +
+        '<circle cx="32" cy="32" r="6" fill="var(--rojo)"/>' +
+        '<circle cx="51" cy="32" r="6" fill="var(--negro)"/>' +
+        '<path d="M54 26 L61 32 L54 38" stroke="var(--rojo)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>'
   },
   {
     icon: 'CAT',
-    title: 'Conoc\u00e9 el producto con criterio',
-    text: 'En el Cat\u00e1logo pod\u00e9s consultar fichas t\u00e9cnicas, l\u00edneas, formas, balances y perfiles de jugador. En Materiales y tecnolog\u00edas encontr\u00e1s explicaciones simples para traducir cada dato t\u00e9cnico en un beneficio de venta.'
+    title: 'Conocé el producto con criterio',
+    text: 'En el Catálogo podés consultar fichas técnicas, líneas, formas, balances y perfiles de jugador. En Materiales y tecnologías encontrás explicaciones simples para traducir cada dato técnico en un beneficio de venta.',
+    illustration:
+      '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
+        '<rect x="9" y="7" width="46" height="50" rx="6" fill="#fff" stroke="var(--gris-borde)" stroke-width="2"/>' +
+        '<rect x="15" y="14" width="17" height="17" rx="3" fill="var(--rojo-soft)"/>' +
+        '<rect x="36" y="16" width="13" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="36" y="23" width="13" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="15" y="37" width="34" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="15" y="44" width="34" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="15" y="51" width="20" height="3" rx="1.5" fill="var(--rojo)"/>' +
+      '</svg>'
   },
   {
     icon: 'REC',
-    title: 'Recomend\u00e1 con m\u00e1s criterio',
-    text: 'Cuando un cliente no sabe qu\u00e9 pala elegir, us\u00e1 el Recomendador. Respond\u00e9s 5 preguntas, el sistema rankea las palas y despu\u00e9s pod\u00e9s comparar las 3 recomendaciones.'
+    title: 'Recomendá con más criterio',
+    text: 'Cuando un cliente no sabe qué pala elegir, usá el Recomendador. Respondés 6 preguntas, el sistema rankea las palas y después podés comparar las 3 recomendaciones.',
+    illustration:
+      '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
+        '<rect x="9" y="9" width="46" height="46" rx="8" fill="#fff" stroke="var(--gris-borde)" stroke-width="2"/>' +
+        '<rect x="33" y="14" width="17" height="9" rx="4.5" fill="var(--rojo)"/>' +
+        '<rect x="15" y="29" width="34" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="15" y="36" width="24" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="15" y="45" width="34" height="10" rx="5" fill="var(--negro)"/>' +
+      '</svg>'
   },
   {
     icon: 'CAP',
-    title: 'Formaci\u00f3n comercial',
-    text: 'En Capacitaciones encontr\u00e1s videos, infograf\u00edas, checklist y quiz. Tu progreso queda guardado autom\u00e1ticamente. Pod\u00e9s volver a ver esta bienvenida desde Inicio cuando quieras.'
+    title: 'Formación comercial',
+    text: 'En Capacitaciones encontrás videos, infografías, checklist y quiz. Tu progreso queda guardado automáticamente. Podés volver a ver esta bienvenida desde Inicio cuando quieras.',
+    illustration:
+      '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' +
+        '<rect x="9" y="11" width="11" height="11" rx="3" fill="var(--rojo)"/>' +
+        '<path d="M12 16.5l2.2 2.2 3.8-4.4" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<rect x="27" y="14.5" width="28" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="9" y="27" width="11" height="11" rx="3" fill="var(--rojo)"/>' +
+        '<path d="M12 32.5l2.2 2.2 3.8-4.4" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<rect x="27" y="30.5" width="28" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+        '<rect x="9" y="43" width="11" height="11" rx="3" fill="none" stroke="var(--gris-borde)" stroke-width="2"/>' +
+        '<rect x="27" y="46.5" width="20" height="3" rx="1.5" fill="var(--gris-borde)"/>' +
+      '</svg>'
   }
 ];
 
@@ -51,10 +96,20 @@ function openOnboarding() {
   document.body.style.overflow = 'hidden';
 }
 
-function closeOnboarding(saveSeen) {
+// navigateByRole: solo el botón final del paso 5 lo pasa en true (Omitir/Escape/click afuera cierran sin redirigir)
+function closeOnboarding(saveSeen, navigateByRole) {
   if (saveSeen !== false) markOnboardingSeen();
   document.getElementById('ob-bg').classList.remove('open');
   document.body.style.overflow = '';
+  if (navigateByRole) navigateOnboardingClose();
+}
+
+// Cierre del modal dirigido por rol — usuario->Recomendador, vendedor->Comparador, owner->sin redirección forzada
+function navigateOnboardingClose() {
+  if (!currentUser) return;
+  const destByRole = { usuario: 'recomendador', vendedor: 'comparador' };
+  const dest = destByRole[currentUser.rol];
+  if (dest) showSection(dest, null);
 }
 
 function nextOnboardingStep() {
@@ -62,7 +117,7 @@ function nextOnboardingStep() {
     _obStep++;
     renderOnboardingStep();
   } else {
-    closeOnboarding(true);
+    closeOnboarding(true, true);
   }
 }
 
@@ -82,7 +137,7 @@ function renderOnboardingStep() {
   document.getElementById('ob-step-label').textContent =
     'Paso ' + (_obStep + 1) + ' de ' + total;
   document.getElementById('ob-title').textContent = step.title;
-  document.getElementById('ob-icon').textContent  = step.icon;
+  document.getElementById('ob-icon').innerHTML = step.illustration || '';
   document.getElementById('ob-text').textContent  = step.text;
 
   // Dots
@@ -104,3 +159,51 @@ document.addEventListener('keydown', function(e) {
     if (bg && bg.classList.contains('open')) closeOnboarding(true);
   }
 });
+
+// -- TIPS CONTEXTUALES POR MÓDULO — capa independiente del modal de 5 pasos --
+// Se disparan la primera vez que el usuario entra a cada módulo (hook llamado desde showSection en eventos.js).
+// Media Center y Administración quedan afuera a propósito (no están en este mapa).
+const MODULE_TIPS = {
+  catalogo: 'Buscá una pala por nombre, línea o nivel, o mirá Materiales y tecnologías para explicar cada dato técnico en criollo.',
+  recomendador: 'Elegí las 6 preguntas y te mostramos las 3 palas más indicadas para tu cliente.',
+  comparador: 'Elegí hasta 3 palas y compará diferencias clave, resumen ejecutivo y cómo explicar cada opción.',
+  capacitaciones: 'Mirá los videos, completá el checklist y el quiz de cada módulo — tu progreso se guarda solo.'
+};
+
+function getModuleTipKey(moduleId) {
+  if (!currentUser) return null;
+  return 'bp2026_onboarding_tip_' + moduleId + '_' + (currentUser.id || currentUser.email);
+}
+
+function maybeShowModuleTip(moduleId) {
+  const text = MODULE_TIPS[moduleId];
+  if (!text || !currentUser) return;
+  const key = getModuleTipKey(moduleId);
+  if (!key || localStorage.getItem(key) === 'seen') return;
+  renderModuleTip(moduleId, text);
+}
+
+function renderModuleTip(moduleId, text) {
+  const host = document.getElementById('sec-' + moduleId);
+  if (!host || host.querySelector('.module-tip')) return;
+
+  const tip = document.createElement('div');
+  tip.className = 'module-tip';
+  tip.innerHTML =
+    '<span class="module-tip-text"></span>' +
+    '<button class="module-tip-close" type="button" aria-label="Cerrar aviso">✕</button>';
+  tip.querySelector('.module-tip-text').textContent = text;
+  tip.querySelector('.module-tip-close').addEventListener('click', function() {
+    dismissModuleTip(moduleId, tip);
+  });
+
+  const head = host.querySelector('.sec-head');
+  if (head) head.insertAdjacentElement('afterend', tip);
+  else host.insertBefore(tip, host.firstChild);
+}
+
+function dismissModuleTip(moduleId, tipEl) {
+  const key = getModuleTipKey(moduleId);
+  if (key) localStorage.setItem(key, 'seen');
+  if (tipEl && tipEl.parentNode) tipEl.parentNode.removeChild(tipEl);
+}
