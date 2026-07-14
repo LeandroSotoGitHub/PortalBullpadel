@@ -882,6 +882,7 @@ const ROLES = {
       verRecomendador:      true,
       verAdminPanel:        true,
       verRecomendador:      true,
+      verMediaCenter:       true,   // Media Center: visible para los 3 roles, sin restricción
 
       // Usuarios
       gestionarUsuarios:    true,   // ver listado de usuarios
@@ -920,6 +921,7 @@ const ROLES = {
       verRecomendador:      true,
       verAdminPanel:        true,   // panel admin limitado (solo sus usuarios)
       verRecomendador:      true,
+      verMediaCenter:       true,   // Media Center: visible para los 3 roles, sin restricción
 
       // Usuarios — solo puede gestionar usuarios creados por él
       gestionarUsuarios:    true,   // ver sus propios usuarios creados
@@ -960,6 +962,7 @@ const ROLES = {
       verRecomendador:      true,
       verAdminPanel:        false,
       verRecomendador:      true,
+      verMediaCenter:       true,   // Media Center: visible para los 3 roles, sin restricción
 
       // Descargas
       descargarArchivos:    true,   // puede descargar archivos permitidos por CONFIG
@@ -2231,3 +2234,58 @@ const PALAS_COMPETENCIA = [
     notasInternas:"Datos tomados de página oficial Babolat racquets. Completar tecnologías específicas."
   },
 ];
+
+
+/* ── 9. MEDIA CENTER ───────────────────────────────────────────────────── */
+// Índice de acceso a material de marketing y producto alojado en Google Drive.
+// El portal no aloja estos archivos: cada card es un link externo que abre
+// la carpeta de Drive correspondiente en una pestaña nueva.
+// Datos generados a partir de media_links.json — no inventar categorías,
+// subcarpetas ni URLs que no estén en esa fuente.
+
+const MEDIA_CENTER = {
+  "01 Imagenes de Marketing": {
+    url: "https://drive.google.com/drive/folders/1PQfgUf897AL0dhLLeziTHAKNhLDpbI2N",
+    subcarpetas: [
+      { nombre: "01 Videos 26",             url: "https://drive.google.com/drive/folders/1MlPrE8KK49NSwLDwlMYsD3-FkAGNALK8" },
+      { nombre: "02 Banners Web 26",         url: "https://drive.google.com/drive/folders/1hlfqR9pjeCFXzDLkGaQEhDvM0P4Dm3w3" },
+      { nombre: "03 Alta resolución 26",     url: "https://drive.google.com/drive/folders/1bgGoYbKl4WJemYiq_7V3RLJIdaKSExCZ" },
+      { nombre: "04 Jugadores 26",           url: "https://drive.google.com/drive/folders/1lwOlFZwABGdynm6YNVIzm6WwzKl1wxaz" },
+      { nombre: "05 Premier padel 2026",     url: "https://drive.google.com/drive/folders/1zRf0GKr_93tQVFwXGZh14VO71rKYN3Ku" },
+      { nombre: "06 Videos 25",              url: "https://drive.google.com/drive/folders/19-XdbkrmKhpwWN4YG0dTyqjGzIO4rMww" },
+      { nombre: "07 Banners Web 25",         url: "https://drive.google.com/drive/folders/1UDME3ocBvRDOpmlmZNunI7ZjehGw5k8q" },
+      { nombre: "08 Alta resolución 25",     url: "https://drive.google.com/drive/folders/1rhu0PCDJ4tuaY3O-YJafmuDpI1661HGR" }
+    ]
+  },
+  "02 Imagenes de producto": {
+    url: "https://drive.google.com/drive/folders/19gw7bCYI0uRBOqyKPQriTyX3zpSm9yNG",
+    subcarpetas: [
+      { nombre: "01 Palas 2026",             url: "https://drive.google.com/drive/folders/1pcs8zocfVJTVWXXCmJerED8_WFM8SXjs" },
+      { nombre: "02 Textil 2026",            url: "https://drive.google.com/drive/folders/1d8s-x7Iy7GF9epGES8FH9i5Me5stbhjv" },
+      { nombre: "03 Bolsos 2026",            url: "https://drive.google.com/drive/folders/1-TH7zR3j6JJyUCex1NvAVJ52a_9HFVKp" },
+      { nombre: "04 Calzado 2026",           url: "https://drive.google.com/drive/folders/1zdQe4Mm3DA66Ghock-1cmXG_MBVvxBMB" },
+      { nombre: "05 Palas ARG 2026",         url: "https://drive.google.com/drive/folders/1CI1mPYSn-tiBheT_47c0QFQjsLxcL4qW" },
+      { nombre: "06 Palas Onyx 2.0",         url: "https://drive.google.com/drive/folders/1n3Yxe74fmUKQga8bGjapBn5UHE0ZQo5_" },
+      { nombre: "07 Palas premier 2026",     url: "https://drive.google.com/drive/folders/1Z8hrXrT8m9-_vF6Vp3j1ofgmgkBsCo_z" },
+      { nombre: "08 Palas Apache 32",        url: "https://drive.google.com/drive/folders/1nWMXK-vnXMMRej2CQgr6EgWb9G0yJ4L4" },
+      { nombre: "09 Línea APA",              url: "https://drive.google.com/drive/folders/1UgHGmPUfGSRwCni4_tSuGVe-IhB8hGLs" },
+      { nombre: "10 Pack Vertex 25",         url: "https://drive.google.com/drive/folders/1tJwWtYWGKzdLjKK54yByQLesGm0Ox8-g" },
+      { nombre: "11 Remeras de jugadores",   url: "https://drive.google.com/drive/folders/1Ss_UjtwoLPSX2OXWZYJYAxE7MlUyoQKi" },
+      { nombre: "12 Accesorios Atemporales", url: "https://drive.google.com/drive/folders/1s2doYjwqgmRiE16GAwLDer0nWX20ozfT" },
+      { nombre: "13 Complementarios",        url: "https://drive.google.com/drive/folders/14xpDzCi1CWJZDDzrkR2hizPgg7Qx0Oma" }
+    ]
+  },
+  "03 Archivo Historico": {
+    url: "https://drive.google.com/drive/folders/11GiVIZsYNdxLaVyjx-pIASsDvHPavKLU",
+    subcarpetas: [
+      { nombre: "01 Palas 2025",             url: "https://drive.google.com/drive/folders/1c_p52AlWnN7CbvuNno0MkxQvHyMFWLo9" },
+      { nombre: "02 Palas Tour Final 25",    url: "https://drive.google.com/drive/folders/1SOwEm25JRfIgnO_QWFgwYRHJNpxUdJuy" },
+      { nombre: "03 Palas premier 2025",     url: "https://drive.google.com/drive/folders/19gEwxv4mQTGY14pCLCmuJnMiQVgzJDJf" },
+      { nombre: "04 Calzado 2025",           url: "https://drive.google.com/drive/folders/1L3mJtuMR0SETi1A87YatUNcHXBO7_T-S" },
+      { nombre: "05 Bolsos y mochilas 2025", url: "https://drive.google.com/drive/folders/1Q_5u6gH-0O0aSCRJzK0GYmX9xUWe3wt5" },
+      { nombre: "06 Textil 2025",            url: "https://drive.google.com/drive/folders/1wZ7VsKCSAwwI3rlgwr45PS93AWzjiG9m" },
+      { nombre: "07 2024",                   url: "https://drive.google.com/drive/folders/1muWa_YL3enIXOl0AODfx6cm49MaNj9xq" },
+      { nombre: "08 2023",                   url: "https://drive.google.com/drive/folders/1xE3TGNNIJvotIVMgiyDvJIc6egAwFsgd" }
+    ]
+  }
+};

@@ -125,6 +125,7 @@ function mountPortal() {
     renderTabla();
     renderGuia();
     renderCapacitaciones();
+    renderMediaCenter();
     window._portalMounted = true;
   }
   // Always re-render admin when mounting (reflects latest users)
@@ -155,6 +156,7 @@ function applyRolePermissions() {
     { text: 'Recomendador',    perm: 'verRecomendador' },
     { text: 'Comparador',      perm: 'verComparador' },
     { text: 'Capacitaciones',  perm: 'verCapacitaciones' },
+    { text: 'Media Center',    perm: 'verMediaCenter' },
     { text: 'Administración',  perm: 'verAdminPanel' },
   ];
 
@@ -186,7 +188,8 @@ function applyRolePermissions() {
     const secId = activeSection.id.replace('sec-','');
     const secMap = {
       palas:'verCatalogo', glosario:'verMateriales', comparador:'verComparador',
-      tabla:'verTablaGama', guia:'verGuiaVenta', capacitaciones:'verCapacitaciones'
+      tabla:'verTablaGama', guia:'verGuiaVenta', capacitaciones:'verCapacitaciones',
+      'media-center':'verMediaCenter'
     };
     if (perms[secMap[secId]] === false) {
       // Show first permitted section

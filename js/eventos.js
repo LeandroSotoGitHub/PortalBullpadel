@@ -104,7 +104,8 @@ function showSection(id,btn){
   // Allow btn to be null (called from home cards)
   if (!btn) {
     var sectionMap = { 'inicio':'Inicio','catalogo':'Catálogo','comparador':'Comparador',
-      'capacitaciones':'Capacitaciones','recomendador':'Recomendador','admin':'Administración' };
+      'capacitaciones':'Capacitaciones','recomendador':'Recomendador','admin':'Administración',
+      'media-center':'Media Center' };
     btn = [...document.querySelectorAll('.nav-btn')]
       .find(b => b.textContent.trim() === (sectionMap[id] || '')) || null;
   }

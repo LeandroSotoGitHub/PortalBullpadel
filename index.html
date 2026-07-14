@@ -65,6 +65,15 @@
     </svg>
   </div>
   <span class="header-title">Bullpadel 2026</span>
+  <nav class="nav-bar" id="nav-bar">
+    <button class="nav-btn active" onclick="showSection('inicio',this)">Inicio</button>
+    <button class="nav-btn" onclick="showSection('catalogo',this)">Catálogo</button>
+    <button class="nav-btn" onclick="showSection('recomendador',this)">Recomendador</button>
+    <button class="nav-btn" onclick="showSection('comparador',this)">Comparador</button>
+    <button class="nav-btn" onclick="showSection('capacitaciones',this)">Capacitaciones</button>
+    <button class="nav-btn" onclick="showSection('media-center',this)">Media Center</button>
+    <button class="nav-btn" id="nav-admin" onclick="showSection('admin',this)">Administración</button>
+  </nav>
   <div class="session-bar" id="session-bar" style="display:none">
     <div class="session-user">
       <div class="session-avatar" id="session-avatar">?</div>
@@ -92,18 +101,6 @@
      - No existe solicitud de acceso.
      - Usuarios creados manualmente por owner o vendedores autorizados.
      ─────────────────────────────────────────────────── -->
-
-<!-- ═══════════════════════════════════════════════════
-     HTML · 3. NAVEGACIÓN PRINCIPAL
-     ═══════════════════════════════════════════════════ -->
-<nav class="nav-bar" id="nav-bar">
-  <button class="nav-btn active" onclick="showSection('inicio',this)">Inicio</button>
-  <button class="nav-btn" onclick="showSection('catalogo',this)">Catálogo</button>
-  <button class="nav-btn" onclick="showSection('recomendador',this)">Recomendador</button>
-  <button class="nav-btn" onclick="showSection('comparador',this)">Comparador</button>
-  <button class="nav-btn" onclick="showSection('capacitaciones',this)">Capacitaciones</button>
-  <button class="nav-btn" id="nav-admin" onclick="showSection('admin',this)">Administración</button>
-</nav>
 
 <!-- ═══════════════════════════════════════════════════
      HTML · 4. SECCIONES PRINCIPALES
@@ -376,6 +373,15 @@
       </div>
     </div>
     <div class="subview" id="cap-tab-guia"></div>
+  </section>
+
+  <!-- 4.6b Media Center -->
+  <section id="sec-media-center" class="section">
+    <div class="sec-head">
+      <h1>Media Center</h1>
+      <p>Accedé al material de marketing y producto alojado en Google Drive — banners, fotos en alta resolución, videos y archivo histórico. Cada card abre la carpeta correspondiente en una pestaña nueva.</p>
+    </div>
+    <div id="media-center-shelves"></div>
   </section>
 
   <!-- 4.7 Administración de usuarios -->
@@ -848,6 +854,7 @@
 <script src="js/comparador.js"></script>
 <script src="js/mapa-competitivo.js"></script>
 <script src="js/capacitaciones.js"></script>
+<script src="js/media-center.js"></script>
 <script src="js/home.js"></script>
 <script src="js/onboarding.js"></script>
 <script src="js/admin.js"></script>
