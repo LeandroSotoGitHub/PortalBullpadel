@@ -51,7 +51,23 @@ function renderHomeQuickAccess() {
 
 function renderHomeStats() {
   const el = document.getElementById('home-stats');
+  const labelEl = document.getElementById('home-hero-label');
   if (!el) return;
+
+  // El rol "usuario" (distribuidor) ve un video demo de cómo usar el portal
+  // en vez del resumen numérico del catálogo, que no le aporta nada a ese rol.
+  if (currentUser && currentUser.rol === 'usuario') {
+    if (labelEl) labelEl.textContent = 'Cómo usar el portal';
+    el.className = 'home-demo-video';
+    el.innerHTML =
+      '<video controls preload="metadata" playsinline>' +
+        '<source src="img/video/portal-demo.mp4" type="video/mp4">' +
+      '</video>';
+    return;
+  }
+
+  if (labelEl) labelEl.textContent = 'Resumen del catálogo';
+  el.className = 'home-stats';
 
   const numPalas   = PALAS.length;
   const numLineas  = new Set(PALAS.map(p => p.linea).filter(Boolean)).size;

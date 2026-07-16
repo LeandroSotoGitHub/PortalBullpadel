@@ -1825,6 +1825,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   letter-spacing: .06em; color: var(--gris-texto-suave);
 }
 
+/* Video demo — vive dentro de la hero-card, reemplaza el resumen
+   del catálogo para el rol usuario (distribuidor). */
+.home-demo-video {
+  border: 1px solid var(--negro-borde); border-radius: var(--radio);
+  overflow: hidden; background: #000; line-height: 0;
+}
+.home-demo-video video {
+  width: 100%; aspect-ratio: 16/9; display: block; background: #000;
+}
+
 /* Section label */
 .home-section-label {
   font-size: 12px; font-weight: 700; text-transform: uppercase;
@@ -3046,4 +3056,3 @@ input:focus, select:focus, textarea:focus {
 @media(max-width:600px) {
   .media-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }
-
