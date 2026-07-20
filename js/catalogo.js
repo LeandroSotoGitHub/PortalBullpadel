@@ -82,7 +82,7 @@ function renderPalas(){
           ${p.descTecnica?`<div class="pala-desc">${p.descTecnica}</div>`:''}
           ${p.sensacionJuego?`<details class="pala-sensacion-wrap"><summary>Descripción para el jugador</summary><div class="pala-sensacion">${p.sensacionJuego}</div></details>`:''}
           <div class="specs-grid">
-            <div class="spec-item"><div class="label">Peso</div><div class="val">${p.peso}</div></div>
+            <div class="spec-item"><div class="label">Peso</div><div class="val">${p.peso || 'No informado'}</div></div>
             <div class="spec-item"><div class="label">Perfil</div><div class="val">${p.perfil}</div></div>
             <div class="spec-item"><div class="label">Forma</div><div class="val">${p.forma}</div></div>
             <div class="spec-item"><div class="label">Balance</div><div class="val">${p.balance}</div></div>
@@ -180,7 +180,7 @@ function renderTabla(){
     <td style="font-weight:600">${p.nombre}</td>
     <td><span class="linea-tag tag-${p.linea}">${p.linea}</span></td>
     <td>${p.forma}</td>
-    <td>${p.peso}</td>
+    <td>${p.peso || '-'}</td>
     <td>${p.perfil}</td>
     <td>${p.balance}</td>
     <td style="font-size:12px">${p.exterior}</td>

@@ -81,7 +81,7 @@ function explicarAlternativaMapa(pala, comp) {
   const esPremiumNivel = nivel.includes('avanzado') || nivel.includes('profesional');
   const esConfort = nombreN.includes('comfort') || nombreN.includes('cloud');
   const esHibrida = forma.includes('h\u00edbrida') || forma.includes('hibrida') || forma.includes('l\u00e1grima') || forma.includes('lagrima');
-  const esAccesible = linea === 'NEXT' || linea === 'ADVANCE' || linea === 'TOUR' || balance.includes('bajo');
+  const esAccesible = linea === 'NEXT' || linea === 'ADVANCE' || linea === 'TOUR' || linea === 'ONYX' || balance.includes('bajo');
 
   let rol = '';
   let explicacion = '';

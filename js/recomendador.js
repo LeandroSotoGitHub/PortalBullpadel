@@ -183,9 +183,9 @@ function poolPrincipalPorNivel(nivel) {
   switch (nivel) {
     case 'Profesional': return ['PROLINE'];
     case 'Avanzado':    return ['PROLINE'];
-    case 'Intermedio':  return ['PROLINE','NEXT','ADVANCE'];
-    case 'Amateur':     return ['TOUR','ADVANCE','NEXT','PROLINE'];
-    case 'Iniciación':  return ['TOUR','ADVANCE','NEXT'];
+    case 'Intermedio':  return ['PROLINE','NEXT','ADVANCE','ONYX'];
+    case 'Amateur':     return ['TOUR','ADVANCE','NEXT','PROLINE','ONYX'];
+    case 'Iniciación':  return ['TOUR','ADVANCE','NEXT','ONYX'];
     case 'Junior':      return ['JUNIOR','ADVANCE'];
     default:            return null; // null = sin restricción de pool
   }
