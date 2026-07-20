@@ -331,8 +331,6 @@ function explicarRecomendacion(pala, ans, chips, idx, forcedProline) {
   const nivel     = ans[1] || '';
   const prioridad = ans[2] || '';
   const estilo    = ans[3] || '';
-  const premium   = esPremiumParaNivel(pala, nivel);
-  const textoN    = normalizarTexto([pala.sensacionJuego, pala.perfilJugador, pala.descTecnica].join(' '));
 
   let base = '';
 
@@ -343,11 +341,7 @@ function explicarRecomendacion(pala, ans, chips, idx, forcedProline) {
                 : prioridad === 'salida'       ? 'tiene una reacción de núcleo que la hace muy accesible y con gran salida de bola'
                 : prioridad === 'polivalencia' ? 'responde bien en defensa y ataque sin exigir una técnica muy afinada'
                 : 'su combinación de materiales y tecnologías la hace más accesible de lo que su línea sugiere';
-    if (forcedProline) {
-      base = 'Además de las opciones más alineadas al perfil, esta pala aparece como alternativa PROLINE para mostrar una opción de mayor prestación. Puede tener sentido si el jugador quiere dar un salto de calidad y acceder a una pala con más tecnología y rendimiento.';
-    } else {
-      base = 'Si bien es una pala de mayores prestaciones, puede tener sentido para este perfil porque ' + razon + '. La presentaría como una opción para quien quiere dar un salto de calidad sin cambiar su estilo de juego.';
-    }
+    base = 'Si bien es una pala de mayores prestaciones, puede tener sentido para este perfil porque ' + razon + '. La presentaría como una opción para quien quiere dar un salto de calidad sin cambiar su estilo de juego.';
   } else {
     // Standard explanation
     const coincidencias = chips.slice(0,3).join(', ').toLowerCase();
@@ -368,7 +362,6 @@ function explicarRecomendacion(pala, ans, chips, idx, forcedProline) {
 
 function fraseVenta(pala, ans, idx, forcedProline) {
   const prioridad = ans[2] || '';
-  const premium   = esPremiumParaNivel(pala, ans[1] || '');
 
   if (forcedProline) {
     return 'Si querés ofrecer una opción premium dentro de Bullpadel, esta PROLINE puede funcionar como alternativa de mayor prestación, manteniendo relación con la necesidad indicada por el jugador.';

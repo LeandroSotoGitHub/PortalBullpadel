@@ -14,7 +14,7 @@ function nivelClass(n){
   const l=n.toLowerCase();
   if(l.includes('prof'))return 'nivel-pro';
   if(l.includes('avanz'))return 'nivel-avz';
-  if(l.includes('inter'))return 'nivel-ini';
+  if(l.includes('inter'))return 'nivel-int';
   if(l.includes('amac')||l.includes('amateur'))return 'nivel-ama';
   if(l.includes('inicia'))return 'nivel-ini';
   if(l.includes('junior'))return 'nivel-jun';
