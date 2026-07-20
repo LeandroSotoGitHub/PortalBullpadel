@@ -238,7 +238,13 @@ function renderMapaResult() {
     : '';
 
   // Ficha competidor
+  const precioHtml = (comp.precioPublicoArs != null)
+    ? '$' + comp.precioPublicoArs.toLocaleString('es-AR')
+    : 'No informado';
+
   const specs = [
+    ['Precio público (ARS)', precioHtml],
+    ['Jugador profesional', na(comp.jugadorPro)],
     ['Temporada', comp.temporada],
     ['Gama', comp.gama],
     ['Nivel', na(comp.nivel)],
@@ -267,11 +273,19 @@ function renderMapaResult() {
     ? '<a class="mapa-source-link" href="' + comp.fuenteOficialUrl + '" target="_blank" rel="noopener noreferrer">Ver ficha oficial \u2192</a>'
     : '';
 
+  const compImgSrcVal = compImgSrc(comp.id);
+  const compImgHtml = '<div class="mapa-competidor-img-wrap">' +
+      '<img src="' + compImgSrcVal + '" alt="' + comp.marca + ' ' + comp.modelo + '" onclick="openLightbox(this.src,this.alt)" onerror="this.parentElement.style.display=\'none\'">' +
+    '</div>';
+
   const fichaHtml = '<div class="mapa-competidor-card">' +
     '<div class="mapa-competidor-head">' +
-      '<div>' +
-        '<div class="mapa-competidor-marca">' + comp.marca + '</div>' +
-        '<div class="mapa-competidor-modelo">' + comp.modelo + '</div>' +
+      '<div class="mapa-competidor-head-main">' +
+        compImgHtml +
+        '<div>' +
+          '<div class="mapa-competidor-marca">' + comp.marca + '</div>' +
+          '<div class="mapa-competidor-modelo">' + comp.modelo + '</div>' +
+        '</div>' +
       '</div>' +
       badgeHtml +
     '</div>' +

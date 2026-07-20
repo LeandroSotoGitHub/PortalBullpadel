@@ -2823,6 +2823,13 @@ input:focus, select:focus, textarea:focus {
   display: flex; align-items: flex-start; justify-content: space-between;
   flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
 }
+.mapa-competidor-head-main { display: flex; align-items: center; gap: 14px; }
+.mapa-competidor-img-wrap {
+  flex: 0 0 auto; width: 72px; height: 72px; border-radius: var(--radio);
+  background: #f9f9f9; border: 1px solid var(--gris-borde);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.mapa-competidor-img-wrap img { max-width: 90%; max-height: 90%; object-fit: contain; cursor: zoom-in; }
 .mapa-competidor-marca {
   font-size: 11px; font-weight: 800; text-transform: uppercase;
   letter-spacing: .1em; color: var(--rojo); margin-bottom: 4px;
