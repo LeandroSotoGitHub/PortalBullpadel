@@ -6,53 +6,10 @@
 function palaImgSrc(id) { return `img/palas/${id}.jpg`; }
 function compImgSrc(id) { return `img/competencia/${id}.jpg`; }
 
-// Carpeta de Drive con las fotos de producto de cada modelo, dentro de
-// "00 Palas por modelo". Generada una vez a partir del Drive real del
-// equipo — no todos los modelos tienen carpeta (ver fallback abajo).
-const PALA_MEDIA_FOLDERS = {
-  elitew: "https://drive.google.com/drive/folders/1xsKaEuteV4DS6f_TT3l8lMZApxdhC_jf",
-  flowlegend: "https://drive.google.com/drive/folders/1jn0GIp2WXBvTqyH6K677N0JFnkaWny-D",
-  hack02advance: "https://drive.google.com/drive/folders/11QAHrY0-it-XebzynjtbiF9EcW603lJE",
-  hack0426: "https://drive.google.com/drive/folders/12QP6XqGIB-FnVvM3TjQ0_eWa3UYXRj5W",
-  hack04comfort26: "https://drive.google.com/drive/folders/1ZWiJzFl0Wm15pn8MB3rT1-oLGKShOMCy",
-  hack04hybrid26: "https://drive.google.com/drive/folders/1g0N1pZqxbA2pJAyQW01dBCdfNmcXCWf7",
-  hack04hybridcloud: "https://drive.google.com/drive/folders/1SDMBzlDXsKNjUGowKIj0W4y0EPYFOfVv",
-  icon26: "https://drive.google.com/drive/folders/1WVYcVO2s4VUu641jdB_JCYlri3DKuIiU",
-  indigactr26: "https://drive.google.com/drive/folders/1-Jdl2LIyzYiB6aPM08SGkrH87r3bkCiR",
-  indigapwr26: "https://drive.google.com/drive/folders/1IF3rxykWIywlcg1Gs6Wf9uTOCEWrvRli",
-  indigaw26: "https://drive.google.com/drive/folders/1-msY3j6CQJbceY9t9RCcD0zZuuDcH32y",
-  ioniccontrol26: "https://drive.google.com/drive/folders/1cr723IEDD7PgbTa66RtfpkYtYIs69747",
-  ioniclight26: "https://drive.google.com/drive/folders/1veOiIS1R2Bc6Z9_ilHOsYKlg1FNwExQr",
-  ionicpower26: "https://drive.google.com/drive/folders/142Q2dfzT6ZS3MJMn7m88HcwQdotTCKCh",
-  neuron02: "https://drive.google.com/drive/folders/154bxTaxSKWSQi1vMIgTv0b9be_XIb-HV",
-  neuron02cloud: "https://drive.google.com/drive/folders/1BoVQYmDuY4Jzl5J6gRqN8wceIcyjMLYT",
-  neuron02edge: "https://drive.google.com/drive/folders/1BuF_7bk0DzPAsSAv4lXQYyAATKar5H_g",
-  onyxcomfort: "https://drive.google.com/drive/folders/1yy4aenyc4-6kAuWvHXju08T0V-ILnURb",
-  onyxcomfortw: "https://drive.google.com/drive/folders/1L_ouWTGGJann9VLMYdy3q1QHThPuTenV",
-  onyxcontrol: "https://drive.google.com/drive/folders/1UUiU482XOHDc4p8fTrru0uX0SIvJMKq4",
-  onyxcontrolw: "https://drive.google.com/drive/folders/1XjueEMF8JRIKwEq3iOpi_4HcWEAj-n0p",
-  onyxpower: "https://drive.google.com/drive/folders/1wJjHwLiRGt8hoDGbavMVaKUbjCL1h3xB",
-  onyxpowerw: "https://drive.google.com/drive/folders/1QGqmOLC6gR7BmDzOuyUQ7R9I0TKTyGbq",
-  pearl26: "https://drive.google.com/drive/folders/1vutaXkwfUCEl90RBRDEEAhesE9e5ODed",
-  vertex05: "https://drive.google.com/drive/folders/1xCaIUsyeVFpoqGD8wb20ek2nc_cmJkGT",
-  vertex05comfort: "https://drive.google.com/drive/folders/1GFRTB4ZEsOEbEkwLjvnahjNmjAF9Ys5l",
-  vertex05geo: "https://drive.google.com/drive/folders/1zJu5Yvt_frFLLRvoE3Eqq2Nxztd2UP0W",
-  vertex05hybrid: "https://drive.google.com/drive/folders/1Y9jugBSqAzn7FgS2zRajnCQDJRt84tdx",
-  vertex05w: "https://drive.google.com/drive/folders/1LWsnn4wE7-WncpmcU8XbCqEZNMlbP2gb",
-  vertex05wcloud: "https://drive.google.com/drive/folders/17lZ8XNPg-ZxhkpRoSqSeN0ufKyw4t3TH",
-  vertexadvance: "https://drive.google.com/drive/folders/1HTED-ZjUJtYBDCZ8SMP8Nwf1Cma_H0zv",
-  vertexonyx: "https://drive.google.com/drive/folders/1xHC4K2thPQVITGygAIuuvPdNZr3cxQfz",
-  vertexonyxw: "https://drive.google.com/drive/folders/1LTawlCTSlNjKZEK5l-1KfF68GOgCxMR3",
-  wonder: "https://drive.google.com/drive/folders/1dMUhxUBp2UFlEpanRDmuQbyJit4y5689",
-  xplo26: "https://drive.google.com/drive/folders/1Cx3PwuMe5V3GwbMjqDOuEuJ7yQZO0aZK",
-  xplocomfort26: "https://drive.google.com/drive/folders/1f6Yu4wLFlh_HLcheFQqUG0ZD7kdhof9L",
-};
-
-// Carpeta de Drive con las fotos de producto de la pala. Usa la carpeta
-// específica del modelo si existe; si no (ej. Hack JR 26, sin fotos propias
-// en el Drive), cae a la carpeta de la línea/categoría en Media Center.
+// Carpeta de Drive con las fotos de producto de la línea de la pala.
+// No hay carpeta por modelo individual en el Drive del equipo — se linkea
+// a la carpeta de la línea/categoría (misma fuente que Media Center).
 function palaMediaFolderUrl(p) {
-  if (PALA_MEDIA_FOLDERS[p.id]) return PALA_MEDIA_FOLDERS[p.id];
   const cat = MEDIA_CENTER['02 Imagenes de producto'];
   if (!cat) return null;
   const folderName = (p.linea === 'ONYX') ? '06 Palas Onyx 2.0' : '01 Palas 2026';
@@ -2489,7 +2446,6 @@ const MEDIA_CENTER = {
   "02 Imagenes de producto": {
     url: "https://drive.google.com/drive/folders/19gw7bCYI0uRBOqyKPQriTyX3zpSm9yNG",
     subcarpetas: [
-      { nombre: "00 Palas por modelo",       url: "https://drive.google.com/drive/folders/1Jk5Vx72PejVG6HeCHZvykAVdJs3kDykR" },
       { nombre: "01 Palas 2026",             url: "https://drive.google.com/drive/folders/1pcs8zocfVJTVWXXCmJerED8_WFM8SXjs" },
       { nombre: "02 Textil 2026",            url: "https://drive.google.com/drive/folders/1d8s-x7Iy7GF9epGES8FH9i5Me5stbhjv" },
       { nombre: "03 Bolsos 2026",            url: "https://drive.google.com/drive/folders/1-TH7zR3j6JJyUCex1NvAVJ52a_9HFVKp" },
