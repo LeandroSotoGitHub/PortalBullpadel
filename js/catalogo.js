@@ -515,6 +515,18 @@ function openPalaModal(palaId) {
     jugEl.style.display  = 'none';
   }
 
+  // Foto de producto (Drive)
+  const mediaBtn = document.getElementById('pm-btn-media');
+  if (mediaBtn) {
+    const mediaUrl = palaMediaFolderUrl(p);
+    if (mediaUrl) {
+      mediaBtn.href = mediaUrl;
+      mediaBtn.style.display = '';
+    } else {
+      mediaBtn.style.display = 'none';
+    }
+  }
+
   // ── Specs ──────────────────────────────────────────────────────────────
   const specsData = [
     { label: 'Forma',          val: p.forma      },
