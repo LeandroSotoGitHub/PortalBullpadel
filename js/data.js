@@ -984,48 +984,18 @@ const JUGADORES = [
 ];
 
 
-/* ── 6. USUARIOS ───────────────────────────────────────────────────────── */
-// IMPORTANTE: No existe registro público. Las credenciales son asignadas
-// manualmente por el equipo Bullpadel (owner o vendedores autorizados).
-
-const USUARIOS = [
-  {
-    id: "usr-001",
-    nombre: "Admin Bullpadel",
-    email: "admin@bullpadel.com",
-    password: "bp2026admin",        // TODO: hashear antes de producción
-    clienteMayorista: null,
-    rol: "owner",
-    estado: "activo",
-    fechaAlta: "2026-01-01",
-    creadoPor: "sistema"
-  },
-  {
-    id: "usr-002",
-    nombre: "Vendedor Demo",
-    email: "vendedor@bullpadel.com",
-    password: "vendedor2026",
-    clienteMayorista: null,
-    rol: "vendedor",
-    estado: "activo",
-    fechaAlta: "2026-01-15",
-    creadoPor: "usr-001"
-  },
-  {
-    id: "usr-003",
-    nombre: "Distribuidor Demo",
-    email: "distribuidor@ejemplo.com",
-    password: "distri2026",
-    clienteMayorista: "Deportes Ejemplo S.A.",
-    rol: "usuario",
-    estado: "activo",
-    fechaAlta: "2026-02-01",
-    creadoPor: "usr-002"
-  }
-];
+/* ── 6. IDENTIDAD ──────────────────────────────────────────────────────── */
+// El listado de cuentas y contraseñas demo se eliminó (RUN Supabase Auth —
+// Fase 1). La identidad real vive en Supabase Auth + public.profiles — no
+// hay ninguna cuenta ni credencial en el frontend. No existe registro
+// público; las altas son manuales/administrativas del lado de Supabase.
 
 
 /* ── 7. ROLES Y PERMISOS ───────────────────────────────────────────────── */
+// NOTA: ROLES sigue siendo un objeto estático para decidir visibilidad de
+// módulos en el cliente (RUN Supabase Auth — Fase 1). La autoridad real es
+// RLS en Supabase; esto es solo UX y usa el rol recibido desde
+// public.profiles vía currentUser.rol, nunca un dato editable por el usuario.
 
 const ROLES = {
 

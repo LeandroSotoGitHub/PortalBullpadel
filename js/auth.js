@@ -1,95 +1,173 @@
-const USERS_KEY = 'bp_users_2026';
+// -- AUTENTICACIÓN . Supabase Auth ------------------------------------------
+// RUN Fase 1: reemplaza el login local/demo por Supabase Auth. Depende de
+// `supabaseClient`, creado en js/supabase-config.js (debe cargarse antes que
+// este archivo). La sesión persiste en el almacenamiento interno de Supabase
+// (ya no hay ninguna clave propia de sesión/usuarios en localStorage).
+//
+// Administración queda deshabilitada temporalmente (ver js/admin.js): no se
+// llama a renderAdmin() desde mountPortal() y el botón de nav está oculto.
 
-// ── Persistencia ────────────────────────────────────────────────────────────
+let _authStateSubscribed = false;
 
-function getUsers() {
-  try {
-    const raw = localStorage.getItem(USERS_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
-}
-
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function seedUsers() {
-  // Solo inicializar si no existe todavía en localStorage
-  if (!getUsers()) {
-    saveUsers(JSON.parse(JSON.stringify(USUARIOS)));
+// ── Mensajes de error en español ────────────────────────────────────────────
+function _authErrorMessage(error) {
+  const msg = ((error && error.message) || '').toLowerCase();
+  if (msg.includes('invalid login credentials')) {
+    return 'Email o contraseña incorrectos. Verificá tus credenciales.';
   }
+  if (msg.includes('email not confirmed')) {
+    return 'Tu cuenta todavía no fue confirmada. Contactá al equipo Bullpadel.';
+  }
+  if (msg.includes('failed to fetch') || msg.includes('network')) {
+    return 'No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo.';
+  }
+  return 'No pudimos iniciar sesión en este momento. Intentá nuevamente en unos minutos.';
 }
 
-// ── CRUD ────────────────────────────────────────────────────────────────────
-
-const SESSION_KEY = 'bp_session_2026';
-
-
-function saveSession(user) {
-  // Guardamos sin password en localStorage
-  const safe = { id:user.id, nombre:user.nombre, email:user.email,
-                 rol:user.rol, clienteMayorista:user.clienteMayorista };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(safe));
-  currentUser = safe;
+// ── Perfil ───────────────────────────────────────────────────────────────
+async function _fetchProfile(userId) {
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('id, email, display_name, role, status, organization_id')
+    .eq('id', userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }
 
-function loadSession() {
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
+async function _fetchOrganizationName(organizationId) {
+  if (!organizationId) return null;
+  const { data, error } = await supabaseClient
+    .from('organizations')
+    .select('name')
+    .eq('id', organizationId)
+    .maybeSingle();
+  if (error || !data) return null;
+  return data.name;
 }
 
-function clearSession() {
-  localStorage.removeItem(SESSION_KEY);
-  currentUser = null;
+// Mapea el perfil de Supabase a la forma que espera el resto del portal.
+async function _buildCurrentUser(authUser, profile) {
+  const clienteMayorista = await _fetchOrganizationName(profile.organization_id);
+  const nombre = (profile.display_name || '').trim();
+  return {
+    id: profile.id,
+    nombre: nombre || profile.email || authUser.email,
+    email: profile.email || authUser.email,
+    rol: profile.role,
+    clienteMayorista: clienteMayorista,
+    organizationId: profile.organization_id || null
+  };
 }
 
-// ── Login handler ─────────────────────────────────────────────────────────
-function handleLogin(e) {
+// ── Login handler ──────────────────────────────────────────────────────────
+async function handleLogin(e) {
   e.preventDefault();
-  const email    = document.getElementById('login-email').value.trim().toLowerCase();
-  const password = document.getElementById('login-password').value;
-  const errEl    = document.getElementById('login-error');
+  const emailInput = document.getElementById('login-email');
+  const pwdInput    = document.getElementById('login-password');
+  const errEl       = document.getElementById('login-error');
+  const submitBtn   = e.target.querySelector('button[type="submit"]');
+
+  const email    = emailInput.value.trim().toLowerCase();
+  const password = pwdInput.value;
 
   errEl.classList.remove('visible');
   errEl.textContent = '';
 
-  // Find user — always read from localStorage (getUsers) so new users can login
-  const allUsers = getUsers() || USUARIOS;
-  const user = allUsers.find(u => u.email.toLowerCase() === email);
-
-  if (!user || user.password !== password) {
-    errEl.textContent = 'Email o contraseña incorrectos. Verificá tus credenciales.';
+  if (!supabaseClient) {
+    errEl.textContent = 'El servicio de acceso no está disponible en este momento. Contactá al equipo Bullpadel.';
     errEl.classList.add('visible');
     return;
   }
 
-  if (user.estado !== 'activo') {
-    errEl.textContent = 'Tu usuario se encuentra inactivo. Contactá al equipo Bullpadel.';
-    errEl.classList.add('visible');
-    return;
-  }
+  if (submitBtn) submitBtn.disabled = true;
 
-  // Success
-  saveSession(user);
-  mountPortal();
+  try {
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+    if (signInError || !signInData || !signInData.user) {
+      errEl.textContent = _authErrorMessage(signInError);
+      errEl.classList.add('visible');
+      return;
+    }
+
+    let profile;
+    try {
+      profile = await _fetchProfile(signInData.user.id);
+    } catch (profileError) {
+      console.error('[Auth] Error al consultar perfil:', profileError.message);
+      await supabaseClient.auth.signOut();
+      errEl.textContent = 'No pudimos verificar tu cuenta. Intentá nuevamente en unos minutos.';
+      errEl.classList.add('visible');
+      return;
+    }
+
+    if (!profile) {
+      await supabaseClient.auth.signOut();
+      errEl.textContent = 'Tu cuenta todavía no fue configurada. Contactá al equipo Bullpadel.';
+      errEl.classList.add('visible');
+      return;
+    }
+
+    if (profile.status !== 'activo') {
+      await supabaseClient.auth.signOut();
+      errEl.textContent = 'Tu usuario se encuentra inactivo. Contactá al equipo Bullpadel.';
+      errEl.classList.add('visible');
+      return;
+    }
+
+    currentUser = await _buildCurrentUser(signInData.user, profile);
+    pwdInput.value = '';
+    mountPortal();
+  } catch (unexpectedError) {
+    console.error('[Auth] Error inesperado en login:', unexpectedError.message);
+    errEl.textContent = 'Ocurrió un error inesperado. Probá de nuevo en unos minutos.';
+    errEl.classList.add('visible');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
 }
 
-// ── Logout handler ────────────────────────────────────────────────────────
-function handleLogout() {
-  clearSession();
-  // Reset login form
-  document.getElementById('login-email').value    = '';
-  document.getElementById('login-password').value = '';
-  document.getElementById('login-error').classList.remove('visible');
-  // Show login, hide portal
+// ── Logout ──────────────────────────────────────────────────────────────
+// No llama a supabase.auth.signOut() — la usan tanto handleLogout() como el
+// listener de onAuthStateChange, y este solo resetea el estado visual.
+function _resetPortalUI() {
+  currentUser = null;
+
+  if (typeof closeOnboarding === 'function') closeOnboarding(false);
+  if (typeof closeLightbox === 'function') closeLightbox();
+  if (typeof closeDetailModal === 'function') closeDetailModal();
+  if (typeof closePalaModal === 'function') closePalaModal();
+  document.querySelectorAll('.admin-modal-bg.open').forEach(m => m.classList.remove('open'));
+
+  // Aislamiento entre sesiones: ninguna respuesta/resultado/selección/
+  // progreso en memoria de la cuenta que cierra sesión debe sobrevivir para
+  // la próxima cuenta que inicie sesión en esta misma pestaña.
+  if (typeof clearPreviousSessionState === 'function') clearPreviousSessionState();
+
+  const emailInput = document.getElementById('login-email');
+  const pwdInput    = document.getElementById('login-password');
+  if (emailInput) emailInput.value = '';
+  if (pwdInput) pwdInput.value = '';
+  const errEl = document.getElementById('login-error');
+  if (errEl) errEl.classList.remove('visible');
+
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('session-bar').style.display = 'none';
-  // Hide nav and main
   document.querySelector('.nav-bar').style.display = 'none';
   document.querySelector('.main').style.display    = 'none';
   document.querySelector('.header').style.background = 'var(--negro)';
+}
+
+async function handleLogout() {
+  if (supabaseClient) {
+    try {
+      await supabaseClient.auth.signOut();
+    } catch (error) {
+      console.error('[Auth] Error al cerrar sesión:', error.message);
+    }
+  }
+  _resetPortalUI();
 }
 
 // ── Mount portal after login ──────────────────────────────────────────────
@@ -116,7 +194,8 @@ function mountPortal() {
   // Apply role-based nav visibility
   applyRolePermissions();
 
-  // Init portal renders (only on first mount)
+  // Renders estáticos — no dependen de currentUser, se ejecutan una sola vez
+  // por carga de página (los datos que muestran no cambian entre logins).
   if (!window._portalMounted) {
     renderPalas();
     renderItems();
@@ -124,13 +203,17 @@ function mountPortal() {
     renderComp();
     renderTabla();
     renderGuia();
-    renderCapacitaciones();
     renderMediaCenter();
     window._portalMounted = true;
   }
-  // Always re-render admin when mounting (reflects latest users)
-  renderAdmin();
-  // Render home stats
+  // Administración deshabilitada temporalmente — no se renderiza (ver js/admin.js)
+
+  // Renders dependientes del usuario — deben actualizarse en CADA login,
+  // no solo en el primer montaje: leen localStorage namespaced por
+  // currentUser.id (progreso/checklist/quiz, ver js/capacitaciones.js) o
+  // permisos por rol. Si no se re-ejecutan acá, una segunda cuenta que
+  // inicia sesión en la misma pestaña vería el progreso de la primera.
+  renderCapacitaciones();
   renderHomeStats();
   renderHomeQuickAccess();
   // Mount catalogo and guia tabs into subviews (synchronous — runs once)
@@ -149,7 +232,9 @@ function applyRolePermissions() {
   if (!currentUser) return;
   const perms = ROLES[currentUser.rol]?.permisos || {};
 
-  // Map nav button text → permission key
+  // Map nav button text → permission key.
+  // "Administración" queda fuera a propósito: el botón permanece oculto
+  // (ver index.html) hasta que exista una función de servidor segura.
   const navMap = [
     { text: 'Inicio',          perm: 'verCatalogo' },
     { text: 'Catálogo',        perm: 'verCatalogo' },
@@ -157,10 +242,10 @@ function applyRolePermissions() {
     { text: 'Comparador',      perm: 'verComparador' },
     { text: 'Capacitaciones',  perm: 'verCapacitaciones' },
     { text: 'Media Center',    perm: 'verMediaCenter' },
-    { text: 'Administración',  perm: 'verAdminPanel' },
   ];
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
+    if (btn.id === 'nav-admin') return; // oculto temporalmente, no reintroducir
     const entry = navMap.find(m => btn.textContent.trim() === m.text);
     if (entry) {
       btn.style.display = perms[entry.perm] !== false ? '' : 'none';
@@ -203,30 +288,64 @@ function applyRolePermissions() {
   }
 }
 
-// ── Init auth on page load ────────────────────────────────────────────────
-function initAuth() {
-  // Seed localStorage with base users if first time
-  seedUsers();
+// ── onAuthStateChange ──────────────────────────────────────────────────────
+// Solo reacciona a un SIGNED_OUT (ej. token revocado/expirado en otra
+// pestaña). No dispara mountPortal() acá — eso solo lo hacen handleLogin()
+// e initAuth(), para evitar montajes duplicados del portal.
+function _subscribeAuthStateChange() {
+  if (_authStateSubscribed || !supabaseClient) return;
+  _authStateSubscribed = true;
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT' && currentUser) {
+      _resetPortalUI();
+    }
+  });
+}
 
-  // Hide nav and main until logged in
+// ── Init auth on page load ────────────────────────────────────────────────
+async function initAuth() {
+  const loginScreen = document.getElementById('login-screen');
+  const errEl       = document.getElementById('login-error');
+
+  // Ocultar portal y navegación mientras se verifica la sesión
   document.querySelector('.nav-bar').style.display = 'none';
   document.querySelector('.main').style.display    = 'none';
 
-  // Check for existing session
-  const saved = loadSession();
-  if (saved) {
-    // Verify user still exists and is active in localStorage
-    const lsUsers = getUsers() || USUARIOS;
-    const user = lsUsers.find(u => u.id === saved.id && u.estado === 'activo');
-    if (user) {
-      currentUser = saved;
-      mountPortal();
-      return;
-    } else {
-      clearSession();
+  if (!supabaseClient) {
+    if (errEl) {
+      errEl.textContent = 'El servicio de acceso no está disponible en este momento. Contactá al equipo Bullpadel.';
+      errEl.classList.add('visible');
     }
+    loginScreen.classList.remove('hidden');
+    return;
   }
 
-  // No valid session — show login
-  document.getElementById('login-screen').classList.remove('hidden');
+  try {
+    const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+    if (sessionError) throw sessionError;
+
+    const session = sessionData && sessionData.session;
+    if (!session) {
+      loginScreen.classList.remove('hidden');
+      _subscribeAuthStateChange();
+      return;
+    }
+
+    const profile = await _fetchProfile(session.user.id);
+    if (!profile || profile.status !== 'activo') {
+      await supabaseClient.auth.signOut();
+      loginScreen.classList.remove('hidden');
+      _subscribeAuthStateChange();
+      return;
+    }
+
+    currentUser = await _buildCurrentUser(session.user, profile);
+    mountPortal();
+  } catch (error) {
+    console.error('[Auth] Error al restaurar sesión:', error.message);
+    try { await supabaseClient.auth.signOut(); } catch (e) { /* sesión ya inválida */ }
+    loginScreen.classList.remove('hidden');
+  }
+
+  _subscribeAuthStateChange();
 }
