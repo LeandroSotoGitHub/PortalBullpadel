@@ -199,3 +199,67 @@ No lanzar como portal privado si cualquiera de estos puntos sigue abierto:
 ## Qué conservar
 
 La mayor parte del trabajo visual y comercial es reutilizable. Conviene conservar el frontend, la estructura modular actual, catálogo, recomendador, comparador, capacitaciones y Media Center. La estrategia de menor riesgo es reemplazar la capa ficticia de identidad/persistencia, sumar pruebas y endurecer el despliegue, sin iniciar una reescritura general.
+
+---
+
+## Validación funcional — Supabase Auth y Administración Fase 2 (04/08/2026)
+
+Actualización sobre el dictamen del 31/07/2026: los P0 de "Autenticación completamente del lado cliente" y "Administración y permisos sin autoridad central" descritos arriba corresponden al estado previo a Supabase Auth (Fase 1, commit `cc5eaec`) y a la Administración segura (Fase 2, commit `a0b445f`). Con ambas fases desplegadas y esta ronda de pruebas funcionales completada, esos dos hallazgos quedan **resueltos** para la capa de identidad/administración — no se los borra de este documento por trazabilidad histórica, pero ya no aplican al estado actual del portal.
+
+Ejecutado por Leandro Soto (owner) guiado por Claude Code, contra el proyecto Supabase `zzvdrnwotxrgvncbsaez`, usando exclusivamente cuentas y organizaciones de prueba reales (sin datos ficticios ni mutaciones directas por SQL).
+
+### Resumen — Bloques 1 a 6
+
+| Bloque | Resultado |
+|---|---|
+| 1. Invitación y alta de vendedor | **PASS** — flujo completo: invitar → email recibido → link en incógnita → "Configurá tu contraseña" → logout forzado → login normal → rol/nav correctos |
+| 2. Asignación de organizaciones | **PASS** — `assign_seller` funcional, auditado como `organization.seller_assigned` |
+| 3. Invitación de credencial mayorista | **PASS** — desde owner y desde vendedor asignado; regla de una sola credencial `usuario` activa por organización respetada; activar/desactivar desde alcance de vendedor OK |
+| 4. Permisos por rol (cliente + servidor) | **PASS** — capa de UI escopada correctamente para vendedor (sin "Nueva organización", sin Auditoría, organizaciones limitadas a las asignadas); **capa de servidor confirmada por bypass deliberado de la UI vía consola** — `invite_user` con `role:'vendedor'` desde sesión vendedor devuelve `403 forbidden` real |
+| 5. Recuperación de contraseña | **PASS** — alcance correcto (403 fuera de alcance vía bypass de consola), auditado como `user.password_reset_requested` |
+| 6. Políticas y auditoría | **PASS** — todos los eventos esperados presentes; lectura de `audit_logs` como no-owner bloqueada por RLS (`data: []` sin error, confirmado desde consola como vendedor) |
+
+### Bloque 7 — Casos de borde (evidencia completa)
+
+Ejecutado con las cuentas y organizaciones de prueba ya existentes (vendedor + `PRUEBA CODEX editada` + credencial mayorista), sin modificar código, migraciones ni configuración.
+
+| # | Caso | Resultado esperado | Resultado real | HTTP/código | Estado final de los registros | PASS/FAIL |
+|---|---|---|---|---|---|---|
+| 1 | Desactivar vendedor con organización asignada | Rechazo, sin mutación | Rechazado | 409 `seller_still_assigned` | Vendedor activo; `PRUEBA CODEX editada` conserva el vendedor asignado — sin mutación parcial | **PASS** |
+| 2 | Cascada al desactivar la organización | Org inactiva → credencial `usuario` inactiva automáticamente; sesión existente pierde acceso al recargar; login posterior rechazado | Confirmado en los 4 puntos | Cascada vía trigger DB (sin código HTTP propio); login rechazado con "Tu usuario se encuentra inactivo. Contactá al equipo Bullpadel." | Org inactiva; credencial `usuario` inactiva; sesión de incógnito expulsada al recargar | **PASS** |
+| 3 | Reactivación asimétrica | Reactivar org NO reactiva la credencial; login sigue rechazado hasta activación explícita; luego login permitido | Confirmado en los 3 puntos | Login rechazado (mismo mensaje) hasta activación manual; luego login OK | Org activa; credencial `usuario` activada explícitamente y con acceso | **PASS** |
+| 4 | Desactivación válida de vendedor (sin organizaciones asignadas) | Desasignar → desactivar permitido → reactivar → reasignar | Confirmado en los 4 pasos | 200 en la desactivación (vs. 409 del Caso 1) | Organización activa y con vendedor asignado; vendedor activo y asignado; credencial mayorista activa | **PASS** |
+| 5 | Último owner — auto-modificación | Rechazo por intento de cambiar el propio estado | Rechazado | 403 `forbidden` ("No podés cambiar el estado de tu propia cuenta.") | Sin cambios — owner sigue activo | **PASS** |
+| — | Guard concurrente de último owner (`pg_advisory_xact_lock`, migración 002) | — | **No ejecutado** — validado solo por inspección de código (`prevent_last_owner_removal()`, líneas 69-99 de `202608030002_admin_backend.sql`), por decisión explícita de no correr una prueba destructiva ni crear un segundo owner | — | Sin cambios | No ejecutado (por diseño) |
+
+**Resultado global del bloque 7: 5/5 casos ejecutados, 5/5 PASS.**
+
+### Distinciones explícitas
+
+- **5/5 casos del bloque 7 ejecutados con PASS.** Ningún hallazgo nuevo de seguridad o integridad — los triggers de la migración `202608030002` se comportan exactamente como documenta `SETUP.md` sección 4.8, incluida la asimetría deliberada de la reactivación de organización.
+- El **guard concurrente del último owner** (serialización vía `pg_advisory_xact_lock` para evitar que dos degradaciones simultáneas dejen el portal sin owners activos) está **validado solamente por inspección de código**, no por ejecución real — se descartó una prueba de concurrencia real porque hubiera requerido crear un segundo owner o mutar la base directamente por SQL, fuera del alcance autorizado para esta ronda.
+- La **auditoría (`audit_logs`) es best-effort, no transaccional** con la mutación de negocio (documentado en `SETUP.md` sección 4.8): en todos los casos probados los eventos esperados aparecieron, pero esto no es una garantía estructural — si el insert de auditoría fallara, la operación de negocio igual queda aplicada. No se encontró ningún evento faltante durante esta ronda, pero la ausencia de garantía transaccional sigue siendo una característica conocida del diseño, no un hallazgo nuevo.
+
+### Hallazgos de esta ronda (detalle completo en `briefs-reportes/REPORTE_pruebas_funcionales_fase2_administracion_2026-08-04.md`)
+
+- 🔴 Bloqueante: sin SMTP propio configurado (resuelto parcialmente con Brevo durante la sesión).
+- 🔴 Bloqueante: entregabilidad — los emails caen en Spam por falta de autenticación de dominio (SPF/DKIM/DMARC) completa en `bullpadelargentina.com.ar`.
+- 🔴 Bloqueante: la casilla `info@bullpadelargentina.com.ar` no recibió el mail de verificación de sender — pendiente de revisión en el hosting de Ferozo.
+- 🟠 Medio: `admin-portal/index.ts:531-538` colapsa cualquier error de `inviteUserByEmail` a un 500 genérico, sin distinguir causa ni loguear el detalle completo. **Corrección de código aplicada 04/08/2026** (`classifyInviteError()`), verificada con 14 casos simulados — sin desplegar, sin prueba real.
+- 🟠 Medio: `js/auth.js:385-389` muestra siempre el mismo mensaje genérico ante cualquier error de `updateUser({password})`, incluido el caso real reproducido de "contraseña igual a la anterior". **Corrección de código aplicada 04/08/2026** (`_setPasswordErrorMessage()`), verificada con 10 casos simulados contra el archivo real — sin prueba real end-to-end.
+- 🟡 Menor: no quedaba claro con qué email loguearse después de configurar la contraseña. **Corrección de código aplicada 04/08/2026** (email mostrado en pantalla + precarga en login), verificada visualmente en navegador — sin prueba real end-to-end.
+
+### Criterio go/no-go — actualizado
+
+- **Aplicación, roles, RLS, triggers e integridad de datos: GO.** Los 6 bloques funcionales y los 5 casos de borde del bloque 7 pasaron sin hallazgos de seguridad ni de integridad, incluidos los intentos deliberados de bypass de la UI.
+- **Lanzamiento general del portal: NO-GO**, exclusivamente por infraestructura de mailing sin terminar.
+
+**Pendientes bloqueantes:**
+1. Completar SPF/DKIM/DMARC para `bullpadelargentina.com.ar` (quedó un registro DKIM2 mal cargado en Ferozo, con nombre/contenido cruzados con el TXT de verificación).
+2. Confirmar entregabilidad fuera de Spam una vez propagados los registros DNS.
+3. Revisar la recepción de `info@bullpadelargentina.com.ar` (o la casilla que se defina como remitente) en el hosting de Ferozo.
+
+**Pendientes medios (recomendados antes de lanzar, no bloqueantes) — código corregido 04/08/2026, sin desplegar ni probar en real:**
+1. ~~Clasificar y loguear correctamente los errores de invitación~~ — implementado, pendiente desplegar `admin-portal` y confirmar contra un error real.
+2. ~~Mostrar el motivo real en los mensajes de error al configurar contraseña~~ — implementado en `js/auth.js`, pendiente prueba real.
+3. ~~Aclarar en el flujo de invitación con qué email debe iniciar sesión la persona invitada~~ — implementado (pantalla + precarga de login), pendiente prueba real.

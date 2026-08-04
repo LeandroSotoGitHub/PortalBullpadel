@@ -10,6 +10,14 @@
 
 let _authStateSubscribed = false;
 
+// Email de la sesión transitoria de invitación/recuperación — se captura una
+// sola vez en _showPasswordSetupScreen() (desde data.session.user.email,
+// nunca desde query params ni desde nada que envíe el cliente) y se
+// conserva en memoria para reusarlo después de guardar la contraseña, ya
+// que en ese punto la sesión transitoria se cierra (signOut) y dejaría de
+// estar disponible para leerla de nuevo.
+let _pwdSetupEmail = null;
+
 // ── Mensajes de error en español ────────────────────────────────────────────
 function _authErrorMessage(error) {
   const msg = ((error && error.message) || '').toLowerCase();
@@ -317,6 +325,7 @@ async function _showPasswordSetupScreen() {
   const pwdSetupScreen = document.getElementById('password-setup-screen');
   const errEl          = document.getElementById('pwdsetup-error');
   const form            = document.getElementById('pwdsetup-form');
+  const emailEl         = document.getElementById('pwdsetup-email');
 
   // Limpiar la URL ya — evita reprocesar el link si se recarga la página.
   // La librería ya leyó window.location al crear el cliente (síncrono, en
@@ -325,6 +334,11 @@ async function _showPasswordSetupScreen() {
 
   loginScreen.classList.add('hidden');
   pwdSetupScreen.classList.remove('hidden');
+  _pwdSetupEmail = null;
+  if (emailEl) {
+    emailEl.textContent = '';
+    emailEl.classList.remove('visible');
+  }
 
   if (!supabaseClient) {
     errEl.textContent = 'El servicio de acceso no está disponible en este momento.';
@@ -340,6 +354,15 @@ async function _showPasswordSetupScreen() {
       errEl.textContent = 'El enlace no es válido o ya expiró. Pedí uno nuevo.';
       errEl.classList.add('visible');
       form.style.display = 'none';
+    } else {
+      // El email sale exclusivamente de la sesión que Supabase ya
+      // estableció a partir del link (data.session.user.email) — nunca de
+      // un query param ni de nada que pueda enviar el cliente.
+      _pwdSetupEmail = data.session.user && data.session.user.email ? data.session.user.email : null;
+      if (emailEl && _pwdSetupEmail) {
+        emailEl.textContent = `Esta contraseña quedará asociada a: ${_pwdSetupEmail}`;
+        emailEl.classList.add('visible');
+      }
     }
   } catch (error) {
     console.error('[Auth] Error al validar el enlace de invitación/recuperación:', error.message);
@@ -349,6 +372,44 @@ async function _showPasswordSetupScreen() {
   }
 
   _subscribeAuthStateChange();
+}
+
+// ── Mensajes de error al configurar contraseña ──────────────────────────────
+// Igual que classifyInviteError en supabase/functions/admin-portal/index.ts:
+// se clasifica por `.code`/`.status` (contrato estable del SDK de Auth), NO
+// por texto de `.message` — evita el mismo problema que se encontró antes
+// (mensaje genérico de rate limit mostrado ante un error real de "misma
+// contraseña que la anterior").
+function _setPasswordErrorMessage(error) {
+  const code   = error && error.code;
+  const status = error && error.status;
+
+  if (code === 'same_password') {
+    return 'La nueva contraseña debe ser distinta de la anterior.';
+  }
+  if (code === 'weak_password') {
+    return 'Esa contraseña es demasiado débil. Elegí una más segura, combinando letras, números y símbolos.';
+  }
+  if (code === 'session_not_found' || code === 'bad_jwt' || code === 'jwt_expired' || code === 'otp_expired') {
+    return 'El enlace expiró o ya no es válido. Pedí uno nuevo desde Administración.';
+  }
+  if (code === 'over_request_rate_limit' || status === 429) {
+    return 'Hiciste demasiados intentos. Esperá unos minutos antes de volver a intentarlo.';
+  }
+  // Desconocido: mensaje genérico correcto, sin afirmar que se va a
+  // resolver "en unos minutos" — no sabemos la causa real.
+  return 'No pudimos guardar la contraseña. Volvé a intentarlo y, si el problema continúa, contactá al equipo Bullpadel.';
+}
+
+// Log seguro: solo campos estables del contrato de AuthError. Nunca la
+// contraseña ni ningún valor del formulario.
+function _logSetPasswordError(error) {
+  console.error('[Auth] Error al configurar contraseña:', {
+    code: (error && error.code) || null,
+    status: (error && error.status) || null,
+    name: (error && error.name) || null,
+    message: (error && error.message) || null,
+  });
 }
 
 async function handleSetPassword(e) {
@@ -384,23 +445,37 @@ async function handleSetPassword(e) {
   try {
     const { error } = await supabaseClient.auth.updateUser({ password: newPwd });
     if (error) {
-      errEl.textContent = 'No pudimos guardar la contraseña. Probá de nuevo en unos minutos.';
+      _logSetPasswordError(error);
+      errEl.textContent = _setPasswordErrorMessage(error);
       errEl.classList.add('visible');
       return;
     }
 
+    // El mensaje de éxito y el precargado del login usan _pwdSetupEmail,
+    // capturado en _showPasswordSetupScreen() ANTES de este punto — acá
+    // todavía no se hizo signOut(), pero ya no hace falta volver a leer la
+    // sesión.
+    successEl.textContent = _pwdSetupEmail
+      ? `Contraseña configurada. Iniciá sesión con ${_pwdSetupEmail} y tu nueva contraseña.`
+      : 'Contraseña configurada. Ya podés iniciar sesión con tu nueva contraseña.';
     successEl.classList.add('visible');
     document.getElementById('pwdsetup-form').style.display = 'none';
 
     // No montar el portal con esta sesión transitoria — pedir login normal.
     await supabaseClient.auth.signOut();
+
+    // Precargar el email en el login normal — la persona no tiene que
+    // volver a escribirlo ni adivinar cuál usar.
+    const loginEmailInput = document.getElementById('login-email');
+    if (loginEmailInput && _pwdSetupEmail) loginEmailInput.value = _pwdSetupEmail;
+
     setTimeout(() => {
       document.getElementById('password-setup-screen').classList.add('hidden');
       document.getElementById('login-screen').classList.remove('hidden');
     }, 1800);
   } catch (unexpectedError) {
-    console.error('[Auth] Error al configurar contraseña:', unexpectedError.message);
-    errEl.textContent = 'Ocurrió un error inesperado. Probá de nuevo en unos minutos.';
+    _logSetPasswordError(unexpectedError);
+    errEl.textContent = 'Ocurrió un error inesperado. Volvé a intentarlo y, si el problema continúa, contactá al equipo Bullpadel.';
     errEl.classList.add('visible');
   } finally {
     if (submitBtn) submitBtn.disabled = false;

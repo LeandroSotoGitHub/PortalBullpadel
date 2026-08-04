@@ -128,6 +128,133 @@ function extractPgTag(error: unknown): string | null {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// Clasificación de errores de Supabase Auth (AuthError) — mismo espíritu que
+// pgErrorCode/extractPgTag arriba, pero para el SDK de Auth en vez de
+// Postgres. `error.code` y `error.status` son el contrato estable del SDK
+// (https://supabase.com/docs/guides/auth/debugging/error-codes); `.message`
+// es texto libre pensado para humanos, no para bifurcar lógica — cambia de
+// wording entre versiones y a veces llega vacío (se vio en producción: un
+// fallo de conexión SMTP logueó `inviteError?.message` como `{}`). Por eso
+// acá `.code`/`.status` son el mecanismo PRINCIPAL; el texto solo entra como
+// fallback final, y únicamente para el caso de cuenta ya existente (el más
+// fácil de reconocer por texto en SDKs viejos sin `.code`).
+interface ClassifiedAuthError {
+  status: number
+  code: string
+  message: string
+}
+
+function classifyInviteError(error: unknown): ClassifiedAuthError {
+  const e = error as { code?: unknown; status?: unknown; message?: unknown } | null
+  const errCode = typeof e?.code === 'string' ? e.code : undefined
+  const errStatus = typeof e?.status === 'number' ? e.status : undefined
+
+  if (errCode === 'email_exists' || errCode === 'user_already_exists') {
+    return { status: 409, code: 'duplicate_email', message: 'Ya existe una cuenta con ese email.' }
+  }
+  if (errCode === 'email_address_invalid') {
+    return { status: 400, code: 'invalid_email', message: 'El email ingresado no es válido.' }
+  }
+  if (errCode === 'over_email_send_rate_limit' || errCode === 'over_request_rate_limit' || errStatus === 429) {
+    return {
+      status: 429,
+      code: 'email_rate_limited',
+      message: 'Se alcanzó el límite de envío de emails — esperá unos minutos antes de reintentar.',
+    }
+  }
+  if (errCode === 'email_address_not_authorized') {
+    return {
+      status: 503,
+      code: 'email_delivery_unavailable',
+      message: 'El servicio de correo no está habilitado para enviar a esta dirección. Contactá al equipo técnico.',
+    }
+  }
+  if (typeof errStatus === 'number' && errStatus >= 500) {
+    // Fallos del proveedor SMTP/Auth (conexión rechazada, credenciales SMTP
+    // inválidas, timeout, etc.) — GoTrue los propaga con status >= 500 sin
+    // necesariamente dar un `.code` específico. No es un error interno de
+    // esta función, es el proveedor de correo fallando: 503, no 500.
+    return {
+      status: 503,
+      code: 'email_delivery_unavailable',
+      message: 'El servicio de correo no está disponible en este momento. Intentá nuevamente en unos minutos.',
+    }
+  }
+
+  // Fallback SOLO por texto, y SOLO para el caso de cuenta existente — para
+  // SDKs/versiones donde `.code` no viene poblado. Nunca el mecanismo
+  // principal de clasificación. Frases de 2+ palabras, no palabras sueltas:
+  // "already"/"registered"/"exists" evaluadas por separado (versión
+  // anterior) generaban falsos positivos — un mensaje como "SMTP host does
+  // not exist" o "webhook not registered for this project" no tiene nada
+  // que ver con una cuenta duplicada, pero contenía "exist"/"registered".
+  const msg = typeof e?.message === 'string' ? e.message.toLowerCase() : ''
+  const isDuplicateEmailText = DUPLICATE_EMAIL_PHRASES.some((phrase) => msg.includes(phrase))
+  if (isDuplicateEmailText) {
+    return { status: 409, code: 'duplicate_email', message: 'Ya existe una cuenta con ese email.' }
+  }
+
+  return { status: 500, code: 'internal_error', message: 'No se pudo enviar la invitación.' }
+}
+
+// Frases inequívocas (no palabras sueltas) para el fallback de texto de
+// arriba. Exportada como constante para poder testearla de forma aislada.
+const DUPLICATE_EMAIL_PHRASES = ['already registered', 'already exists', 'user already', 'email already']
+
+// ─────────────────────────────────────────────────────────────────────────
+// Sanitización de mensajes de error antes de loguearlos. `.message` viene
+// del proveedor de Auth/SMTP y puede incluir el email invitado, tokens o
+// claves (GoTrue a veces ecoa parte del payload o del header en el texto
+// del error) — nunca se loguea `.message` crudo, siempre pasa por acá
+// primero.
+// ─────────────────────────────────────────────────────────────────────────
+
+const LOG_EMAIL_PATTERN = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
+const LOG_BEARER_PATTERN = /\bBearer\s+[A-Za-z0-9\-_.]+/gi
+const LOG_JWT_PATTERN = /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g
+const LOG_SUPABASE_KEY_PATTERN = /\bsb_[a-z]+_[A-Za-z0-9_-]{6,}\b/gi
+const LOG_MESSAGE_MAX_LENGTH = 500
+
+function sanitizeLogMessage(message: unknown): string | null {
+  if (typeof message !== 'string') return null
+
+  // Primero colapsar a una sola línea — un \r o \n en medio de un JSON de
+  // log lo puede romper o permitir inyectar líneas de log falsas.
+  const collapsed = message.replace(/[\r\n]+/g, ' ').trim()
+  if (!collapsed) return null
+
+  const sanitized = collapsed
+    .replace(LOG_BEARER_PATTERN, 'Bearer [token_redacted]')
+    .replace(LOG_JWT_PATTERN, '[token_redacted]')
+    .replace(LOG_SUPABASE_KEY_PATTERN, '[key_redacted]')
+    .replace(LOG_EMAIL_PATTERN, '[email_redacted]')
+    .trim()
+
+  if (!sanitized) return null
+  return sanitized.length > LOG_MESSAGE_MAX_LENGTH
+    ? `${sanitized.slice(0, LOG_MESSAGE_MAX_LENGTH)}…`
+    : sanitized
+}
+
+// Logging estructurado y seguro de un fallo de invitación — nunca incluye el
+// email del invitado, `metadata`, tokens, headers, credenciales SMTP ni el
+// objeto de error crudo completo (podría traer detalles internos del
+// proveedor). Solo los 4 campos estables del contrato de AuthError, y
+// `message` siempre pasa por sanitizeLogMessage() antes de loguearse.
+function logInviteFailure(error: unknown): void {
+  const e = error as { code?: unknown; status?: unknown; name?: unknown; message?: unknown } | null
+  console.error(
+    JSON.stringify({
+      event: 'admin_portal_invite_failed',
+      code: typeof e?.code === 'string' ? e.code : null,
+      status: typeof e?.status === 'number' ? e.status : 0,
+      name: typeof e?.name === 'string' ? e.name : null,
+      message: sanitizeLogMessage(e?.message),
+    }),
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // PORTAL_BASE_URL — para redirectTo. NUNCA se acepta una URL enviada por el
 // cliente: siempre sale de la variable de entorno del lado servidor.
 // ─────────────────────────────────────────────────────────────────────────
@@ -529,12 +656,9 @@ async function handleInviteUser(admin: any, actor: ActorProfile, payload: Payloa
   })
 
   if (inviteError || !inviteData?.user) {
-    const msg = (inviteError?.message || '').toLowerCase()
-    if (msg.includes('already') || msg.includes('registered') || msg.includes('exists')) {
-      return fail(409, 'Ya existe una cuenta con ese email.', 'duplicate_email')
-    }
-    console.error('[admin-portal] inviteUserByEmail failed:', inviteError?.message)
-    return fail(500, 'No se pudo enviar la invitación.', 'internal_error')
+    logInviteFailure(inviteError)
+    const classified = classifyInviteError(inviteError)
+    return fail(classified.status, classified.message, classified.code)
   }
 
   const newUserId = inviteData.user.id
