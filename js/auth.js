@@ -4,8 +4,9 @@
 // este archivo). La sesión persiste en el almacenamiento interno de Supabase
 // (ya no hay ninguna clave propia de sesión/usuarios en localStorage).
 //
-// Administración queda deshabilitada temporalmente (ver js/admin.js): no se
-// llama a renderAdmin() desde mountPortal() y el botón de nav está oculto.
+// RUN Fase 2: Administración está activa para owner/vendedor (ver
+// js/admin.js). renderAdmin() es lazy — se dispara desde showSection('admin')
+// en js/eventos.js, no desde acá.
 
 let _authStateSubscribed = false;
 
@@ -206,7 +207,10 @@ function mountPortal() {
     renderMediaCenter();
     window._portalMounted = true;
   }
-  // Administración deshabilitada temporalmente — no se renderiza (ver js/admin.js)
+  // Administración (RUN Fase 2) NO se renderiza acá — es lazy, disparada por
+  // showSection('admin') (ver js/eventos.js), igual que Mapa competitivo.
+  // Evita consultar Supabase en cada login para roles que nunca abren el
+  // panel.
 
   // Renders dependientes del usuario — deben actualizarse en CADA login,
   // no solo en el primer montaje: leen localStorage namespaced por
@@ -233,8 +237,10 @@ function applyRolePermissions() {
   const perms = ROLES[currentUser.rol]?.permisos || {};
 
   // Map nav button text → permission key.
-  // "Administración" queda fuera a propósito: el botón permanece oculto
-  // (ver index.html) hasta que exista una función de servidor segura.
+  // "Administración" (RUN Fase 2): visible para owner/vendedor vía
+  // verAdminPanel (ROLES en js/data.js). Es solo UX — la autoridad real es
+  // la Edge Function admin-portal + RLS (ver js/admin.js), que rechazan la
+  // operación aunque alguien reactive el botón a mano.
   const navMap = [
     { text: 'Inicio',          perm: 'verCatalogo' },
     { text: 'Catálogo',        perm: 'verCatalogo' },
@@ -242,10 +248,10 @@ function applyRolePermissions() {
     { text: 'Comparador',      perm: 'verComparador' },
     { text: 'Capacitaciones',  perm: 'verCapacitaciones' },
     { text: 'Media Center',    perm: 'verMediaCenter' },
+    { text: 'Administración',  perm: 'verAdminPanel' },
   ];
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    if (btn.id === 'nav-admin') return; // oculto temporalmente, no reintroducir
     const entry = navMap.find(m => btn.textContent.trim() === m.text);
     if (entry) {
       btn.style.display = perms[entry.perm] !== false ? '' : 'none';
@@ -288,6 +294,119 @@ function applyRolePermissions() {
   }
 }
 
+// ── Configurar contraseña (invitación / recuperación) ──────────────────────
+// Un link de invitación o de recuperación de Supabase vuelve al portal con
+// un token en la URL (hash `#access_token=...&type=invite|recovery` o query
+// `?code=...&type=invite|recovery`, según el flow). detectSessionInUrl:true
+// (js/supabase-config.js) ya establece la sesión automáticamente; acá solo
+// se detecta el caso para NO montar el portal con esa sesión transitoria —
+// hay que pedir contraseña nueva primero.
+//
+// Importante: Supabase solo distingue un evento propio para recuperación
+// (PASSWORD_RECOVERY); un link de INVITACIÓN dispara el mismo SIGNED_IN que
+// un login normal. Por eso la detección se hace leyendo la URL cruda, no el
+// evento de onAuthStateChange — si dependiera del evento, una invitación
+// terminaría montando el portal sin haber configurado contraseña.
+function _isPasswordSetupLink() {
+  const raw = (window.location.hash || '') + ' ' + (window.location.search || '');
+  return /type=(recovery|invite)/.test(raw) && /(access_token=|code=)/.test(raw);
+}
+
+async function _showPasswordSetupScreen() {
+  const loginScreen   = document.getElementById('login-screen');
+  const pwdSetupScreen = document.getElementById('password-setup-screen');
+  const errEl          = document.getElementById('pwdsetup-error');
+  const form            = document.getElementById('pwdsetup-form');
+
+  // Limpiar la URL ya — evita reprocesar el link si se recarga la página.
+  // La librería ya leyó window.location al crear el cliente (síncrono, en
+  // js/supabase-config.js), así que esto no interfiere con esa lectura.
+  window.history.replaceState(null, '', window.location.pathname);
+
+  loginScreen.classList.add('hidden');
+  pwdSetupScreen.classList.remove('hidden');
+
+  if (!supabaseClient) {
+    errEl.textContent = 'El servicio de acceso no está disponible en este momento.';
+    errEl.classList.add('visible');
+    form.style.display = 'none';
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) throw error;
+    if (!data || !data.session) {
+      errEl.textContent = 'El enlace no es válido o ya expiró. Pedí uno nuevo.';
+      errEl.classList.add('visible');
+      form.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('[Auth] Error al validar el enlace de invitación/recuperación:', error.message);
+    errEl.textContent = 'El enlace no es válido o ya expiró. Pedí uno nuevo.';
+    errEl.classList.add('visible');
+    form.style.display = 'none';
+  }
+
+  _subscribeAuthStateChange();
+}
+
+async function handleSetPassword(e) {
+  e.preventDefault();
+  const newPwd     = document.getElementById('pwdsetup-new').value;
+  const confirmPwd = document.getElementById('pwdsetup-confirm').value;
+  const errEl      = document.getElementById('pwdsetup-error');
+  const successEl  = document.getElementById('pwdsetup-success');
+  const submitBtn  = e.target.querySelector('button[type="submit"]');
+
+  errEl.classList.remove('visible');
+  errEl.textContent = '';
+  successEl.classList.remove('visible');
+
+  if (newPwd.length < 8) {
+    errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+    errEl.classList.add('visible');
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    errEl.textContent = 'Las contraseñas no coinciden.';
+    errEl.classList.add('visible');
+    return;
+  }
+  if (!supabaseClient) {
+    errEl.textContent = 'El servicio de acceso no está disponible en este momento.';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  if (submitBtn) submitBtn.disabled = true;
+
+  try {
+    const { error } = await supabaseClient.auth.updateUser({ password: newPwd });
+    if (error) {
+      errEl.textContent = 'No pudimos guardar la contraseña. Probá de nuevo en unos minutos.';
+      errEl.classList.add('visible');
+      return;
+    }
+
+    successEl.classList.add('visible');
+    document.getElementById('pwdsetup-form').style.display = 'none';
+
+    // No montar el portal con esta sesión transitoria — pedir login normal.
+    await supabaseClient.auth.signOut();
+    setTimeout(() => {
+      document.getElementById('password-setup-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+    }, 1800);
+  } catch (unexpectedError) {
+    console.error('[Auth] Error al configurar contraseña:', unexpectedError.message);
+    errEl.textContent = 'Ocurrió un error inesperado. Probá de nuevo en unos minutos.';
+    errEl.classList.add('visible');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
 // ── onAuthStateChange ──────────────────────────────────────────────────────
 // Solo reacciona a un SIGNED_OUT (ej. token revocado/expirado en otra
 // pestaña). No dispara mountPortal() acá — eso solo lo hacen handleLogin()
@@ -310,6 +429,13 @@ async function initAuth() {
   // Ocultar portal y navegación mientras se verifica la sesión
   document.querySelector('.nav-bar').style.display = 'none';
   document.querySelector('.main').style.display    = 'none';
+
+  // Link de invitación/recuperación — no seguir con el flujo normal, no
+  // montar el portal. Ver _showPasswordSetupScreen().
+  if (_isPasswordSetupLink()) {
+    await _showPasswordSetupScreen();
+    return;
+  }
 
   if (!supabaseClient) {
     if (errEl) {

@@ -55,6 +55,47 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════
+     CONFIGURAR CONTRASEÑA — invitación / recuperación (RUN Fase 2)
+     - Se muestra solo cuando un link de invitación o recuperación de
+       Supabase Auth trae la sesión de vuelta al portal. Ver
+       _isPasswordSetupLink()/_showPasswordSetupScreen() en js/auth.js.
+     - Nunca monta el portal: al confirmar, cierra sesión y pide login
+       normal (handleSetPassword en js/auth.js).
+     ═══════════════════════════════════════════════════ -->
+<div id="password-setup-screen" class="hidden">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M8 12 Q12 6 16 12 Q12 18 8 12Z" fill="white" stroke="none"/>
+        </svg>
+      </div>
+      <div class="login-brand">Bullpadel 2026</div>
+      <div class="login-sub">Configurá tu contraseña</div>
+    </div>
+    <form class="login-form" id="pwdsetup-form" onsubmit="handleSetPassword(event)">
+      <div class="login-field">
+        <label for="pwdsetup-new">Nueva contraseña</label>
+        <div class="pwd-wrap"><input id="pwdsetup-new" type="password" placeholder="Mínimo 8 caracteres"
+               autocomplete="new-password" required minlength="8"><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwdsetup-new', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
+      </div>
+      <div class="login-field">
+        <label for="pwdsetup-confirm">Confirmar contraseña</label>
+        <div class="pwd-wrap"><input id="pwdsetup-confirm" type="password" placeholder="Repetí la contraseña"
+               autocomplete="new-password" required minlength="8"><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwdsetup-confirm', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
+      </div>
+      <div class="login-error" id="pwdsetup-error"></div>
+      <div class="pwdsetup-success" id="pwdsetup-success">
+        Contraseña configurada. Ya podés iniciar sesión con tu nueva contraseña.
+      </div>
+      <button class="login-btn" type="submit" id="pwdsetup-submit">Guardar contraseña</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
      HTML · 1. HEADER
      ═══════════════════════════════════════════════════ -->
 <header class="header">
@@ -387,11 +428,14 @@
     <div id="media-center-shelves"></div>
   </section>
 
-  <!-- 4.7 Administración de usuarios -->
+  <!-- 4.7 Administración — RUN Fase 2: organizaciones + cuentas reales vía
+       Edge Function admin-portal (js/admin.js). No hay altas de usuarios
+       desde el navegador con contraseña propia: todo pasa por invitación
+       (supabase.auth.admin.inviteUserByEmail, solo dentro de la función). -->
   <section id="sec-admin" class="section">
     <div class="sec-head">
       <h1>Administración</h1>
-      <p>Gestión de usuarios del portal Bullpadel</p>
+      <p>Organizaciones y cuentas del portal Bullpadel.</p>
     </div>
     <div id="admin-restricted" class="admin-restricted" style="display:none">
       <div class="admin-restricted-icon" style="font-size:20px;font-weight:700;color:var(--rojo)">✕</div>
@@ -400,95 +444,132 @@
     </div>
     <div id="admin-content" style="display:none">
 
+      <div id="admin-loading" class="admin-empty" style="display:none">Cargando datos…</div>
+      <div id="admin-error" class="admin-alert admin-alert-error"></div>
+
       <!-- Stats -->
       <div class="admin-stats" id="admin-stats" style="margin-bottom:24px"></div>
 
-      <!-- Crear usuario -->
-      <div class="admin-card" style="margin-bottom:20px">
+      <!-- Organizaciones -->
+      <div class="admin-card" id="admin-orgs-card" style="margin-bottom:20px">
         <div class="admin-card-head">
-          <div>
-            <div class="admin-card-title">Nuevo usuario</div>
-          </div>
-          <button class="btn btn-secondary btn-sm" id="btn-toggle-form"
-                  onclick="adminToggleForm()">Mostrar formulario</button>
+          <div class="admin-card-title">Organizaciones</div>
+          <button class="btn btn-secondary btn-sm" id="btn-toggle-org-form"
+                  onclick="adminToggleOrgForm()" style="display:none">Nueva organización</button>
         </div>
-        <div id="admin-create-form" style="display:none">
+        <div id="admin-org-form-wrap" style="display:none">
           <div class="admin-card-body">
-            <div id="alert-create" class="admin-alert"></div>
-            <form class="admin-form" id="form-create-user"
-                  onsubmit="adminCreateUser(event)">
+            <div id="alert-org-create" class="admin-alert"></div>
+            <form class="admin-form" id="form-create-org" onsubmit="adminCreateOrganization(event)">
               <div class="form-row">
                 <div class="form-field">
                   <label>Nombre <span class="form-required">*</span></label>
-                  <input type="text" id="cu-nombre" placeholder="Nombre completo" required>
+                  <input type="text" id="org-nombre" placeholder="Nombre del distribuidor" required>
                 </div>
                 <div class="form-field">
-                  <label>Email <span class="form-required">*</span></label>
-                  <input type="email" id="cu-email" placeholder="email@ejemplo.com" required>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Contraseña <span class="form-required">*</span></label>
-                  <div class="pwd-wrap"><input type="password" id="cu-password" placeholder="Mínimo 6 caracteres" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('cu-password', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
-                </div>
-                <div class="form-field">
-                  <label>Rol <span class="form-required">*</span></label>
-                  <select id="cu-rol" required>
-                    <option value="">— Seleccionar —</option>
-                    <option value="owner">Owner</option>
-                    <option value="vendedor">Vendedor</option>
-                    <option value="usuario">Usuario / Distribuidor</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Cliente mayorista <span id="cu-mayorista-req"></span></label>
-                  <input type="text" id="cu-mayorista"
-                         placeholder="Nombre del distribuidor">
-                  <span class="form-hint" id="cu-mayorista-hint"></span>
-                </div>
-                <div class="form-field">
-                  <label>Estado <span class="form-required">*</span></label>
-                  <select id="cu-estado" required>
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
-                  </select>
+                  <label>Código</label>
+                  <input type="text" id="org-codigo" placeholder="Opcional">
                 </div>
               </div>
               <div style="display:flex;gap:10px;justify-content:flex-end">
-                <button type="button" class="btn btn-secondary"
-                        onclick="adminToggleForm()">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Crear usuario</button>
+                <button type="button" class="btn btn-secondary" onclick="adminToggleOrgForm()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btn-submit-org-create">Crear organización</button>
               </div>
             </form>
           </div>
         </div>
-      </div>
-
-      <!-- Tabla de usuarios -->
-      <div class="admin-card">
-        <div class="admin-card-head">
-          <div class="admin-card-title">Usuarios del portal</div>
-          <button class="btn btn-secondary btn-sm"
-                  onclick="renderAdmin()">↻ Actualizar</button>
-        </div>
-        <div id="alert-table" class="admin-alert" style="margin:14px 14px 0"></div>
+        <div id="alert-orgs-table" class="admin-alert" style="margin:14px 14px 0"></div>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Usuario</th>
-                <th>Rol</th>
+                <th>Organización</th>
+                <th>Código</th>
                 <th>Estado</th>
-                <th>Mayorista</th>
-                <th>Alta</th>
-                <th>Creado por</th>
+                <th>Vendedor asignado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody id="admin-table-body"></tbody>
+            <tbody id="admin-orgs-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Invitar cuenta -->
+      <div class="admin-card" style="margin-bottom:20px">
+        <div class="admin-card-head">
+          <div class="admin-card-title">Invitar cuenta</div>
+        </div>
+        <div class="admin-card-body">
+          <div id="alert-invite" class="admin-alert"></div>
+          <form class="admin-form" id="form-invite" onsubmit="adminInviteUser(event)">
+            <div class="form-row">
+              <div class="form-field">
+                <label>Nombre <span class="form-required">*</span></label>
+                <input type="text" id="inv-nombre" placeholder="Nombre completo" required>
+              </div>
+              <div class="form-field">
+                <label>Email <span class="form-required">*</span></label>
+                <input type="email" id="inv-email" placeholder="email@ejemplo.com" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field" id="inv-rol-wrap">
+                <label>Rol <span class="form-required">*</span></label>
+                <select id="inv-rol" required onchange="adminUpdateInviteOrgVisibility()">
+                  <option value="usuario">Usuario / Distribuidor</option>
+                  <option value="vendedor">Vendedor</option>
+                </select>
+              </div>
+              <div class="form-field" id="inv-org-wrap">
+                <label>Organización <span class="form-required">*</span></label>
+                <select id="inv-organization" required>
+                  <option value="">— elegir organización —</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-hint" id="inv-hint" style="margin-bottom:10px"></div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button type="submit" class="btn btn-primary" id="btn-submit-invite">Enviar invitación</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Cuentas -->
+      <div class="admin-card" style="margin-bottom:20px">
+        <div class="admin-card-head">
+          <div class="admin-card-title">Cuentas</div>
+          <button class="btn btn-secondary btn-sm" onclick="renderAdmin()">↻ Actualizar</button>
+        </div>
+        <div id="alert-accounts-table" class="admin-alert" style="margin:14px 14px 0"></div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Cuenta</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Organización</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-accounts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Auditoría — solo owner -->
+      <div class="admin-card" id="admin-audit-card" style="display:none">
+        <div class="admin-card-head">
+          <div class="admin-card-title">Auditoría</div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Fecha</th><th>Acción</th><th>Actor</th><th>Objetivo</th></tr>
+            </thead>
+            <tbody id="admin-audit-body"></tbody>
           </table>
         </div>
       </div>
@@ -496,90 +577,91 @@
     </div><!-- /admin-content -->
   </section>
 
-  <!-- Modal: editar usuario -->
-  <div class="admin-modal-bg" id="modal-edit">
+  <!-- Modal: asignar vendedor a organización -->
+  <div class="admin-modal-bg" id="modal-assign-seller">
     <div class="admin-modal">
       <div class="admin-modal-head">
-        <div class="admin-modal-title">Editar usuario</div>
-        <button class="admin-modal-close" onclick="adminCloseModal('modal-edit')">✕</button>
+        <div class="admin-modal-title">Asignar vendedor</div>
+        <button class="admin-modal-close" onclick="adminCloseModal('modal-assign-seller')">✕</button>
       </div>
       <div class="admin-modal-body">
-        <div id="alert-edit" class="admin-alert"></div>
-        <form class="admin-form" id="form-edit-user"
-              onsubmit="adminSaveEdit(event)">
-          <input type="hidden" id="eu-id">
-          <div class="form-row">
-            <div class="form-field">
-              <label>Nombre <span class="form-required">*</span></label>
-              <input type="text" id="eu-nombre" required>
-            </div>
-            <div class="form-field">
-              <label>Email <span class="form-required">*</span></label>
-              <input type="email" id="eu-email" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field" id="eu-rol-wrap">
-              <label>Rol</label>
-              <select id="eu-rol">
-                <option value="owner">Owner</option>
-                <option value="vendedor">Vendedor</option>
-                <option value="usuario">Usuario / Distribuidor</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label>Estado</label>
-              <select id="eu-estado">
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
-              </select>
-            </div>
+        <div id="alert-assign-seller" class="admin-alert"></div>
+        <form class="admin-form" id="form-assign-seller" onsubmit="adminSaveAssignSeller(event)">
+          <input type="hidden" id="as-org-id">
+          <div class="form-field">
+            <label>Organización</label>
+            <input type="text" id="as-org-nombre" disabled>
           </div>
           <div class="form-field">
-            <label>Cliente mayorista</label>
-            <input type="text" id="eu-mayorista"
-                   placeholder="Nombre del distribuidor">
+            <label>Vendedor</label>
+            <select id="as-seller-id">
+              <option value="">— Sin asignar —</option>
+            </select>
           </div>
         </form>
       </div>
       <div class="admin-modal-foot">
-        <button class="btn btn-secondary"
-                onclick="adminCloseModal('modal-edit')">Cancelar</button>
-        <button class="btn btn-primary"
-                onclick="adminSaveEdit(event)">Guardar cambios</button>
+        <button class="btn btn-secondary" onclick="adminCloseModal('modal-assign-seller')">Cancelar</button>
+        <button class="btn btn-primary" onclick="adminSaveAssignSeller(event)">Guardar</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: cambiar contraseña -->
-  <div class="admin-modal-bg" id="modal-pwd">
+  <!-- Modal: editar organización -->
+  <div class="admin-modal-bg" id="modal-edit-org">
     <div class="admin-modal">
       <div class="admin-modal-head">
-        <div class="admin-modal-title">Cambiar contraseña</div>
-        <button class="admin-modal-close" onclick="adminCloseModal('modal-pwd')">✕</button>
+        <div class="admin-modal-title">Editar organización</div>
+        <button class="admin-modal-close" onclick="adminCloseModal('modal-edit-org')">✕</button>
       </div>
       <div class="admin-modal-body">
-        <div id="alert-pwd" class="admin-alert"></div>
-        <form class="admin-form" id="form-pwd"
-              onsubmit="adminSavePwd(event)">
-          <input type="hidden" id="pwd-id">
+        <div id="alert-edit-org" class="admin-alert"></div>
+        <form class="admin-form" id="form-edit-org" onsubmit="adminSaveOrgEdit(event)">
+          <input type="hidden" id="eo-org-id">
           <div class="form-field">
-            <label>Nueva contraseña <span class="form-required">*</span></label>
-            <div class="pwd-wrap"><input type="password" id="pwd-new"
-                   placeholder="Mínimo 6 caracteres" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwd-new', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
+            <label>Nombre <span class="form-required">*</span></label>
+            <input type="text" id="eo-nombre" required>
           </div>
           <div class="form-field">
-            <label>Confirmar contraseña <span class="form-required">*</span></label>
-            <div class="pwd-wrap"><input type="password" id="pwd-confirm"
-                   placeholder="Repetir contraseña" required><button type="button" class="pwd-eye" onclick="togglePwdVisibility('pwd-confirm', this)" tabindex="-1" aria-label="Mostrar/ocultar contraseña">Ver</button></div>
+            <label>Código</label>
+            <input type="text" id="eo-codigo">
+          </div>
+          <div class="form-field">
+            <label>Estado</label>
+            <select id="eo-estado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
           </div>
         </form>
       </div>
       <div class="admin-modal-foot">
-        <button class="btn btn-secondary"
-                onclick="adminCloseModal('modal-pwd')">Cancelar</button>
-        <button class="btn btn-primary"
-                onclick="adminSavePwd(event)">Cambiar contraseña</button>
+        <button class="btn btn-secondary" onclick="adminCloseModal('modal-edit-org')">Cancelar</button>
+        <button class="btn btn-primary" onclick="adminSaveOrgEdit(event)">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: editar nombre de cuenta -->
+  <div class="admin-modal-bg" id="modal-edit-name">
+    <div class="admin-modal">
+      <div class="admin-modal-head">
+        <div class="admin-modal-title">Editar nombre</div>
+        <button class="admin-modal-close" onclick="adminCloseModal('modal-edit-name')">✕</button>
+      </div>
+      <div class="admin-modal-body">
+        <div id="alert-edit-name" class="admin-alert"></div>
+        <form class="admin-form" id="form-edit-name" onsubmit="adminSaveProfileName(event)">
+          <input type="hidden" id="en-profile-id">
+          <div class="form-field">
+            <label>Nombre <span class="form-required">*</span></label>
+            <input type="text" id="en-nombre" required>
+          </div>
+        </form>
+      </div>
+      <div class="admin-modal-foot">
+        <button class="btn btn-secondary" onclick="adminCloseModal('modal-edit-name')">Cancelar</button>
+        <button class="btn btn-primary" onclick="adminSaveProfileName(event)">Guardar</button>
       </div>
     </div>
   </div>

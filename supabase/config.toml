@@ -1,0 +1,22 @@
+# Configuración del Supabase CLI para Portal Bullpadel.
+#
+# `project_id` es solo una etiqueta local (nombra los contenedores si algún
+# día se corre `supabase start` localmente) — NO es el project ref real.
+# Para enlazar este repo al proyecto real (zzvdrnwotxrgvncbsaez) hay que
+# correr, una sola vez, con el CLI ya autenticado:
+#
+#   supabase link --project-ref zzvdrnwotxrgvncbsaez
+#
+# Este archivo es mínimo a propósito: el proyecto no corre el stack local
+# completo de Supabase (db/auth/storage/studio) — solo se usa el CLI para
+# aplicar migraciones y desplegar la Edge Function admin-portal. Si en el
+# futuro se necesita `supabase start` local completo, correr `supabase init`
+# agrega las secciones adicionales (db, studio, auth, storage, etc.) sin
+# pisar lo de acá.
+project_id = "portal-bullpadel"
+
+[functions.admin-portal]
+# Exige un JWT válido en el header Authorization antes de invocar la
+# función (capa adicional a la validación propia de withSupabase({auth:
+# 'user'}) en supabase/functions/admin-portal/index.ts — ver ese archivo).
+verify_jwt = true

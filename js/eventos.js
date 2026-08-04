@@ -114,6 +114,12 @@ function showSection(id,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
 
+  // Administración (RUN Fase 2): render lazy en cada entrada a la sección,
+  // igual que Mapa competitivo. renderAdmin() valida permisos por su cuenta
+  // (muestra "acceso restringido" si el rol no corresponde) — cubre también
+  // una llamada manual a showSection('admin') desde la consola.
+  if (id === 'admin' && typeof renderAdmin === 'function') renderAdmin();
+
   // Tip contextual por módulo (capa independiente del modal de onboarding) — noop si el módulo no tiene tip
   if (typeof maybeShowModuleTip === 'function') maybeShowModuleTip(id);
 }

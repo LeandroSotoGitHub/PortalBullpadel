@@ -2,3 +2,11 @@ Catalogo/
 desktop.ini
 CONTEXT.md
 HANDOFF_rediseno_visual.md
+
+# Supabase CLI — estado local / secretos locales (nunca el proyecto real,
+# ese vive en Supabase; esto es solo lo que el CLI puede generar en disco)
+supabase/.temp/
+supabase/.branches/
+.env
+.env.local
+supabase/functions/**/.env

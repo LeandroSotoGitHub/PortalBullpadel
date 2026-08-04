@@ -22,7 +22,16 @@ if (typeof window.supabase === 'undefined' || typeof window.supabase.createClien
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: false
+      // RUN Fase 2 (Administración): true a partir de acá — necesario para
+      // que los links de invitación/recuperación de contraseña (que
+      // vuelven al portal con un token en la URL) establezcan sesión. La
+      // detección de "esta carga de página viene de un link de invitación/
+      // recuperación" NO depende de esto — se hace leyendo la URL cruda de
+      // forma temprana en js/auth.js, porque un link de invitación dispara
+      // el mismo evento SIGNED_IN que un login normal (Supabase solo emite
+      // un evento distinto, PASSWORD_RECOVERY, para recuperación — no para
+      // invitación). Ver _checkPasswordSetupLink() en js/auth.js.
+      detectSessionInUrl: true
     }
   });
 }

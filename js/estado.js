@@ -68,4 +68,9 @@ function clearPreviousSessionState() {
 
   // Tips contextuales por módulo — banners insertados en el DOM del módulo
   document.querySelectorAll('.module-tip').forEach(el => el.remove());
+
+  // Administración (RUN Fase 2) — listados/caché en memoria y modales
+  // abiertos de la cuenta anterior. renderAdmin() vuelve a cargar todo
+  // desde cero para la cuenta nueva (ver js/admin.js).
+  if (typeof _resetAdminState === 'function') _resetAdminState();
 }
