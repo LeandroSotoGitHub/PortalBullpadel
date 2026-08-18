@@ -401,6 +401,15 @@ async function countAssignedOrganizations(admin: any, sellerId: string): Promise
   return count ?? 0
 }
 
+async function countOrganizationProfiles(admin: any, organizationId: string): Promise<number> {
+  const { count, error } = await admin
+    .from('profiles')
+    .select('id', { count: 'exact', head: true })
+    .eq('organization_id', organizationId)
+  if (error) throw error
+  return count ?? 0
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // Acciones
 // ─────────────────────────────────────────────────────────────────────────
@@ -509,6 +518,89 @@ async function handleUpdateOrganization(admin: any, actor: ActorProfile, payload
   })
 
   return ok({ organization: data })
+}
+
+async function handleDeleteOrganization(admin: any, actor: ActorProfile, payload: Payload): Promise<Response> {
+  if (actor.role !== 'owner') {
+    await rejected(admin, actor.id, 'delete_organization: solo owner')
+    return fail(403, 'Solo el owner puede eliminar organizaciones.', 'forbidden')
+  }
+
+  const organizationId = readUuid(payload, 'organization_id')
+  if (!organizationId) return fail(400, 'organization_id inválido.', 'invalid_payload')
+  if (payload.confirmation !== 'ELIMINAR') {
+    return fail(400, 'Confirmación de eliminación inválida.', 'deletion_not_confirmed')
+  }
+
+  const target = await getOrganizationById(admin, organizationId)
+  if (!target) return fail(404, 'Organización no encontrada.', 'not_found')
+
+  if (target.status !== 'inactivo') {
+    return fail(
+      409,
+      'La organización debe estar inactiva antes de eliminarla.',
+      'organization_must_be_inactive',
+    )
+  }
+
+  if (target.assigned_seller_id) {
+    return fail(
+      409,
+      'Desasigná al vendedor antes de eliminar la organización.',
+      'organization_seller_assigned',
+    )
+  }
+
+  const linkedProfiles = await countOrganizationProfiles(admin, target.id)
+  if (linkedProfiles > 0) {
+    return fail(
+      409,
+      'La organización todavía tiene cuentas vinculadas. Eliminá primero esas cuentas.',
+      'organization_has_accounts',
+    )
+  }
+
+  // La RPC repite todos los chequeos dentro de una transacción y con lock.
+  // No se otorga DELETE directo sobre organizations ni siquiera a
+  // service_role: esta función SQL privada es la única vía autorizada.
+  const { error } = await admin.rpc('admin_delete_empty_organization', {
+    p_organization_id: target.id,
+  })
+
+  if (error) {
+    const tag = extractPgTag(error)
+    if (tag === 'organization_not_found') {
+      return fail(404, 'Organización no encontrada.', 'not_found')
+    }
+    if (tag === 'organization_must_be_inactive') {
+      return fail(409, 'La organización debe estar inactiva antes de eliminarla.', tag)
+    }
+    if (tag === 'organization_seller_assigned') {
+      return fail(409, 'Desasigná al vendedor antes de eliminar la organización.', tag)
+    }
+    if (tag === 'organization_has_accounts' || pgErrorCode(error) === '23503') {
+      return fail(409, 'La organización todavía tiene cuentas vinculadas. Eliminá primero esas cuentas.', 'organization_has_accounts')
+    }
+    console.error(
+      JSON.stringify({
+        event: 'admin_portal_delete_organization_failed',
+        targetId: target.id,
+        code: pgErrorCode(error) ?? null,
+        message: sanitizeLogMessage(error.message),
+      }),
+    )
+    return fail(500, 'No se pudo eliminar la organización.', 'internal_error')
+  }
+
+  await logAudit(admin, {
+    actorUserId: actor.id,
+    action: 'organization.deleted',
+    targetType: 'organization',
+    targetId: target.id,
+    metadata: { name: target.name, code: target.code },
+  })
+
+  return ok({ deleted: { id: target.id } })
 }
 
 async function handleAssignSeller(admin: any, actor: ActorProfile, payload: Payload): Promise<Response> {
@@ -858,6 +950,95 @@ async function handleSetAccountStatus(admin: any, actor: ActorProfile, payload: 
   return ok({ profile: data })
 }
 
+async function handleDeleteAccount(admin: any, actor: ActorProfile, payload: Payload): Promise<Response> {
+  if (actor.role !== 'owner') {
+    await rejected(admin, actor.id, 'delete_account: solo owner')
+    return fail(403, 'Solo el owner puede eliminar cuentas.', 'forbidden')
+  }
+
+  const profileId = readUuid(payload, 'profile_id')
+  if (!profileId) return fail(400, 'profile_id inválido.', 'invalid_payload')
+  if (payload.confirmation !== 'ELIMINAR') {
+    return fail(400, 'Confirmación de eliminación inválida.', 'deletion_not_confirmed')
+  }
+
+  const target = await getProfileById(admin, profileId)
+  if (!target) return fail(404, 'Cuenta no encontrada.', 'not_found')
+
+  if (target.id === actor.id) {
+    await rejected(admin, actor.id, 'delete_account: intento de autoeliminación')
+    return fail(403, 'No podés eliminar tu propia cuenta.', 'forbidden')
+  }
+
+  // Ningún owner se elimina desde el portal, incluso si está inactivo. Es
+  // una regla deliberadamente más fuerte que la protección del último
+  // owner: evita perder historial o autoridad por un clic equivocado.
+  if (target.role === 'owner') {
+    await rejected(admin, actor.id, 'delete_account: cuenta owner protegida', { target_id: target.id })
+    return fail(403, 'Las cuentas owner no se pueden eliminar desde el portal.', 'owner_deletion_forbidden')
+  }
+
+  if (target.status !== 'inactivo') {
+    return fail(409, 'La cuenta debe estar inactiva antes de eliminarla.', 'account_must_be_inactive')
+  }
+
+  if (target.role === 'vendedor') {
+    const assignedCount = await countAssignedOrganizations(admin, target.id)
+    if (assignedCount > 0) {
+      return fail(
+        409,
+        'Este vendedor todavía tiene organizaciones asignadas. Desasignalas antes de eliminar la cuenta.',
+        'seller_still_assigned',
+      )
+    }
+  }
+
+  // La eliminación es permanente en Supabase Auth. El FK de profiles hacia
+  // auth.users hace cascade a perfil, progreso y preferencias. El trigger
+  // de la migración 202608180001 repite las reglas críticas en la base.
+  const { error } = await admin.auth.admin.deleteUser(target.id)
+  if (error) {
+    const tag = extractPgTag(error)
+    if (tag === 'owner_deletion_forbidden') {
+      return fail(403, 'Las cuentas owner no se pueden eliminar desde el portal.', tag)
+    }
+    if (tag === 'account_must_be_inactive') {
+      return fail(409, 'La cuenta debe estar inactiva antes de eliminarla.', tag)
+    }
+    if (tag === 'seller_still_assigned') {
+      return fail(
+        409,
+        'Este vendedor todavía tiene organizaciones asignadas. Desasignalas antes de eliminar la cuenta.',
+        tag,
+      )
+    }
+    console.error(
+      JSON.stringify({
+        event: 'admin_portal_delete_account_failed',
+        targetId: target.id,
+        code: typeof error.code === 'string' ? error.code : null,
+        status: typeof error.status === 'number' ? error.status : 0,
+        message: sanitizeLogMessage(error.message),
+      }),
+    )
+    return fail(500, 'No se pudo eliminar la cuenta.', 'internal_error')
+  }
+
+  await logAudit(admin, {
+    actorUserId: actor.id,
+    action: 'user.deleted',
+    targetType: 'profile',
+    targetId: target.id,
+    metadata: {
+      role: target.role,
+      organization_id: target.organization_id,
+      display_name: target.display_name,
+    },
+  })
+
+  return ok({ deleted: { id: target.id } })
+}
+
 async function handleSendPasswordReset(admin: any, actor: ActorProfile, payload: Payload): Promise<Response> {
   const profileId = readUuid(payload, 'profile_id')
   if (!profileId) return fail(400, 'profile_id inválido.', 'invalid_payload')
@@ -904,10 +1085,12 @@ async function handleSendPasswordReset(admin: any, actor: ActorProfile, payload:
 const ACTIONS: Record<string, (admin: any, actor: ActorProfile, payload: Payload) => Promise<Response>> = {
   create_organization: handleCreateOrganization,
   update_organization: handleUpdateOrganization,
+  delete_organization: handleDeleteOrganization,
   assign_seller: handleAssignSeller,
   invite_user: handleInviteUser,
   update_profile: handleUpdateProfile,
   set_account_status: handleSetAccountStatus,
+  delete_account: handleDeleteAccount,
   send_password_reset: handleSendPasswordReset,
 }
 

@@ -3,7 +3,7 @@
 // auditoría) son lecturas directas bajo RLS vía `supabaseClient` — el
 // backend ya filtra por alcance (owner ve todo, vendedor solo lo asignado).
 // TODA escritura privilegiada (crear/editar organización, asignar vendedor,
-// invitar, activar/desactivar, recuperación de contraseña) pasa por la Edge
+// invitar, activar/desactivar, eliminar, recuperación de contraseña) pasa por la Edge
 // Function `admin-portal` (supabase/functions/admin-portal/index.ts) vía
 // `supabaseClient.functions.invoke()` — nunca se escribe directo a
 // organizations/profiles/audit_logs desde acá, y nunca se usa
@@ -17,6 +17,7 @@ let _adminOrgs = [];
 let _adminProfiles = [];
 let _adminAuditLogs = [];
 let _adminScope = null; // 'owner' | 'vendedor' | null
+let _adminDeletionInProgress = false;
 
 // ── Entry point ──────────────────────────────────────────────────────────
 
@@ -148,6 +149,7 @@ function _renderAdminOrgs() {
         <div class="col-actions">
           ${canManage ? `<button class="btn btn-secondary btn-sm" onclick="adminOpenEditOrg('${o.id}')">Editar</button>` : ''}
           ${canManage ? `<button class="btn btn-secondary btn-sm" onclick="adminOpenAssignSeller('${o.id}')">Vendedor</button>` : ''}
+          ${canManage && o.status === 'inactivo' ? `<button class="btn btn-danger btn-sm" onclick="adminDeleteOrganization('${o.id}')">Eliminar</button>` : ''}
         </div>
       </td>
     </tr>`;
@@ -209,6 +211,7 @@ function _renderAdminAccounts() {
     const canManage = _adminScope === 'owner' ||
       (_adminScope === 'vendedor' && p.role === 'usuario' && p.organization_id && _vendorOwnsOrgLocally(p.organization_id));
     const canToggle = canManage && !isSelf;
+    const canDelete = _adminScope === 'owner' && !isSelf && p.role !== 'owner' && p.status === 'inactivo';
 
     const roleBadge   = `<span class="badge badge-${p.role}">${roleLabels[p.role] || p.role}</span>`;
     const estadoBadge = `<span class="badge badge-${p.status}">${p.status === 'activo' ? 'Activo' : 'Inactivo'}</span>`;
@@ -228,6 +231,7 @@ function _renderAdminAccounts() {
           ${canManage ? `<button class="btn btn-secondary btn-sm" onclick="adminOpenEditName('${p.id}')">Editar</button>` : ''}
           ${canToggle ? `<button class="btn ${toggleClass} btn-sm" onclick="adminToggleAccountStatus('${p.id}','${p.status}')">${toggleLabel}</button>` : ''}
           ${canManage ? `<button class="btn btn-secondary btn-sm" onclick="adminSendPasswordReset('${p.id}')">Recuperación</button>` : ''}
+          ${canDelete ? `<button class="btn btn-danger btn-sm" onclick="adminDeleteAccount('${p.id}')">Eliminar</button>` : ''}
         </div>
       </td>
     </tr>`;
@@ -240,10 +244,12 @@ const _AUDIT_ACTION_LABELS = {
   'organization.created':          'Organización creada',
   'organization.updated':          'Organización editada',
   'organization.seller_assigned':  'Vendedor asignado',
+  'organization.deleted':          'Organización eliminada',
   'user.invited':                  'Cuenta invitada',
   'user.profile_updated':          'Cuenta editada',
   'user.activated':                'Cuenta activada',
   'user.deactivated':              'Cuenta desactivada',
+  'user.deleted':                  'Cuenta eliminada',
   'user.password_reset_requested': 'Recuperación enviada',
   'admin.operation_rejected':      'Operación rechazada',
 };
@@ -320,6 +326,16 @@ function escHtml(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _confirmPermanentDeletion(entityLabel) {
+  const accepted = confirm(
+    `Vas a eliminar permanentemente ${entityLabel}. Esta acción no se puede deshacer.\n\n¿Querés continuar?`,
+  );
+  if (!accepted) return false;
+
+  const confirmation = prompt('Para confirmar la eliminación permanente, escribí ELIMINAR:');
+  return confirmation === 'ELIMINAR';
 }
 
 // ── Organizaciones — crear / editar / asignar vendedor ──────────────────
@@ -422,6 +438,27 @@ async function adminSaveAssignSeller(e) {
   _loadAdminData();
 }
 
+async function adminDeleteOrganization(orgId) {
+  if (_adminScope !== 'owner' || _adminDeletionInProgress) return;
+  const org = _adminOrgs.find(o => o.id === orgId);
+  if (!org || org.status !== 'inactivo') return;
+  if (!_confirmPermanentDeletion(`la organización "${org.name}"`)) return;
+
+  _adminDeletionInProgress = true;
+  const result = await _callAdminFunction('delete_organization', {
+    organization_id: org.id,
+    confirmation: 'ELIMINAR',
+  });
+  _adminDeletionInProgress = false;
+
+  if (!result.ok) {
+    adminShowAlert('alert-orgs-table', result.message, 'error');
+    return;
+  }
+  adminShowAlert('alert-orgs-table', `Organización "${org.name}" eliminada permanentemente.`, 'success');
+  _loadAdminData();
+}
+
 // ── Invitar cuenta ───────────────────────────────────────────────────────
 
 async function adminInviteUser(e) {
@@ -514,6 +551,28 @@ async function adminSendPasswordReset(profileId) {
   adminShowAlert('alert-accounts-table', 'Correo de recuperación enviado.', 'success');
 }
 
+async function adminDeleteAccount(profileId) {
+  if (_adminScope !== 'owner' || _adminDeletionInProgress) return;
+  const profile = _adminProfiles.find(p => p.id === profileId);
+  if (!profile || profile.id === currentUser.id || profile.role === 'owner' || profile.status !== 'inactivo') return;
+  const label = profile.display_name || profile.email;
+  if (!_confirmPermanentDeletion(`la cuenta "${label}"`)) return;
+
+  _adminDeletionInProgress = true;
+  const result = await _callAdminFunction('delete_account', {
+    profile_id: profile.id,
+    confirmation: 'ELIMINAR',
+  });
+  _adminDeletionInProgress = false;
+
+  if (!result.ok) {
+    adminShowAlert('alert-accounts-table', result.message, 'error');
+    return;
+  }
+  adminShowAlert('alert-accounts-table', `Cuenta "${label}" eliminada permanentemente.`, 'success');
+  _loadAdminData();
+}
+
 // ── Limpieza de estado entre sesiones (ver clearPreviousSessionState en
 //    js/estado.js) ──────────────────────────────────────────────────────
 
@@ -522,6 +581,7 @@ function _resetAdminState() {
   _adminProfiles = [];
   _adminAuditLogs = [];
   _adminScope = null;
+  _adminDeletionInProgress = false;
   document.querySelectorAll('.admin-modal-bg.open').forEach(m => m.classList.remove('open'));
   const content    = document.getElementById('admin-content');
   const restricted = document.getElementById('admin-restricted');
