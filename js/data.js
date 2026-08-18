@@ -1,8 +1,7 @@
 // -- DATA . modelos de datos del portal Bullpadel 2026 --------------------
 // Imagenes: ya no se embeben en base64. Se referencian por ruta relativa
 // (ver img/palas/ e img/materiales/), con un pequeno helper de resolucion
-// para no romper el caso "Custom Weight" (cod !== id, sin archivo extraido
-// hoy, igual que en el IMGS/ITEM_IMGS original: se oculta, no rompe).
+// Los nombres de archivo usan el codigo publico del material o tecnologia.
 function palaImgSrc(id) { return `img/palas/${id}.jpg`; }
 function compImgSrc(id) { return `img/competencia/${id}.jpg`; }
 
@@ -16,8 +15,8 @@ function palaMediaFolderUrl(p) {
   const sub = cat.subcarpetas.find(s => s.nombre === folderName);
   return sub ? sub.url : null;
 }
-const ITEM_IMG_MISSING = new Set(['CustomWeight']);
-function itemImgSrc(cod) { return ITEM_IMG_MISSING.has(cod) ? '' : `img/materiales/${cod}.png`; }
+const ITEM_IMG_VERSION = '20260818-1';
+function itemImgSrc(cod) { return `img/materiales/${cod}.png?v=${ITEM_IMG_VERSION}`; }
 
 const PALAS = [
   {
