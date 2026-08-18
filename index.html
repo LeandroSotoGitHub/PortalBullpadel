@@ -464,16 +464,11 @@
           <div class="admin-card-body">
             <div id="alert-org-create" class="admin-alert"></div>
             <form class="admin-form" id="form-create-org" onsubmit="adminCreateOrganization(event)">
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Nombre <span class="form-required">*</span></label>
-                  <input type="text" id="org-nombre" placeholder="Nombre del distribuidor" required>
-                </div>
-                <div class="form-field">
-                  <label>Código</label>
-                  <input type="text" id="org-codigo" placeholder="Opcional">
-                </div>
+              <div class="form-field">
+                <label>Nombre <span class="form-required">*</span></label>
+                <input type="text" id="org-nombre" placeholder="Nombre del distribuidor" required>
               </div>
+              <div class="form-hint" style="margin-bottom:10px">El código se asignará automáticamente al crear la organización.</div>
               <div style="display:flex;gap:10px;justify-content:flex-end">
                 <button type="button" class="btn btn-secondary" onclick="adminToggleOrgForm()">Cancelar</button>
                 <button type="submit" class="btn btn-primary" id="btn-submit-org-create">Crear organización</button>
@@ -626,8 +621,8 @@
             <input type="text" id="eo-nombre" required>
           </div>
           <div class="form-field">
-            <label>Código</label>
-            <input type="text" id="eo-codigo">
+            <label>Código automático</label>
+            <input type="text" id="eo-codigo" readonly aria-readonly="true">
           </div>
           <div class="form-field">
             <label>Estado</label>
@@ -952,7 +947,7 @@
 <script src="js/media-center.js"></script>
 <script src="js/home.js"></script>
 <script src="js/onboarding.js"></script>
-<script src="js/admin.js?v=20260818-1"></script>
+<script src="js/admin.js?v=20260818-2"></script>
 <script src="js/eventos.js"></script>
 <script src="js/main.js"></script>
 

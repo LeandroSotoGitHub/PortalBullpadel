@@ -355,7 +355,6 @@ function adminToggleOrgForm() {
 async function adminCreateOrganization(e) {
   e.preventDefault();
   const nombre = document.getElementById('org-nombre').value.trim();
-  const codigo = document.getElementById('org-codigo').value.trim();
   const btn    = document.getElementById('btn-submit-org-create');
 
   if (!nombre) {
@@ -364,7 +363,7 @@ async function adminCreateOrganization(e) {
   }
 
   if (btn) btn.disabled = true;
-  const result = await _callAdminFunction('create_organization', { name: nombre, code: codigo || null });
+  const result = await _callAdminFunction('create_organization', { name: nombre });
   if (btn) btn.disabled = false;
 
   if (!result.ok) {
@@ -393,7 +392,6 @@ async function adminSaveOrgEdit(e) {
   if (e) e.preventDefault();
   const id     = document.getElementById('eo-org-id').value;
   const nombre = document.getElementById('eo-nombre').value.trim();
-  const codigo = document.getElementById('eo-codigo').value.trim();
   const estado = document.getElementById('eo-estado').value;
 
   if (!nombre) {
@@ -402,7 +400,7 @@ async function adminSaveOrgEdit(e) {
   }
 
   const result = await _callAdminFunction('update_organization', {
-    organization_id: id, name: nombre, code: codigo || null, status: estado,
+    organization_id: id, name: nombre, status: estado,
   });
   if (!result.ok) {
     adminShowAlert('alert-edit-org', result.message, 'error');

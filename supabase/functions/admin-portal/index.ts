@@ -423,15 +423,12 @@ async function handleCreateOrganization(admin: any, actor: ActorProfile, payload
   const name = readTrimmedString(payload, 'name', 2, 160)
   if (!name) return fail(400, 'El nombre de la organización debe tener entre 2 y 160 caracteres.', 'invalid_payload')
 
-  let code: string | null = null
-  if (payload.code !== undefined && payload.code !== null) {
-    code = readTrimmedString(payload, 'code', 1, 40)
-    if (!code) return fail(400, 'El código de la organización no es válido.', 'invalid_payload')
-  }
-
+  // `code` se omite deliberadamente: PostgreSQL lo asigna mediante el
+  // default next_organization_code(). Cualquier `payload.code` enviado por
+  // un frontend viejo se ignora y nunca puede decidir el código real.
   const { data, error } = await admin
     .from('organizations')
-    .insert({ name, code, status: 'activo' })
+    .insert({ name, status: 'activo' })
     .select('id, name, code, status, assigned_seller_id')
     .single()
 
@@ -448,7 +445,7 @@ async function handleCreateOrganization(admin: any, actor: ActorProfile, payload
     action: 'organization.created',
     targetType: 'organization',
     targetId: data.id,
-    metadata: { name, code },
+    metadata: { name, code: data.code },
   })
 
   return ok({ organization: data }, 201)
@@ -475,15 +472,8 @@ async function handleUpdateOrganization(admin: any, actor: ActorProfile, payload
     if (!name) return fail(400, 'El nombre de la organización debe tener entre 2 y 160 caracteres.', 'invalid_payload')
     update.name = name
   }
-  if (payload.code !== undefined) {
-    if (payload.code === null) {
-      update.code = null
-    } else {
-      const code = readTrimmedString(payload, 'code', 1, 40)
-      if (!code) return fail(400, 'El código de la organización no es válido.', 'invalid_payload')
-      update.code = code
-    }
-  }
+  // El código es inmutable desde Administración. Un `payload.code` de una
+  // versión cacheada del frontend se ignora por compatibilidad.
   if (payload.status !== undefined) {
     const status = readAccountStatus(payload, 'status')
     if (!status) return fail(400, 'Estado inválido.', 'invalid_payload')
