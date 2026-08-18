@@ -20,7 +20,7 @@ function itemImgSrc(cod) { return `img/materiales/${cod}.png?v=${ITEM_IMG_VERSIO
 
 const PALAS = [
   {
-    id:"vertex05", sku:"BP-PRO-V05-2026",
+    id:"vertex05", sku:"078965", ean:"8445402973989", ean2:null,
     nombre:"Vertex 05", linea:"PROLINE",
     nivel:"Profesional", estilo:"Polivalente",
     forma:"Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -39,7 +39,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"vertex05geo", sku:"BP-PRO-V05G-2026",
+    id:"vertex05geo", sku:"078966", ean:"8445402974009", ean2:null,
     nombre:"Vertex 05 Geo", linea:"PROLINE",
     nivel:"Profesional", estilo:"Polivalente / Ofensivo",
     forma:"Geométrica", peso:"365-375 g", perfil:"38 mm",
@@ -58,7 +58,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"vertex05hybrid", sku:"BP-PRO-V05H-2026",
+    id:"vertex05hybrid", sku:"078967", ean:"8445402974023", ean2:null,
     nombre:"Vertex 05 Hybrid", linea:"PROLINE",
     nivel:"Profesional", estilo:"Polivalente / Defensivo",
     forma:"Híbrida", peso:"365-375 g", perfil:"38 mm",
@@ -77,7 +77,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"vertex05comfort", sku:"BP-PRO-V05C-2026",
+    id:"vertex05comfort", sku:"078968", ean:"8445402974047", ean2:null,
     nombre:"Vertex 05 Comfort", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Polivalente",
     forma:"Diamante", peso:"360-370 g", perfil:"38 mm",
@@ -96,7 +96,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"vertex05w", sku:"BP-PRO-V05W-2026",
+    id:"vertex05w", sku:"078969", ean:"8445402974962", ean2:"8445402974061",
     nombre:"Vertex 05 W", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Polivalente",
     forma:"Diamante", peso:"350-360 g", perfil:"38 mm",
@@ -115,7 +115,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"hack0426", sku:"BP-PRO-H04-2026",
+    id:"hack0426", sku:"078962", ean:"8445402973927", ean2:null,
     nombre:"Hack 04 26", linea:"PROLINE",
     nivel:"Profesional", estilo:"Ofensivo",
     forma:"Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -134,7 +134,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"hack04hybrid26", sku:"BP-PRO-H04H-2026",
+    id:"hack04hybrid26", sku:"078963", ean:"8445402973941", ean2:null,
     nombre:"Hack 04 Hybrid 26", linea:"PROLINE",
     nivel:"Profesional", estilo:"Defensivo",
     forma:"Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -153,7 +153,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"hack04comfort26", sku:"BP-PRO-H04C-2026",
+    id:"hack04comfort26", sku:"078964", ean:"8445402973965", ean2:null,
     nombre:"Hack 04 Comfort 26", linea:"PROLINE",
     nivel:"Profesional", estilo:"Ofensivo",
     forma:"Diamante", peso:"360-370 g", perfil:"38 mm",
@@ -172,7 +172,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"hack04hybridcloud", sku:"BP-PRO-H04HC-2026",
+    id:"hack04hybridcloud", sku:"078978", ean:"8445402975051", ean2:null,
     nombre:"Hack 04 Hybrid Cloud", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Confort",
     forma:"Híbrida", peso:"365-375 g", perfil:"38 mm",
@@ -191,7 +191,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"neuron02", sku:"BP-PRO-N02-2026",
+    id:"neuron02", sku:"078972", ean:"8445402974993", ean2:null,
     nombre:"Neuron 02", linea:"PROLINE",
     nivel:"Profesional", estilo:"Defensivo",
     forma:"Híbrida", peso:"365-375 g", perfil:"38 mm",
@@ -210,7 +210,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"neuron02edge", sku:"BP-PRO-N02E-2026",
+    id:"neuron02edge", sku:"078973", ean:"8445402975006", ean2:null,
     nombre:"Neuron 02 Edge", linea:"PROLINE",
     nivel:"Profesional", estilo:"Ofensivo",
     forma:"Geométrica / Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -229,7 +229,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"neuron02cloud", sku:"BP-PRO-N02CL-2026",
+    id:"neuron02cloud", sku:"078980", ean:"8445402975099", ean2:null,
     nombre:"Neuron 02 Cloud", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Confort",
     forma:"Híbrida", peso:"365-375 g", perfil:"38 mm",
@@ -248,7 +248,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"vertex05wcloud", sku:"BP-PRO-V05WCL-2026",
+    id:"vertex05wcloud", sku:"078979", ean:"8445402975075", ean2:null,
     nombre:"Vertex 05 W Cloud", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Confort",
     forma:"Diamante", peso:"350-360 g", perfil:"38 mm",
@@ -267,7 +267,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"xplo26", sku:"BP-PRO-XPLO-2026",
+    id:"xplo26", sku:"078970", ean:"8445402974979", ean2:null,
     nombre:"XPLO 26", linea:"PROLINE",
     nivel:"Profesional", estilo:"Ofensivo",
     forma:"Geométrica", peso:"365-375 g", perfil:"38 mm",
@@ -286,7 +286,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"xplocomfort26", sku:"BP-PRO-XPLOC-2026",
+    id:"xplocomfort26", sku:"078971", ean:"8445402974986", ean2:null,
     nombre:"XPLO Comfort 26", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Ofensivo",
     forma:"Geométrica", peso:"365-375 g", perfil:"38 mm",
@@ -305,7 +305,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"icon26", sku:"BP-PRO-ICON-2026",
+    id:"icon26", sku:"078974", ean:"8445402975013", ean2:null,
     nombre:"Icon 26", linea:"PROLINE",
     nivel:"Profesional", estilo:"Ofensivo",
     forma:"Diamante", peso:"370-375 g", perfil:"38 mm",
@@ -324,7 +324,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"pearl26", sku:"BP-PRO-PEARL-2026",
+    id:"pearl26", sku:"078292", ean:"8445402895618", ean2:"8445402895625",
     nombre:"Pearl 26", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Ofensivo",
     forma:"Diamante", peso:"355-365 g", perfil:"38 mm",
@@ -343,7 +343,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"wonder", sku:"BP-PRO-WND-2026",
+    id:"wonder", sku:"078977", ean:"8445402975044", ean2:null,
     nombre:"Wonder", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Polivalente",
     forma:"Híbrida", peso:"350-360 g", perfil:"38 mm",
@@ -362,7 +362,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"elitew", sku:"BP-PRO-ELITEW-2026",
+    id:"elitew", sku:"078976", ean:"8445402975037", ean2:null,
     nombre:"Elite W", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Polivalente",
     forma:"Lágrima", peso:"350-360 g", perfil:"38 mm",
@@ -381,7 +381,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"flowlegend", sku:"BP-PRO-FLOW-2026",
+    id:"flowlegend", sku:"078975", ean:"8445402975020", ean2:null,
     nombre:"Flow Legend", linea:"PROLINE",
     nivel:"Avanzado", estilo:"Ofensivo",
     forma:"Diamante", peso:"350-360 g", perfil:"38 mm",
@@ -400,7 +400,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"ionicpower26", sku:"BP-NXT-IPWR-2026",
+    id:"ionicpower26", sku:"078981", ean:"8445402975112", ean2:"8445402975129",
     nombre:"Ionic Power 26", linea:"NEXT",
     nivel:"Intermedio", estilo:"Ofensivo",
     forma:"Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -419,7 +419,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"ioniccontrol26", sku:"BP-NXT-ICTR-2026",
+    id:"ioniccontrol26", sku:"078982", ean:"8445402975136", ean2:null,
     nombre:"Ionic Control 26", linea:"NEXT",
     nivel:"Intermedio", estilo:"Defensivo",
     forma:"Redonda", peso:"365-375 g", perfil:"38 mm",
@@ -438,7 +438,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"ioniclight26", sku:"BP-NXT-ILTG-2026",
+    id:"ioniclight26", sku:"078983", ean:"8445402993765", ean2:null,
     nombre:"Ionic Light 26", linea:"NEXT",
     nivel:"Intermedio", estilo:"Polivalente",
     forma:"Híbrida", peso:"350-360 g", perfil:"38 mm",
@@ -457,7 +457,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"vertexadvance", sku:"BP-ADV-VADV-2026",
+    id:"vertexadvance", sku:"078984", ean:"8445402975150", ean2:null,
     nombre:"Vertex Advance", linea:"ADVANCE",
     nivel:"Amateur", estilo:"Polivalente",
     forma:"Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -476,7 +476,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"hack02advance", sku:"BP-ADV-H02A-2026",
+    id:"hack02advance", sku:"078985", ean:"8445402993789", ean2:null,
     nombre:"Hack 02 Advance", linea:"ADVANCE",
     nivel:"Amateur", estilo:"Defensivo",
     forma:"Redonda", peso:"365-375 g", perfil:"38 mm",
@@ -495,7 +495,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"indigapwr26", sku:"BP-TOUR-IPWR-2026",
+    id:"indigapwr26", sku:"078986", ean:"8445402993802", ean2:null,
     nombre:"Indiga PWR 26", linea:"TOUR",
     nivel:"Iniciación", estilo:"Defensivo",
     forma:"Híbrida", peso:"360-370 g", perfil:"38 mm",
@@ -514,7 +514,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"indigactr26", sku:"BP-TOUR-ICTR-2026",
+    id:"indigactr26", sku:"078987", ean:"8445402993826", ean2:null,
     nombre:"Indiga CTR 26", linea:"TOUR",
     nivel:"Iniciación", estilo:"Defensivo",
     forma:"Redonda", peso:"360-370 g", perfil:"38 mm",
@@ -533,7 +533,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"indigaw26", sku:"BP-TOUR-IW-2026",
+    id:"indigaw26", sku:"078988", ean:"8445402993840", ean2:null,
     nombre:"Indiga W 26", linea:"TOUR",
     nivel:"Iniciación", estilo:"Defensivo",
     forma:"Redonda", peso:"350-360 g", perfil:"38 mm",
@@ -552,7 +552,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"hackjr26", sku:"BP-JNR-H04JR-2026",
+    id:"hackjr26", sku:"078989", ean:"8445402993864", ean2:null,
     nombre:"Hack JR 26", linea:"JUNIOR",
     nivel:"Junior",  estilo:"Polivalente",
     forma:"Diamante", peso:"335-345 g", perfil:"35 mm",
@@ -571,7 +571,7 @@ const PALAS = [
     tipo_pala:"junior"
   },
   {
-    id:"vertexonyx", sku:"BP-ONYX-VTX-2025",
+    id:"vertexonyx", sku:"055545", ean:"8445402896523", ean2:null,
     nombre:"Vertex Onyx", linea:"ONYX",
     nivel:"Intermedio", estilo:"Polivalente",
     forma:"Diamante", peso:"365-375 g", perfil:"38 mm",
@@ -590,7 +590,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"vertexonyxw", sku:"BP-ONYX-VTXW-2025",
+    id:"vertexonyxw", sku:"055546", ean:"8445402896530", ean2:null,
     nombre:"Vertex Onyx W", linea:"ONYX",
     nivel:"Intermedio", estilo:"Polivalente / Ofensivo",
     forma:"Diamante", peso:"355-365 g", perfil:"38 mm",
@@ -609,7 +609,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"onyxpower", sku:"BP-ONYX-PWR-2025",
+    id:"onyxpower", sku:"055550", ean:"8445402794126", ean2:null,
     nombre:"Onyx Power", linea:"ONYX",
     nivel:"Amateur", estilo:"Ofensivo",
     forma:"Diamante", peso:"360-370 g", perfil:"38 mm",
@@ -628,7 +628,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"onyxpowerw", sku:"BP-ONYX-PWRW-2025",
+    id:"onyxpowerw", sku:"055551", ean:"8445402794089", ean2:null,
     nombre:"Onyx Power W", linea:"ONYX",
     nivel:"Amateur", estilo:"Ofensivo",
     forma:"Diamante", peso:"355-365 g", perfil:"38 mm",
@@ -647,7 +647,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"onyxcontrol", sku:"BP-ONYX-CTR-2025",
+    id:"onyxcontrol", sku:"055552", ean:"8445402794096", ean2:null,
     nombre:"Onyx Control", linea:"ONYX",
     nivel:"Iniciación", estilo:"Defensivo",
     forma:"Redonda", peso:"360-370 g", perfil:"38 mm",
@@ -666,7 +666,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"onyxcontrolw", sku:"BP-ONYX-CTRW-2025",
+    id:"onyxcontrolw", sku:"055554", ean:"8445402794119", ean2:null,
     nombre:"Onyx Control W", linea:"ONYX",
     nivel:"Iniciación", estilo:"Defensivo",
     forma:"Redonda", peso:"360-370 g", perfil:"38 mm",
@@ -685,7 +685,7 @@ const PALAS = [
     tipo_pala:"w"
   },
   {
-    id:"onyxcomfort", sku:"BP-ONYX-CMF-2025",
+    id:"onyxcomfort", sku:"055547", ean:"8445402881383", ean2:null,
     nombre:"Onyx Comfort", linea:"ONYX",
     nivel:"Intermedio", estilo:"Confort",
     forma:"Diamante", peso:"360-370 g", perfil:"38 mm",
@@ -704,7 +704,7 @@ const PALAS = [
     tipo_pala:"standard"
   },
   {
-    id:"onyxcomfortw", sku:"BP-ONYX-CMFW-2025",
+    id:"onyxcomfortw", sku:"055548", ean:"8445402881390", ean2:null,
     nombre:"Onyx Comfort W", linea:"ONYX",
     nivel:"Intermedio", estilo:"Confort",
     forma:"Diamante", peso:"360-370 g", perfil:"38 mm",

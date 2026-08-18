@@ -242,7 +242,8 @@ function formatArrayForCSV(arr) {
 /**
  * Construye las filas de datos del catálogo técnico.
  * Trabaja contra el array PALAS del modelo de datos.
- * Excluye SKU, imágenes base64, precios, stock y datos de ecommerce.
+ * Incluye SKU y hasta dos EAN por producto.
+ * Excluye imágenes base64, precios, stock y datos de ecommerce.
  * Traduce códigos de materiales a nombres completos via getMaterialNombre().
  */
 
@@ -259,6 +260,9 @@ function buildCatalogoTecnicoRows() {
 
     return [
       csvEscape(p.nombre           || '-'),
+      csvEscape(p.sku              || ''),
+      csvEscape(p.ean              || ''),
+      csvEscape(p.ean2             || ''),
       csvEscape(p.linea            || '-'),
       csvEscape(p.forma            || '-'),
       csvEscape(p.peso             || '-'),
@@ -283,7 +287,8 @@ function buildCatalogoTecnicoRows() {
  * Genera y descarga el CSV del catálogo técnico.
  * - Requiere sesión activa.
  * - UTF-8 con BOM para compatibilidad con Excel Argentina (punto y coma).
- * - No incluye SKU, precios, stock, EAN ni imágenes base64.
+ * - Incluye SKU, EAN 1 y EAN 2 (cuando existe).
+ * - No incluye precios, stock ni imágenes base64.
  */
 
 function downloadCatalogoTecnicoCSV() {
@@ -301,6 +306,9 @@ function downloadCatalogoTecnicoCSV() {
   // Header row
   const headers = [
     'nombre',
+    'sku',
+    'ean_1',
+    'ean_2',
     'linea',
     'forma',
     'peso',
