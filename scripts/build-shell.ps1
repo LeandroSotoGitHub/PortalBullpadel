@@ -26,7 +26,7 @@ $head = @'
 <meta charset="UTF-8">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bullpadel 2026 · Portal Distribuidores</title>
+<title>Bullpadel 2026 · Portal Puntos de Venta</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>

@@ -204,7 +204,7 @@ function _renderAdminAccounts() {
     tbody.innerHTML = '<tr><td colspan="5"><div class="admin-empty">No hay cuentas para mostrar.</div></td></tr>';
     return;
   }
-  const roleLabels = { owner: 'Owner', vendedor: 'Vendedor', usuario: 'Usuario' };
+  const roleLabels = { owner: 'Owner', vendedor: 'Vendedor', usuario: 'Punto de Venta' };
 
   tbody.innerHTML = _adminProfiles.map(p => {
     const isSelf = p.id === currentUser.id;

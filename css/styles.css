@@ -1859,7 +1859,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 }
 
 /* Video demo — vive dentro de la hero-card, reemplaza el resumen
-   del catálogo para el rol usuario (distribuidor). */
+   del catálogo para el rol usuario (punto de venta). */
 .home-demo-video {
   border: 1px solid var(--negro-borde); border-radius: var(--radio);
   overflow: hidden; background: #000; line-height: 0;

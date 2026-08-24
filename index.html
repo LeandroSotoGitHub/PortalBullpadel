@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bullpadel 2026 · Portal Distribuidores</title>
+<title>Bullpadel 2026 · Portal Puntos de Venta</title>
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="stylesheet" href="css/styles.css">
@@ -30,7 +30,7 @@
         </svg>
       </div>
       <div class="login-brand">Bullpadel 2026</div>
-      <div class="login-sub">Portal técnico · Distribuidores</div>
+      <div class="login-sub">Portal técnico · Puntos de Venta</div>
     </div>
     <form class="login-form" onsubmit="handleLogin(event)">
       <div class="login-field">
@@ -163,9 +163,9 @@
       <div class="home-hero-dot home-hero-dot-2"></div>
       <div class="home-hero-grid">
         <div>
-          <div class="home-hero-eyebrow">Portal técnico · Distribuidores</div>
+          <div class="home-hero-eyebrow">Portal técnico · Puntos de Venta</div>
           <div class="home-hero-title">Portal Bullpadel 2026</div>
-          <div class="home-hero-sub">Herramienta de consulta, capacitación y recomendación para vendedores y distribuidores. Accedé al catálogo técnico, compará palas, capacitáte y encontrá la recomendación adecuada según el perfil de cada jugador.</div>
+          <div class="home-hero-sub">Herramienta de consulta, capacitación y recomendación para vendedores y puntos de venta. Accedé al catálogo técnico, compará palas, capacitáte y encontrá la recomendación adecuada según el perfil de cada jugador.</div>
           <div class="home-hero-actions">
             <button class="home-hero-btn primary" onclick="showSection('recomendador', this)">Ir al recomendador</button>
             <button class="home-hero-btn ghost" onclick="showSection('catalogo', this)">Ver catálogo</button>
@@ -402,7 +402,7 @@
   <section id="sec-capacitaciones" class="section">
     <div class="sec-head" style="margin-bottom:0;border-bottom:none;padding-bottom:12px">
       <h1>Capacitaciones Bullpadel</h1>
-      <p>Formación comercial para vendedores y distribuidores. Avanzá a tu ritmo.</p>
+      <p>Formación comercial para vendedores y puntos de venta. Avanzá a tu ritmo.</p>
     </div>
     <div class="subnav" id="subnav-cap" style="margin-bottom:16px">
       <button class="subnav-btn active" onclick="showCapTab('modulos',this)">Módulos</button>
@@ -466,7 +466,7 @@
             <form class="admin-form" id="form-create-org" onsubmit="adminCreateOrganization(event)">
               <div class="form-field">
                 <label>Nombre <span class="form-required">*</span></label>
-                <input type="text" id="org-nombre" placeholder="Nombre del distribuidor" required>
+                <input type="text" id="org-nombre" placeholder="Nombre del punto de venta" required>
               </div>
               <div class="form-hint" style="margin-bottom:10px">El código se asignará automáticamente al crear la organización.</div>
               <div style="display:flex;gap:10px;justify-content:flex-end">
@@ -515,7 +515,7 @@
               <div class="form-field" id="inv-rol-wrap">
                 <label>Rol <span class="form-required">*</span></label>
                 <select id="inv-rol" required onchange="adminUpdateInviteOrgVisibility()">
-                  <option value="usuario">Usuario / Distribuidor</option>
+                  <option value="usuario">Punto de Venta</option>
                   <option value="vendedor">Vendedor</option>
                 </select>
               </div>
@@ -932,13 +932,13 @@
     </div>
   </div>
 </div>
-<script src="js/data.js?v=20260818-2"></script>
+<script src="js/data.js?v=20260824-1"></script>
 <script src="js/estado.js"></script>
 <script src="js/helpers.js"></script>
 <!-- @supabase/supabase-js — versión fijada 2.112.0 (rama 2.x), no usar @latest -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.0/dist/umd/supabase.js"></script>
 <script src="js/supabase-config.js"></script>
-<script src="js/auth.js"></script>
+<script src="js/auth.js?v=20260824-1"></script>
 <script src="js/catalogo.js?v=20260818-2"></script>
 <script src="js/recomendador.js"></script>
 <script src="js/comparador.js"></script>
@@ -947,7 +947,7 @@
 <script src="js/media-center.js"></script>
 <script src="js/home.js"></script>
 <script src="js/onboarding.js"></script>
-<script src="js/admin.js?v=20260818-2"></script>
+<script src="js/admin.js?v=20260824-1"></script>
 <script src="js/eventos.js"></script>
 <script src="js/main.js"></script>
 

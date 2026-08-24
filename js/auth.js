@@ -195,7 +195,7 @@ function mountPortal() {
   document.getElementById('session-avatar').textContent  = initials;
   document.getElementById('session-name').textContent    = currentUser.nombre;
   const roleEl = document.getElementById('session-role-badge');
-  const roleLabels = { owner:'Owner', vendedor:'Vendedor', usuario:'Distribuidor' };
+  const roleLabels = { owner:'Owner', vendedor:'Vendedor', usuario:'Punto de Venta' };
   roleEl.textContent  = roleLabels[currentUser.rol] || currentUser.rol;
   roleEl.className    = 'session-role ' + currentUser.rol;
   document.getElementById('session-bar').style.display = 'flex';

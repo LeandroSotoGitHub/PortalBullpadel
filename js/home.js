@@ -54,7 +54,7 @@ function renderHomeStats() {
   const labelEl = document.getElementById('home-hero-label');
   if (!el) return;
 
-  // El rol "usuario" (distribuidor) ve un video demo de cómo usar el portal
+  // El rol "usuario" (punto de venta) ve un video demo de cómo usar el portal
   // en vez del resumen numérico del catálogo, que no le aporta nada a ese rol.
   if (currentUser && currentUser.rol === 'usuario') {
     if (labelEl) labelEl.textContent = 'Cómo usar el portal';

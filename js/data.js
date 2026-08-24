@@ -1072,15 +1072,15 @@ const ROLES = {
       // Restricciones explícitas
       puedeCrearOwners:     false,  // no puede crear owners
       puedeCrearVendedores: false,  // no puede crear otros vendedores
-      puedeCrearUsuarios:   true,   // solo puede crear usuarios/distribuidores
+      puedeCrearUsuarios:   true,   // solo puede crear usuarios de puntos de venta
       noPuedeEliminarOwners: true,  // restricción explícita
       noPuedeCambiarRolesCriticos: true
     }
   },
 
-  // ── Usuario / Distribuidor: acceso al catálogo ───────────────────────────
+  // ── Punto de Venta: acceso al catálogo ──────────────────────────────────
   usuario: {
-    nombre: "Usuario / Distribuidor",
+    nombre: "Punto de Venta",
     descripcion: "Acceso al catálogo de producto, comparador y materiales. Sin herramientas internas.",
     permisos: {
       // Contenido — acceso parcial
