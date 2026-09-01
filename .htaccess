@@ -1,18 +1,39 @@
 # Portal Bullpadel — cabeceras de cache
 #
+# ESTADO (verificado el 2026-09-01): este hosting NO procesa .htaccess. El
+# servidor es CilantroWS/12.18.22 — ni Apache ni LiteSpeed. Se comprobó con
+# una directiva ErrorDocument, que no depende de ningún módulo: no tuvo
+# efecto alguno sobre las respuestas 404. O el servidor no soporta .htaccess
+# o lo tiene deshabilitado (equivalente a AllowOverride None).
+#
+# El archivo se conserva igual porque es inerte y sin riesgo, y queda listo
+# para el día en que el soporte del hosting habilite .htaccess o el sitio se
+# mude a un servidor que sí lo lea. Hasta entonces, no esperar ningún efecto
+# de lo que sigue.
+#
+# ── El problema que esto resuelve cuando funcione ──────────────────────────
 # El hosting no envía Cache-Control ni ETag para el HTML: solo Last-Modified.
-# Sin Cache-Control el navegador aplica cache heurístico (suele quedarse con
-# ~10% del tiempo transcurrido desde la última modificación), así que después
-# de subir una versión nueva un visitante recurrente puede seguir viendo el
-# index.html viejo durante horas — y con él, las versiones viejas de los
-# archivos que ese HTML referencia.
+# Sin Cache-Control el navegador aplica cache heurístico (típicamente ~10% del
+# tiempo transcurrido desde la última modificación), así que tras un deploy un
+# visitante recurrente puede seguir viendo el index.html viejo durante horas
+# o días — y con él, las versiones viejas de lo que ese HTML referencia.
 #
-# Esta regla obliga a revalidar SOLO el HTML en cada visita. Es barato: si el
-# archivo no cambió, el servidor responde 304 sin cuerpo.
+# Se usan dos mecanismos porque no está confirmado qué módulos expondría el
+# servidor. El hosting ya emite "Cache-Control: public, max-age=604800" para
+# text/css por configuración propia, lo que sugiere mod_expires disponible.
+# Cualquiera de los dos bloques alcanza por separado; si corren los dos, gana
+# el Header por ser más explícito.
 #
-# IfModule es deliberado: si mod_headers no estuviera disponible, una
-# directiva Header suelta hace que Apache devuelva 500 en TODAS las
-# peticiones. Así, en el peor caso, la regla simplemente no se aplica.
+# Ambos van envueltos en IfModule a propósito: una directiva de un módulo no
+# cargado hace que el servidor devuelva 500 en TODAS las peticiones. Así, en
+# el peor caso la regla no se aplica y el sitio sigue funcionando.
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # "plus 0 seconds" emite max-age=0: el navegador revalida en cada visita.
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
 <IfModule mod_headers.c>
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache, must-revalidate"
