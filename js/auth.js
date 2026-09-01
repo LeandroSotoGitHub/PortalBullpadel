@@ -370,13 +370,18 @@ function _clearAuthRedirectUrl() {
   window.history.replaceState(null, '', window.location.pathname);
 }
 
-function _showPasswordSetupLinkError(message) {
+function _showPasswordSetupLinkError(message, title) {
   const form = document.getElementById('pwdsetup-form');
   const panel = document.getElementById('pwdsetup-link-error');
   const messageEl = document.getElementById('pwdsetup-link-error-message');
+  const titleEl = document.querySelector('.pwdsetup-link-error-title');
 
   if (form) form.style.display = 'none';
   if (messageEl) messageEl.textContent = message;
+  // Sin `title` se conserva el del markup ("No pudimos validar el enlace"),
+  // correcto para un enlace que nunca sirvió. handleSetPassword() pasa uno
+  // propio: ahí el enlace SÍ era válido y venció durante el uso.
+  if (titleEl && title) titleEl.textContent = title;
   if (panel) panel.classList.add('visible');
 }
 
@@ -465,6 +470,17 @@ async function _showPasswordSetupScreen() {
 // por texto de `.message` — evita el mismo problema que se encontró antes
 // (mensaje genérico de rate limit mostrado ante un error real de "misma
 // contraseña que la anterior").
+// Un error terminal significa que el enlace ya no sirve: reintentar el
+// formulario no puede funcionar nunca. Se separa del resto porque cambia la
+// pantalla, no solo el mensaje — ver handleSetPassword().
+function _isTerminalLinkError(error) {
+  const code = error && error.code;
+  return code === 'session_not_found'
+      || code === 'bad_jwt'
+      || code === 'jwt_expired'
+      || code === 'otp_expired';
+}
+
 function _setPasswordErrorMessage(error) {
   const code   = error && error.code;
   const status = error && error.status;
@@ -475,8 +491,8 @@ function _setPasswordErrorMessage(error) {
   if (code === 'weak_password') {
     return 'Esa contraseña es demasiado débil. Elegí una más segura, combinando letras, números y símbolos.';
   }
-  if (code === 'session_not_found' || code === 'bad_jwt' || code === 'jwt_expired' || code === 'otp_expired') {
-    return 'El enlace expiró o ya no es válido. Pedí uno nuevo desde Administración.';
+  if (_isTerminalLinkError(error)) {
+    return 'El enlace expiró mientras configurabas la contraseña. Pedí uno nuevo con el botón de abajo.';
   }
   if (code === 'over_request_rate_limit' || status === 429) {
     return 'Hiciste demasiados intentos. Esperá unos minutos antes de volver a intentarlo.';
@@ -531,6 +547,25 @@ async function handleSetPassword(e) {
     const { error } = await supabaseClient.auth.updateUser({ password: newPwd });
     if (error) {
       _logSetPasswordError(error);
+
+      // Enlace muerto: reintentar el formulario no puede funcionar. Se
+      // cambia de pantalla al panel que ya existe, que sí ofrece salidas
+      // (pedir un enlace nuevo / volver al portal). Sin esto la persona
+      // quedaba con un formulario inservible y ningún botón.
+      if (_isTerminalLinkError(error)) {
+        _showPasswordSetupLinkError(
+          _setPasswordErrorMessage(error),
+          'El enlace dejó de ser válido'
+        );
+        // Precargar el email conocido — no hacérselo tipear de nuevo justo
+        // después de perder el intento.
+        const resendInput = document.getElementById('pwdsetup-resend-email');
+        if (resendInput && _pwdSetupEmail) resendInput.value = _pwdSetupEmail;
+        return;
+      }
+
+      // Recuperable (misma contraseña, contraseña débil, rate limit): el
+      // enlace sigue vivo, así que se mantiene el formulario para reintentar.
       errEl.textContent = _setPasswordErrorMessage(error);
       errEl.classList.add('visible');
       return;
