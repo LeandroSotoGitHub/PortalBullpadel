@@ -7,7 +7,7 @@
 <title>Bullpadel 2026 · Portal Puntos de Venta</title>
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 <link rel="icon" href="favicon.ico" sizes="any">
-<link rel="stylesheet" href="css/styles.css?v=20260901-1">
+<link rel="stylesheet" href="css/styles.css?v=20260901-2">
 </head>
 <body>
 <!-- ═══════════════════════════════════════════════════
@@ -106,6 +106,25 @@
       </div>
       <button class="pwdsetup-back-btn" type="button" onclick="returnToPortalFromPasswordSetup()">
         Volver al portal
+      </button>
+    </div>
+    <!-- Confirmación de identidad — solo aparece si YA había una sesión abierta
+         en este navegador cuando se abrió el enlace. En ese caso no se puede
+         saber si la sesión vigente vino del enlace o es la de otra persona
+         (típico: máquina compartida del mostrador). Ver
+         _showPasswordSetupScreen() en js/auth.js. -->
+    <div id="pwdsetup-confirm-identity" class="pwdsetup-confirm hidden">
+      <div class="pwdsetup-confirm-title">Confirmá de quién es esta cuenta</div>
+      <div class="pwdsetup-confirm-body">
+        Ya había una sesión abierta en este navegador. Vas a configurar la
+        contraseña de:
+      </div>
+      <div class="pwdsetup-confirm-email" id="pwdsetup-confirm-email"></div>
+      <button type="button" class="login-btn" onclick="confirmPasswordSetupIdentity()">
+        Sí, es mi cuenta
+      </button>
+      <button type="button" class="pwdsetup-back-btn" onclick="rejectPasswordSetupIdentity()">
+        No soy yo
       </button>
     </div>
     <form class="login-form" id="pwdsetup-form" onsubmit="handleSetPassword(event)">
@@ -971,8 +990,8 @@
 <script src="js/helpers.js?v=20260720-1"></script>
 <!-- @supabase/supabase-js — versión fijada 2.112.0 (rama 2.x), no usar @latest -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.0/dist/umd/supabase.js"></script>
-<script src="js/supabase-config.js?v=20260901-1"></script>
-<script src="js/auth.js?v=20260901-2"></script>
+<script src="js/supabase-config.js?v=20260901-2"></script>
+<script src="js/auth.js?v=20260901-3"></script>
 <script src="js/catalogo.js?v=20260818-2"></script>
 <script src="js/recomendador.js?v=20260720-1"></script>
 <script src="js/comparador.js?v=20260710-1"></script>

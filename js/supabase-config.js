@@ -45,6 +45,31 @@ const SUPABASE_AUTH_REDIRECT = (() => {
   });
 })();
 
+// ¿Había una sesión guardada ANTES de abrir esta página? Se lee acá y no en
+// js/auth.js porque createClient() pisa esta clave con la sesión nueva apenas
+// se inicializa, si el enlace de la URL trae un code válido. Después ya no hay
+// forma de saberlo.
+//
+// Para qué sirve: cuando llega un `?code=` que NO sirve (vencido, ya usado o
+// inválido) y existía una sesión previa, el intercambio falla en silencio y
+// getSession() devuelve la sesión vieja. Sin este dato, el portal ofrecería
+// configurar la contraseña de esa cuenta ajena — el caso real es una máquina
+// compartida en el mostrador. Ver _showPasswordSetupScreen() en js/auth.js.
+//
+// Guarda un booleano y nada más: nunca el token ni ningún dato de la sesión.
+const SUPABASE_HAD_SESSION_BEFORE_LOAD = (() => {
+  try {
+    // Misma convención de clave que usa supabase-js: sb-<project-ref>-auth-token.
+    // Se deriva de SUPABASE_URL para que siga valiendo si cambia el proyecto.
+    const projectRef = new URL(SUPABASE_URL).hostname.split('.')[0];
+    return window.localStorage.getItem(`sb-${projectRef}-auth-token`) !== null;
+  } catch (e) {
+    // localStorage bloqueado (incógnito, cookies de terceros deshabilitadas).
+    // Degradar a `false` es lo correcto: se comporta como antes de este cambio.
+    return false;
+  }
+})();
+
 let supabaseClient = null;
 
 if (typeof window.supabase === 'undefined' || typeof window.supabase.createClient !== 'function') {

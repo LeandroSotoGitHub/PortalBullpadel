@@ -400,6 +400,8 @@ async function _showPasswordSetupScreen() {
 
   loginScreen.classList.add('hidden');
   pwdSetupScreen.classList.remove('hidden');
+  const confirmEl = document.getElementById('pwdsetup-confirm-identity');
+  if (confirmEl) confirmEl.classList.add('hidden');
   form.style.display = '';
   errEl.textContent = '';
   errEl.classList.remove('visible');
@@ -450,6 +452,23 @@ async function _showPasswordSetupScreen() {
         emailEl.textContent = `Esta contraseña quedará asociada a: ${_pwdSetupEmail}`;
         emailEl.classList.add('visible');
       }
+
+      // Si ya había una sesión guardada antes de abrir esta página, esta
+      // sesión puede NO venir del enlace: un `code` vencido, ya usado o
+      // inválido falla en silencio y getSession() devuelve la sesión previa.
+      // El portal ofrecería entonces cambiarle la contraseña a esa cuenta —
+      // el caso real es una máquina compartida donde A quedó logueada y B
+      // abre su propio enlace ya vencido.
+      //
+      // No se intenta averiguar si el enlace autenticó (frágil, y obligaría a
+      // tocar detectSessionInUrl, que es lo único que hace funcionar todo el
+      // flujo). Se resuelve preguntando: se nombra la cuenta y se exige una
+      // decisión explícita antes de mostrar el formulario.
+      const hadPreviousSession = typeof SUPABASE_HAD_SESSION_BEFORE_LOAD !== 'undefined'
+        && SUPABASE_HAD_SESSION_BEFORE_LOAD;
+      if (hadPreviousSession) {
+        _showPasswordSetupIdentityCheck();
+      }
     }
   } catch (error) {
     console.error('[Auth] Error al validar el enlace de invitación/recuperación:', error.message);
@@ -462,6 +481,60 @@ async function _showPasswordSetupScreen() {
   }
 
   _subscribeAuthStateChange();
+}
+
+// ── Confirmación de identidad ───────────────────────────────────────────────
+// Solo se usa cuando existía una sesión previa al abrir el enlace (ver la
+// nota en _showPasswordSetupScreen). Es una defensa contra la confusión, no
+// contra un atacante: no hay apropiación de cuenta posible por esta vía. Por
+// eso alcanza con nombrar la cuenta y pedir una decisión explícita.
+function _showPasswordSetupIdentityCheck() {
+  const panel = document.getElementById('pwdsetup-confirm-identity');
+  const emailEl = document.getElementById('pwdsetup-confirm-email');
+  const form = document.getElementById('pwdsetup-form');
+  const inlineEmail = document.getElementById('pwdsetup-email');
+
+  if (!panel) return;
+  if (emailEl) emailEl.textContent = _pwdSetupEmail || 'una cuenta ya iniciada en este navegador';
+  // El email se muestra en el panel; repetirlo arriba sería redundante.
+  if (inlineEmail) inlineEmail.classList.remove('visible');
+  if (form) form.style.display = 'none';
+  panel.classList.remove('hidden');
+}
+
+function confirmPasswordSetupIdentity() {
+  const panel = document.getElementById('pwdsetup-confirm-identity');
+  const form = document.getElementById('pwdsetup-form');
+  const inlineEmail = document.getElementById('pwdsetup-email');
+
+  if (panel) panel.classList.add('hidden');
+  if (form) form.style.display = '';
+  if (inlineEmail && _pwdSetupEmail) inlineEmail.classList.add('visible');
+}
+
+// "No soy yo": cerrar la sesión ajena antes de ofrecer nada más, y recién
+// entonces mostrar el panel de pedir un enlace nuevo. El campo de email queda
+// vacío a propósito — la persona correcta tiene que escribir el suyo, no
+// heredar el de quien estaba logueado.
+async function rejectPasswordSetupIdentity() {
+  const panel = document.getElementById('pwdsetup-confirm-identity');
+  if (panel) panel.classList.add('hidden');
+
+  _pwdSetupEmail = null;
+  if (supabaseClient) {
+    try {
+      await supabaseClient.auth.signOut();
+    } catch (e) {
+      console.error('[Auth] No se pudo cerrar la sesión previa:', e && e.message);
+    }
+  }
+
+  _showPasswordSetupLinkError(
+    'Cerramos la sesión que estaba abierta. Escribí tu email y te enviamos un enlace nuevo a tu nombre.',
+    'Pedí un enlace para tu cuenta'
+  );
+  const resendInput = document.getElementById('pwdsetup-resend-email');
+  if (resendInput) resendInput.value = '';
 }
 
 // ── Mensajes de error al configurar contraseña ──────────────────────────────
