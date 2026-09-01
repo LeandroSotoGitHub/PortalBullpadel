@@ -1,0 +1,28 @@
+# Portal Bullpadel — cabeceras de cache
+#
+# El hosting no envía Cache-Control ni ETag para el HTML: solo Last-Modified.
+# Sin Cache-Control el navegador aplica cache heurístico (suele quedarse con
+# ~10% del tiempo transcurrido desde la última modificación), así que después
+# de subir una versión nueva un visitante recurrente puede seguir viendo el
+# index.html viejo durante horas — y con él, las versiones viejas de los
+# archivos que ese HTML referencia.
+#
+# Esta regla obliga a revalidar SOLO el HTML en cada visita. Es barato: si el
+# archivo no cambió, el servidor responde 304 sin cuerpo.
+#
+# IfModule es deliberado: si mod_headers no estuviera disponible, una
+# directiva Header suelta hace que Apache devuelva 500 en TODAS las
+# peticiones. Así, en el peor caso, la regla simplemente no se aplica.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# NO se agrega cache de larga duración para css/js a propósito. Hoy 11 de los
+# <script> de index.html (estado, helpers, recomendador, comparador,
+# mapa-competitivo, capacitaciones, media-center, home, onboarding, eventos,
+# main) se cargan SIN parámetro ?v=. Un max-age largo sobre ellos los
+# congelaría en el navegador hasta que alguien vacíe la cache a mano. Para
+# habilitarlo primero hay que versionar esos archivos como ya se hace con
+# auth.js, supabase-config.js, catalogo.js y styles.css.
