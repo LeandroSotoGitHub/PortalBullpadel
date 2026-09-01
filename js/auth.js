@@ -18,6 +18,26 @@ let _authStateSubscribed = false;
 // estar disponible para leerla de nuevo.
 let _pwdSetupEmail = null;
 
+const AUTH_SESSION_TIMEOUT_MS = 10000;
+
+async function _getSessionWithTimeout(timeoutMs = AUTH_SESSION_TIMEOUT_MS) {
+  let timeoutId = null;
+  try {
+    return await Promise.race([
+      supabaseClient.auth.getSession(),
+      new Promise((resolve, reject) => {
+        timeoutId = setTimeout(() => {
+          const timeoutError = new Error('La validación de la sesión demoró demasiado.');
+          timeoutError.code = 'session_timeout';
+          reject(timeoutError);
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timeoutId !== null) clearTimeout(timeoutId);
+  }
+}
+
 // ── Mensajes de error en español ────────────────────────────────────────────
 function _authErrorMessage(error) {
   const msg = ((error && error.message) || '').toLowerCase();
@@ -67,6 +87,20 @@ async function _buildCurrentUser(authUser, profile) {
     clienteMayorista: clienteMayorista,
     organizationId: profile.organization_id || null
   };
+}
+
+// Observabilidad best-effort: registra que la cuenta efectivamente llegó al
+// portal después de un login válido. La RPC deriva el usuario de auth.uid() y
+// no acepta ids/emails del navegador. Nunca se espera este request para montar
+// la interfaz, de modo que una caída del seguimiento no puede bloquear acceso.
+async function _recordPortalLogin() {
+  if (!supabaseClient) return;
+  try {
+    const { error } = await supabaseClient.rpc('record_own_portal_login');
+    if (error) throw error;
+  } catch (error) {
+    console.warn('[Auth] No se pudo registrar la actividad de acceso:', error && error.code ? error.code : 'unknown');
+  }
 }
 
 // ── Login handler ──────────────────────────────────────────────────────────
@@ -126,6 +160,7 @@ async function handleLogin(e) {
     }
 
     currentUser = await _buildCurrentUser(signInData.user, profile);
+    void _recordPortalLogin();
     pwdInput.value = '';
     mountPortal();
   } catch (unexpectedError) {
@@ -317,7 +352,37 @@ function applyRolePermissions() {
 // terminaría montando el portal sin haber configurado contraseña.
 function _isPasswordSetupLink() {
   const raw = (window.location.hash || '') + ' ' + (window.location.search || '');
-  return /type=(recovery|invite)/.test(raw) && /(access_token=|code=)/.test(raw);
+  const capturedRedirect = typeof SUPABASE_AUTH_REDIRECT !== 'undefined'
+    ? SUPABASE_AUTH_REDIRECT
+    : null;
+
+  return Boolean(
+    (capturedRedirect && (capturedRedirect.isPasswordSetup || capturedRedirect.hasAuthError)) ||
+    (/type=(recovery|invite)/.test(raw) && /(access_token=|code=)/.test(raw)) ||
+    /[?&#]code=/.test(raw)
+  );
+}
+
+function _clearAuthRedirectUrl() {
+  // Quitar tokens/códigos del historial solo DESPUÉS de que getSession()
+  // haya esperado la inicialización de Supabase. Limpiarlos antes abre una
+  // condición de carrera en móviles y puede perder la sesión transitoria.
+  window.history.replaceState(null, '', window.location.pathname);
+}
+
+function _showPasswordSetupLinkError(message) {
+  const form = document.getElementById('pwdsetup-form');
+  const panel = document.getElementById('pwdsetup-link-error');
+  const messageEl = document.getElementById('pwdsetup-link-error-message');
+
+  if (form) form.style.display = 'none';
+  if (messageEl) messageEl.textContent = message;
+  if (panel) panel.classList.add('visible');
+}
+
+function returnToPortalFromPasswordSetup() {
+  _clearAuthRedirectUrl();
+  window.location.reload();
 }
 
 async function _showPasswordSetupScreen() {
@@ -326,34 +391,51 @@ async function _showPasswordSetupScreen() {
   const errEl          = document.getElementById('pwdsetup-error');
   const form            = document.getElementById('pwdsetup-form');
   const emailEl         = document.getElementById('pwdsetup-email');
-
-  // Limpiar la URL ya — evita reprocesar el link si se recarga la página.
-  // La librería ya leyó window.location al crear el cliente (síncrono, en
-  // js/supabase-config.js), así que esto no interfiere con esa lectura.
-  window.history.replaceState(null, '', window.location.pathname);
+  const linkErrorEl     = document.getElementById('pwdsetup-link-error');
 
   loginScreen.classList.add('hidden');
   pwdSetupScreen.classList.remove('hidden');
+  form.style.display = '';
+  errEl.textContent = '';
+  errEl.classList.remove('visible');
+  if (linkErrorEl) linkErrorEl.classList.remove('visible');
   _pwdSetupEmail = null;
   if (emailEl) {
     emailEl.textContent = '';
     emailEl.classList.remove('visible');
   }
 
+  // Un redirect que ya volvió con error (por ejemplo, OTP vencido o link
+  // reutilizado) nunca debe aprovechar una sesión previa del navegador. Sin
+  // este corte, getSession() podría devolver la cuenta que ya estaba abierta
+  // y ofrecer cambiarle la contraseña aunque el enlace recibido sea inválido.
+  const capturedRedirect = typeof SUPABASE_AUTH_REDIRECT !== 'undefined'
+    ? SUPABASE_AUTH_REDIRECT
+    : null;
+  if (capturedRedirect && capturedRedirect.hasAuthError) {
+    _showPasswordSetupLinkError(
+      'El enlace no es válido, ya expiró o fue utilizado anteriormente. Solicitá un nuevo correo y abrilo directamente en Chrome o Safari.'
+    );
+    _clearAuthRedirectUrl();
+    _subscribeAuthStateChange();
+    return;
+  }
+
   if (!supabaseClient) {
-    errEl.textContent = 'El servicio de acceso no está disponible en este momento.';
-    errEl.classList.add('visible');
-    form.style.display = 'none';
+    _clearAuthRedirectUrl();
+    _showPasswordSetupLinkError(
+      'El servicio de acceso no está disponible en este momento. Volvé al portal e intentá nuevamente más tarde.'
+    );
     return;
   }
 
   try {
-    const { data, error } = await supabaseClient.auth.getSession();
+    const { data, error } = await _getSessionWithTimeout();
     if (error) throw error;
     if (!data || !data.session) {
-      errEl.textContent = 'El enlace no es válido o ya expiró. Pedí uno nuevo.';
-      errEl.classList.add('visible');
-      form.style.display = 'none';
+      _showPasswordSetupLinkError(
+        'No pudimos iniciar la configuración. El enlace puede haber expirado o haberse abierto desde un navegador interno. Solicitá uno nuevo y abrilo directamente en Chrome o Safari.'
+      );
     } else {
       // El email sale exclusivamente de la sesión que Supabase ya
       // estableció a partir del link (data.session.user.email) — nunca de
@@ -366,9 +448,12 @@ async function _showPasswordSetupScreen() {
     }
   } catch (error) {
     console.error('[Auth] Error al validar el enlace de invitación/recuperación:', error.message);
-    errEl.textContent = 'El enlace no es válido o ya expiró. Pedí uno nuevo.';
-    errEl.classList.add('visible');
-    form.style.display = 'none';
+    const message = error && error.code === 'session_timeout'
+      ? 'La validación está demorando más de lo esperado. Revisá tu conexión, volvé al portal y abrí nuevamente el enlace desde Chrome o Safari.'
+      : 'El enlace no es válido o ya expiró. Solicitá uno nuevo y abrilo directamente en Chrome o Safari.';
+    _showPasswordSetupLinkError(message);
+  } finally {
+    _clearAuthRedirectUrl();
   }
 
   _subscribeAuthStateChange();
@@ -482,6 +567,143 @@ async function handleSetPassword(e) {
   }
 }
 
+// ── Solicitar un enlace nuevo de contraseña (auto-servicio) ────────────
+// Hasta acá, un enlace vencido dejaba a la persona sin salida: había que
+// reenviarlo a mano desde Administración. Esto llama al mismo endpoint
+// /recover que usa admin-portal (resetPasswordForEmail), pero disparado por
+// el propio usuario.
+//
+// El email se pide escrito a mano incluso en la pantalla de enlace inválido:
+// un redirect con error vuelve SIN sesión, así que no hay forma de saber a
+// quién pertenecía el enlace vencido (ver _showPasswordSetupScreen()).
+//
+// La respuesta al usuario es SIEMPRE la misma, exista o no la cuenta. Si
+// dijera "ese email no está registrado", cualquiera podría ir probando
+// direcciones para averiguar quién tiene acceso al portal.
+const PASSWORD_LINK_TARGETS = {
+  login:    { input: 'login-resend-email',    button: 'login-resend-btn',    status: 'login-resend-status' },
+  pwdsetup: { input: 'pwdsetup-resend-email', button: 'pwdsetup-resend-btn', status: 'pwdsetup-resend-status' },
+};
+
+// Enfriamiento tras un envío exitoso. Protege el rate limit de envió de mails
+// del proyecto (Authentication → Rate Limits) de alguien apretando el botón
+// varias veces sin haber esperado el correo.
+const PASSWORD_LINK_COOLDOWN_MS = 60000;
+
+function _setPasswordLinkStatus(statusEl, message, kind) {
+  if (!statusEl) return;
+  statusEl.textContent = message;
+  statusEl.classList.remove('ok', 'err');
+  statusEl.classList.add(kind, 'visible');
+}
+
+// Mensajes por `.code`/`.status` del AuthError, no por texto de `.message`
+// — mismo criterio que _setPasswordErrorMessage().
+function _passwordLinkErrorMessage(error) {
+  const code   = error && error.code;
+  const status = error && error.status;
+
+  if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' || status === 429) {
+    return 'Ya se enviaron varios correos en los últimos minutos. Esperá un rato y volvé a intentarlo.';
+  }
+  if (code === 'validation_failed' || status === 400) {
+    return 'Revisá que el email esté bien escrito.';
+  }
+  return 'No pudimos enviar el correo en este momento. Volvé a intentarlo y, si el problema continúa, contactá al equipo Bullpadel.';
+}
+
+function togglePasswordLinkRequest() {
+  const panel  = document.getElementById('login-resend');
+  const toggle = document.getElementById('login-forgot-toggle');
+  if (!panel) return;
+
+  const willOpen = panel.hidden;
+  panel.hidden = !willOpen;
+  if (toggle) toggle.setAttribute('aria-expanded', String(willOpen));
+  if (!willOpen) return;
+
+  // Reusar lo que la persona ya escribió arriba — no hacerla tipearlo dos veces.
+  const loginEmail = document.getElementById('login-email');
+  const resendEmail = document.getElementById('login-resend-email');
+  if (resendEmail) {
+    if (!resendEmail.value && loginEmail && loginEmail.value) resendEmail.value = loginEmail.value;
+    resendEmail.focus();
+  }
+}
+
+async function requestPasswordLink(target) {
+  const ids = PASSWORD_LINK_TARGETS[target];
+  if (!ids) return;
+
+  const input    = document.getElementById(ids.input);
+  const button   = document.getElementById(ids.button);
+  const statusEl = document.getElementById(ids.status);
+  if (!input) return;
+
+  const email = (input.value || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    _setPasswordLinkStatus(statusEl, 'Escribí un email válido.', 'err');
+    input.focus();
+    return;
+  }
+  if (!supabaseClient) {
+    _setPasswordLinkStatus(statusEl, 'El servicio de acceso no está disponible en este momento. Intentá más tarde.', 'err');
+    return;
+  }
+
+  const originalLabel = button ? button.textContent : null;
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'Enviando…';
+  }
+
+  try {
+    // redirectTo debe estar en Authentication → URL Configuration → Redirect
+    // URLs del proyecto; si no, Supabase manda el enlace al Site URL.
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname,
+    });
+
+    if (error) {
+      // Supabase NO devuelve error cuando el email no existe (responde 200
+      // igual, a propósito). Así que un error acá es real — rate limit,
+      // formato o falla del servicio — y mostrarlo no filtra nada.
+      console.error('[Auth] Error al solicitar enlace de contraseña:', {
+        code: error.code || null,
+        status: error.status || null,
+        name: error.name || null,
+      });
+      _setPasswordLinkStatus(statusEl, _passwordLinkErrorMessage(error), 'err');
+      if (button) {
+        button.disabled = false;
+        button.textContent = originalLabel;
+      }
+      return;
+    }
+
+    _setPasswordLinkStatus(
+      statusEl,
+      'Si ese correo está registrado, te enviamos un enlace. Revisá tu bandeja de entrada y la carpeta de spam. Tenés 24 horas para usarlo, y abrilo directamente en Chrome o Safari.',
+      'ok'
+    );
+
+    if (button) {
+      button.textContent = 'Enlace enviado';
+      setTimeout(() => {
+        button.disabled = false;
+        button.textContent = originalLabel;
+      }, PASSWORD_LINK_COOLDOWN_MS);
+    }
+  } catch (unexpectedError) {
+    console.error('[Auth] Error inesperado al solicitar enlace de contraseña:', unexpectedError && unexpectedError.message);
+    _setPasswordLinkStatus(statusEl, 'Ocurrió un error inesperado. Volvé a intentarlo en unos minutos.', 'err');
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
+  }
+}
+
 // ── onAuthStateChange ──────────────────────────────────────────────────────
 // Solo reacciona a un SIGNED_OUT (ej. token revocado/expirado en otra
 // pestaña). No dispara mountPortal() acá — eso solo lo hacen handleLogin()
@@ -522,7 +744,7 @@ async function initAuth() {
   }
 
   try {
-    const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+    const { data: sessionData, error: sessionError } = await _getSessionWithTimeout();
     if (sessionError) throw sessionError;
 
     const session = sessionData && sessionData.session;
@@ -541,6 +763,7 @@ async function initAuth() {
     }
 
     currentUser = await _buildCurrentUser(session.user, profile);
+    void _recordPortalLogin();
     mountPortal();
   } catch (error) {
     console.error('[Auth] Error al restaurar sesión:', error.message);

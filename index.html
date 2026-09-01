@@ -7,7 +7,7 @@
 <title>Bullpadel 2026 · Portal Puntos de Venta</title>
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 <link rel="icon" href="favicon.ico" sizes="any">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/styles.css?v=20260901-1">
 </head>
 <body>
 <!-- ═══════════════════════════════════════════════════
@@ -46,6 +46,21 @@
       <div class="login-error" id="login-error"></div>
       <button class="login-btn" type="submit">Ingresar</button>
     </form>
+    <div class="pwdlink-request" id="login-resend-wrap">
+      <button type="button" class="pwdlink-toggle" id="login-forgot-toggle"
+              onclick="togglePasswordLinkRequest()"
+              aria-expanded="false" aria-controls="login-resend">
+        ¿Olvidaste tu contraseña?
+      </button>
+      <div class="pwdlink-panel" id="login-resend" hidden>
+        <label for="login-resend-email">Tu email</label>
+        <input id="login-resend-email" type="email" placeholder="tu@email.com"
+               autocomplete="email" inputmode="email">
+        <button type="button" class="pwdlink-btn" id="login-resend-btn"
+                onclick="requestPasswordLink('login')">Enviarme un enlace</button>
+        <div class="pwdlink-status" id="login-resend-status" role="status" aria-live="polite"></div>
+      </div>
+    </div>
     <div class="login-note">
       <div class="login-note-title">¿Problemas para ingresar?</div>
       <div class="login-note-body">
@@ -78,7 +93,26 @@
       <div class="login-sub">Configurá tu contraseña</div>
       <div class="pwdsetup-email" id="pwdsetup-email"></div>
     </div>
+    <div class="pwdsetup-link-error" id="pwdsetup-link-error" role="alert">
+      <div class="pwdsetup-link-error-title">No pudimos validar el enlace</div>
+      <div class="pwdsetup-link-error-message" id="pwdsetup-link-error-message"></div>
+      <div class="pwdlink-panel pwdlink-panel-inline" id="pwdsetup-resend">
+        <label for="pwdsetup-resend-email">Ingresá tu email y te mandamos uno nuevo</label>
+        <input id="pwdsetup-resend-email" type="email" placeholder="tu@email.com"
+               autocomplete="email" inputmode="email">
+        <button type="button" class="pwdlink-btn" id="pwdsetup-resend-btn"
+                onclick="requestPasswordLink('pwdsetup')">Enviarme un enlace nuevo</button>
+        <div class="pwdlink-status" id="pwdsetup-resend-status" role="status" aria-live="polite"></div>
+      </div>
+      <button class="pwdsetup-back-btn" type="button" onclick="returnToPortalFromPasswordSetup()">
+        Volver al portal
+      </button>
+    </div>
     <form class="login-form" id="pwdsetup-form" onsubmit="handleSetPassword(event)">
+      <div class="pwdsetup-hint">
+        Tenés <strong>24 horas</strong> desde que recibiste el correo para configurar tu
+        contraseña. Pasado ese plazo el enlace deja de servir y hay que pedir uno nuevo.
+      </div>
       <div class="login-field">
         <label for="pwdsetup-new">Nueva contraseña</label>
         <div class="pwd-wrap"><input id="pwdsetup-new" type="password" placeholder="Mínimo 8 caracteres"
@@ -937,8 +971,8 @@
 <script src="js/helpers.js"></script>
 <!-- @supabase/supabase-js — versión fijada 2.112.0 (rama 2.x), no usar @latest -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.0/dist/umd/supabase.js"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/auth.js?v=20260824-1"></script>
+<script src="js/supabase-config.js?v=20260827-1"></script>
+<script src="js/auth.js?v=20260901-1"></script>
 <script src="js/catalogo.js?v=20260818-2"></script>
 <script src="js/recomendador.js"></script>
 <script src="js/comparador.js"></script>

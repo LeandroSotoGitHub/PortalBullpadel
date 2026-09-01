@@ -487,8 +487,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
    ═══════════════════════════════════════════════════ */
 #login-screen{
   position:fixed;inset:0;background:var(--negro);
-  display:flex;align-items:center;justify-content:center;
-  z-index:9000;overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:center;
+  z-index:9000;overflow-x:hidden;overflow-y:auto;
+  padding:24px 0;box-sizing:border-box;
 }
 #login-screen.hidden{display:none}
 
@@ -496,8 +497,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
    overlay que #login-screen, reutiliza .login-box/.login-form/etc. */
 #password-setup-screen{
   position:fixed;inset:0;background:var(--negro);
-  display:flex;align-items:center;justify-content:center;
-  z-index:9000;overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:center;
+  z-index:9000;overflow-x:hidden;overflow-y:auto;
+  padding:24px 0;box-sizing:border-box;
 }
 #password-setup-screen.hidden{display:none}
 .pwdsetup-success{
@@ -513,6 +515,80 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   display:none;word-break:break-all;
 }
 .pwdsetup-email.visible{display:block}
+.pwdsetup-link-error{
+  display:none;background:rgba(200,16,46,.12);
+  border:1px solid rgba(200,16,46,.35);border-radius:var(--radio-lg);
+  padding:22px;margin-top:18px;color:#fff;text-align:center;
+}
+.pwdsetup-link-error.visible{display:block}
+.pwdsetup-link-error-title{font-size:16px;font-weight:700;margin-bottom:8px}
+.pwdsetup-link-error-message{font-size:13px;color:#ffb4bf;line-height:1.55}
+.pwdsetup-back-btn{
+  width:100%;margin-top:18px;padding:13px 16px;border:1px solid var(--negro-borde);
+  border-radius:var(--radio);background:var(--negro-suave);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;
+}
+.pwdsetup-back-btn:hover{border-color:var(--rojo);background:#252525}
+
+/* Vigencia del enlace — se muestra dentro del formulario de configurar
+   contraseña, es decir solo cuando el enlace todavía es válido. */
+.pwdsetup-hint{
+  padding:10px 14px;margin-bottom:18px;
+  background:var(--negro);border:1px solid var(--negro-borde);
+  border-left:3px solid var(--rojo);border-radius:var(--radio);
+  font-size:12.5px;color:var(--gris-texto-suave);line-height:1.5;
+}
+.pwdsetup-hint strong{color:#fff}
+
+/* Auto-servicio: pedir un enlace nuevo. Mismo bloque para las dos entradas
+   (login y pantalla de enlace inválido) — ver requestPasswordLink() en
+   js/auth.js. */
+.pwdlink-request{margin-top:14px;text-align:center}
+.pwdlink-toggle{
+  background:none;border:none;padding:6px;cursor:pointer;
+  color:var(--gris-texto-suave);font-size:13px;text-decoration:underline;
+  text-underline-offset:3px;font-family:inherit;
+}
+.pwdlink-toggle:hover{color:#fff}
+.pwdlink-panel{
+  margin-top:12px;padding:16px 18px;text-align:left;
+  background:var(--negro-suave);border:1px solid var(--negro-borde);
+  border-radius:var(--radio-lg);
+}
+.pwdlink-panel[hidden]{display:none}
+.pwdlink-panel-inline{
+  margin-top:18px;background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.12);
+}
+.pwdlink-panel label{
+  display:block;font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--gris-texto-suave);margin-bottom:8px;
+}
+.pwdlink-panel input{
+  width:100%;box-sizing:border-box;padding:13px 14px;font-size:15px;
+  background:var(--negro);border:1px solid var(--negro-borde);
+  border-radius:var(--radio);color:#fff;outline:none;transition:border-color .15s;
+}
+.pwdlink-panel input:focus{border-color:var(--rojo)}
+.pwdlink-panel input::placeholder{color:#6b6b6b}
+.pwdlink-btn{
+  width:100%;margin-top:12px;padding:13px 16px;
+  background:var(--rojo);color:#fff;border:none;border-radius:var(--radio);
+  font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:background .15s;
+}
+.pwdlink-btn:hover:not(:disabled){background:var(--rojo-hover)}
+.pwdlink-btn:disabled{background:#3a3a3a;color:#8a8a8a;cursor:not-allowed}
+.pwdlink-status{
+  display:none;margin-top:12px;padding:10px 12px;border-radius:var(--radio);
+  font-size:12.5px;line-height:1.5;
+}
+.pwdlink-status.visible{display:block}
+.pwdlink-status.ok{
+  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#4ade80;
+}
+.pwdlink-status.err{
+  background:rgba(200,16,46,.12);border:1px solid rgba(200,16,46,.3);color:#ff6b6b;
+}
 
 .login-dot{position:absolute;border-radius:50%;background:var(--rojo);pointer-events:none}
 .login-dot-1{width:6px;height:6px;top:14%;left:20%;opacity:.7}
@@ -521,6 +597,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 .login-box{
   width:100%;max-width:400px;padding:0 24px;position:relative;z-index:1;
+  margin:auto 0;flex:0 0 auto;
+}
+
+@media(max-height:620px){
+  #login-screen,#password-setup-screen{padding:16px 0}
+  .login-logo{margin-bottom:18px}
+  .login-logo-mark{margin-bottom:12px}
 }
 .login-logo{
   display:flex;flex-direction:column;align-items:center;margin-bottom:32px;

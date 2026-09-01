@@ -13,6 +13,38 @@
 const SUPABASE_URL = 'https://zzvdrnwotxrgvncbsaez.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_gkum-0xJyrW6tODLAn2RbQ_Ai6h-FIF';
 
+// Capturar la intención del enlace ANTES de crear el cliente. Supabase
+// procesa los parámetros de Auth durante su inicialización y puede limpiar
+// `window.location` antes de que initAuth() se ejecute (especialmente en
+// navegadores móviles). Guardamos únicamente indicadores booleanos: nunca
+// persistimos ni copiamos access_token, refresh_token, code u otros secretos.
+const SUPABASE_AUTH_REDIRECT = (() => {
+  const searchParams = new URLSearchParams(window.location.search || '');
+  const hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+  const authType = searchParams.get('type') || hashParams.get('type');
+  const hasCredential =
+    searchParams.has('code') ||
+    searchParams.has('access_token') ||
+    hashParams.has('code') ||
+    hashParams.has('access_token');
+  const hasAuthError =
+    searchParams.has('error') ||
+    searchParams.has('error_code') ||
+    hashParams.has('error') ||
+    hashParams.has('error_code');
+
+  return Object.freeze({
+    // Los redirects PKCE de Supabase pueden volver solo con `?code=...`, sin
+    // conservar `type=invite|recovery`. El portal no usa OAuth/social login,
+    // por lo que un code de Auth siempre pertenece a estos dos flujos.
+    isPasswordSetup:
+      (hasCredential && (authType === 'invite' || authType === 'recovery')) ||
+      searchParams.has('code') ||
+      hashParams.has('code'),
+    hasAuthError,
+  });
+})();
+
 let supabaseClient = null;
 
 if (typeof window.supabase === 'undefined' || typeof window.supabase.createClient !== 'function') {
