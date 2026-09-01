@@ -18,7 +18,7 @@ En la configuración de Authentication:
 - mantener habilitado Email/Password;
 - deshabilitar el registro público de nuevos usuarios;
 - no crear usuarios hasta terminar el paso 1;
-- configurar más adelante las URLs de redirección de GitHub Pages y producción.
+- configurar las URLs de redirección de producción (ver 4.2 y 4.3).
 
 ## 3. Crear el primer owner
 
@@ -77,16 +77,16 @@ La eliminación permanente tampoco agrega `DELETE` directo a `service_role`: `20
 La función usa esta variable para el `redirectTo` de invitaciones y recuperación de contraseña — **nunca** acepta una URL enviada por el navegador. Con el Supabase CLI ya autenticado y el proyecto enlazado (`supabase link --project-ref zzvdrnwotxrgvncbsaez`):
 
 ```bash
-supabase secrets set PORTAL_BASE_URL=https://tu-usuario.github.io/PortalBullpadel/
+supabase secrets set PORTAL_BASE_URL=https://onyxsportspdv.com.ar/
 ```
 
 Valores de ejemplo según dónde se esté sirviendo el portal (usar el que corresponda, sin barra final duplicada):
 
-| Entorno | Valor de ejemplo |
+| Entorno | Valor |
 |---|---|
-| GitHub Pages actual | `https://leandrosotogithub.github.io/PortalBullpadel/` (ajustar al usuario/repo reales del Pages activo) |
-| Desarrollo local | `http://localhost:8531/` (o el puerto que use `scripts/nocache-server.py` en ese momento) |
-| Futuro dominio productivo | *(todavía no existe — configurar cuando se defina; no hardcodear acá)* |
+| **Producción (actual)** | `https://onyxsportspdv.com.ar/` — sitio estático servido desde cPanel |
+| Desarrollo local | `http://localhost:8537/` (o el puerto que use `scripts/nocache-server.py` en ese momento) |
+| GitHub Pages | Ya no es destino de producción. Quedó solo como referencia histórica; no configurarlo salvo que se reactive a propósito. |
 
 No hace falta configurar `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEYS`, `SUPABASE_SECRET_KEYS` ni `SUPABASE_JWKS` — el runtime de Edge Functions los inyecta automáticamente.
 
@@ -94,9 +94,39 @@ No hace falta configurar `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEYS`, `SUPABASE_
 
 **Authentication → URL Configuration → Redirect URLs** — agregar exactamente las mismas URLs que se usen como `PORTAL_BASE_URL` (Supabase rechaza cualquier `redirectTo` que no esté en esta lista, sin importar lo que envíe la Edge Function):
 
-- `http://localhost:8531/*` (ajustar el puerto si corresponde)
-- La URL de GitHub Pages activa (con `/*` al final)
-- El futuro dominio productivo, cuando exista
+- `https://onyxsportspdv.com.ar/*` — producción
+- `http://localhost:8537/*` (ajustar el puerto si corresponde)
+
+Esto también habilita el `redirectTo` del botón de auto-servicio del login
+(`requestPasswordLink()` en `js/auth.js`), que envía `origin + pathname` desde
+el navegador. Si esa URL no está en la lista, el correo sale igual pero el
+enlace redirige al Site URL en vez de al portal.
+
+### 4.3.1 Parámetros de Auth que NO viven en este repo
+
+Dos valores críticos se configuran **solo desde el dashboard de Supabase**. No
+hay archivo que los versione ni código que impida cambiarlos, así que forman
+parte del checklist de despliegue y de cualquier revisión posterior:
+
+| Dónde | Parámetro | Valor esperado |
+|---|---|---|
+| Authentication → Sign In / Providers → Email | **Email OTP Expiration** | `86400` (24 h) |
+| Authentication → Rate Limits | **Rate limit for sending emails** | `60` por hora |
+
+**Por qué importan.** El OTP estuvo en el default de `3600` (1 hora) y fue la
+causa raíz de un problema real: los puntos de venta abrían el correo horas
+después de recibirlo y el enlace ya estaba vencido. Un caso quedó registrado
+en los logs de Auth con cuatro `/verify` seguidos, los cuatro `email link has
+expired`, con el correo abierto 78 minutos después del envío. Al momento de
+detectarlo, 27 de 55 cuentas seguían sin contraseña.
+
+El rate limit aplica a **todos** los correos de Auth del proyecto, sumados. No
+bajarlo de 60 sin recalcular: una reinvitación masiva a las cuentas sin
+contraseña consume una tanda entera, y agotar el cupo deja sin correo también
+a quien use el botón de auto-servicio del login.
+
+Ambos valores fueron verificados en producción el 01/09/2026. Si el flujo de
+contraseñas vuelve a fallar, **revisar estos dos antes de tocar código.**
 
 ### 4.4 Desplegar la Edge Function
 
@@ -121,7 +151,7 @@ Desde Administración (owner): "Invitar cuenta" → rol **Vendedor** → nombre 
 ### 4.7 Crear el primer mayorista (organización + credencial `usuario`)
 
 1. Owner crea la organización (o ya existe una creada).
-2. Owner o el vendedor asignado a esa organización usa "Invitar cuenta" → rol **Usuario / Distribuidor** → elegir la organización.
+2. Owner o el vendedor asignado a esa organización usa "Invitar cuenta" → rol **Usuario / Punto de venta** → elegir la organización.
 3. La persona invitada configura su contraseña por el mismo flujo del punto 4.6.
 4. Solo puede existir una credencial `usuario` **activa** por organización — si ya hay una, la invitación devuelve un conflicto claro en vez de crear una segunda.
 

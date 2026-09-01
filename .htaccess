@@ -39,10 +39,18 @@
   </FilesMatch>
 </IfModule>
 
-# NO se agrega cache de larga duración para css/js a propósito. Hoy 11 de los
-# <script> de index.html (estado, helpers, recomendador, comparador,
-# mapa-competitivo, capacitaciones, media-center, home, onboarding, eventos,
-# main) se cargan SIN parámetro ?v=. Un max-age largo sobre ellos los
-# congelaría en el navegador hasta que alguien vacíe la cache a mano. Para
-# habilitarlo primero hay que versionar esos archivos como ya se hace con
-# auth.js, supabase-config.js, catalogo.js y styles.css.
+# NO se agrega cache de larga duración para css/js, y a esta altura es una
+# decisión, no un impedimento: desde el commit b6bca9e los 17 assets de
+# index.html se cargan con ?v=, así que técnicamente se podría.
+#
+# El motivo de no hacerlo es el modo de falla. Hoy, si alguien edita un .js y
+# olvida bumpear su ?v=, el navegador igual revalida cada tanto por cache
+# heurístico y termina tomando el archivo nuevo. Con un max-age largo ese
+# mismo olvido deja al usuario con código viejo INDEFINIDAMENTE, sin
+# recuperación salvo vaciar la cache a mano: un error humano pasa de molesto
+# a permanente. Con un build step que hashee los archivos sería seguro; sin
+# build step depende de disciplina.
+#
+# Revisar solo si aparece evidencia real de lentitud de carga. El
+# Cache-Control del HTML de arriba ya resolvió el problema concreto que
+# existía (deploys que no llegaban a visitantes recurrentes).
