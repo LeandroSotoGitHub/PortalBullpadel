@@ -1,24 +1,23 @@
 # Portal Bullpadel — cabeceras de cache
 #
-# ESTADO (verificado el 2026-09-01): este hosting NO procesa .htaccess. El
-# servidor es CilantroWS/12.18.22 — ni Apache ni LiteSpeed. Se comprobó con
-# una directiva ErrorDocument, que no depende de ningún módulo: no tuvo
-# efecto alguno sobre las respuestas 404. O el servidor no soporta .htaccess
-# o lo tiene deshabilitado (equivalente a AllowOverride None).
+# ESTADO (verificado el 2026-09-01): funcionando. Comprobado contra el sitio
+# en producción: /index.html responde con "Cache-Control: no-cache,
+# must-revalidate" (mod_headers) y "Expires" igual al instante de la petición
+# (mod_expires). Los dos módulos están disponibles en este hosting.
 #
-# El archivo se conserva igual porque es inerte y sin riesgo, y queda listo
-# para el día en que el soporte del hosting habilite .htaccess o el sitio se
-# mude a un servidor que sí lo lea. Hasta entonces, no esperar ningún efecto
-# de lo que sigue.
+# Nota para el futuro: una versión previa de este archivo se subió al servidor
+# SIN el punto inicial, y eso hizo parecer que el hosting ignoraba .htaccess.
+# Antes de concluir que el servidor no lo procesa, verificar el nombre exacto
+# del archivo en public_html con los dotfiles visibles.
 #
-# ── El problema que esto resuelve cuando funcione ──────────────────────────
+# ── El problema que esto resuelve ──────────────────────────────────────
 # El hosting no envía Cache-Control ni ETag para el HTML: solo Last-Modified.
 # Sin Cache-Control el navegador aplica cache heurístico (típicamente ~10% del
 # tiempo transcurrido desde la última modificación), así que tras un deploy un
 # visitante recurrente puede seguir viendo el index.html viejo durante horas
 # o días — y con él, las versiones viejas de lo que ese HTML referencia.
 #
-# Se usan dos mecanismos porque no está confirmado qué módulos expondría el
+# Se usan dos mecanismos, ambos confirmados activos. El hosting además emite
 # servidor. El hosting ya emite "Cache-Control: public, max-age=604800" para
 # text/css por configuración propia, lo que sugiere mod_expires disponible.
 # Cualquiera de los dos bloques alcanza por separado; si corren los dos, gana
