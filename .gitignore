@@ -10,3 +10,6 @@ supabase/.branches/
 .env
 .env.local
 supabase/functions/**/.env
+
+# Snapshot .zip del código fuente — redundante con el historial de git
+portal-bullpadel-authfix-*.zip

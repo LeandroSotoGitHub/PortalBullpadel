@@ -150,3 +150,107 @@ Desde Administración (owner): "Invitar cuenta" → rol **Vendedor** → nombre 
 - en v1 no se muestra progreso de terceros;
 - las bajas habituales son lógicas (`inactivo`) y conservan el historial; el owner puede hacer una eliminación permanente posterior, bajo las protecciones de 4.8;
 - toda escritura privilegiada (crear/editar/eliminar organización, asignar vendedor, invitar, activar/desactivar/eliminar cuentas, recuperación de contraseña) pasa exclusivamente por la Edge Function `admin-portal` — nunca por el navegador directo ni por `supabase.auth.admin`.
+
+## 5. Sincronización automática de estados con Google Sheets
+
+La migración `202608280001_portal_access_status.sql` agrega una fuente de
+verdad privada para el seguimiento operativo de altas:
+
+- `portal_access_status`: estado actual por cuenta (invitación, entrega,
+  apertura y acceso real al portal);
+- `portal_email_events`: bitácora mínima y deduplicada de Brevo, sin payloads
+  crudos, tokens ni contenido del correo;
+- `record_own_portal_login()`: RPC de alcance propio que deriva la identidad de
+  `auth.uid()` y registra un ingreso sin aceptar ids o emails del navegador.
+
+Ambas tablas tienen RLS habilitado y ningún permiso para `anon` o
+`authenticated`. Las Edge Functions usan permisos mínimos de `service_role`;
+el navegador solo puede ejecutar la RPC de login sobre su propia cuenta.
+
+### 5.1 Aplicar migración y desplegar funciones
+
+```bash
+supabase db push --linked --dry-run
+supabase db push --linked --yes
+supabase functions deploy admin-portal
+supabase functions deploy brevo-webhook
+supabase functions deploy sheet-status-export
+```
+
+`admin-portal` se vuelve a desplegar porque registra cada invitación exitosa en
+`portal_access_status`. `brevo-webhook` y `sheet-status-export` tienen
+`verify_jwt=false` en `config.toml` a propósito: cada una exige un bearer largo
+y diferente, guardado como secreto de Supabase.
+
+### 5.2 Secretos requeridos
+
+Generar valores aleatorios independientes (mínimo 32 bytes) y configurarlos sin
+guardarlos en el repositorio:
+
+```bash
+supabase secrets set BREVO_WEBHOOK_TOKEN=<token-aleatorio-1>
+supabase secrets set SHEET_SYNC_TOKEN=<token-aleatorio-2>
+supabase secrets set 'PORTAL_EMAIL_SUBJECT_MARKERS=Configurá tu acceso al Portal Bullpadel;Restablecé tu contraseña del Portal Bullpadel'
+```
+
+`PORTAL_EMAIL_SUBJECT_MARKERS` evita que una comunicación comercial enviada a
+un usuario del portal se confunda con una invitación o recuperación de acceso.
+
+### 5.3 Webhook transaccional en Brevo
+
+Crear un webhook transaccional hacia:
+
+```text
+https://zzvdrnwotxrgvncbsaez.supabase.co/functions/v1/brevo-webhook
+```
+
+Configurar autenticación Bearer con el mismo valor de
+`BREVO_WEBHOOK_TOKEN` y activar estos eventos:
+
+- enviado/request;
+- entregado;
+- primera apertura/apertura;
+- clic;
+- hard bounce y soft bounce;
+- bloqueado, spam, email inválido, diferido y error.
+
+Las aperturas por proxy se ignoran: no prueban que la persona haya abierto el
+mensaje. También se ignoran destinatarios que no tengan una cuenta registrada
+en `portal_access_status`.
+
+### 5.4 Apps Script de la hoja de altas
+
+La hoja de producción es `Alta clientes portal`, pestaña
+`Respuestas de formulario 1`. El script fuente está en
+`scripts/google-sheets-status-sync.gs`.
+
+1. Abrir la hoja → **Extensiones → Apps Script**.
+2. Copiar el archivo `.gs` en el editor y guardar.
+3. Recargar la hoja para ver el menú **Portal Bullpadel**.
+4. Ejecutar **Configurar automatización**.
+5. Pegar `SHEET_SYNC_TOKEN` cuando lo solicite y aceptar los permisos de Google.
+
+El script instala un trigger cada 15 minutos, toma el email de la columna G y
+actualiza únicamente la columna J. Nunca retrocede un estado y preserva estos
+valores manuales/históricos:
+
+- `No enviado (acceso único)`;
+- `Acceso configurado manualmente`;
+- `Ingresó (correo alternativo)`;
+- `ya estaba dado de alta`.
+
+Jerarquía automática: `Ingresó al portal` > `Abierto` > `Entregado` >
+`Invitación enviada`. Los rebotes/bloqueos vigentes se muestran como
+`Error de entrega`; un reenvío posterior exitoso puede resolver ese estado.
+
+### 5.5 Validación recomendada
+
+Usar una cuenta controlada y confirmar, en este orden:
+
+1. invitación exitosa → `Invitación enviada`;
+2. entrega informada por Brevo → `Entregado`;
+3. apertura o clic → `Abierto`;
+4. login normal en el portal → `Ingresó al portal`;
+5. ejecución manual del menú actualiza J sin modificar A:I ni estados
+   especiales;
+6. llamadas sin bearer a ambas funciones públicas responden 401.

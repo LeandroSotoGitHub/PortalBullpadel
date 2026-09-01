@@ -344,6 +344,36 @@ async function rejected(
   })
 }
 
+// Seguimiento best-effort para la hoja de altas. La invitación de Auth ya fue
+// enviada cuando llegamos acá: un fallo de observabilidad nunca debe convertir
+// una invitación exitosa en error ni provocar un segundo envío al reintentar.
+async function recordInvitationAccessStatus(
+  admin: any,
+  profile: TargetProfile,
+): Promise<void> {
+  const occurredAt = new Date().toISOString()
+  const { error } = await admin
+    .from('portal_access_status')
+    .upsert({
+      profile_id: profile.id,
+      email: profile.email.trim().toLowerCase(),
+      organization_id: profile.organization_id,
+      invitation_sent_at: occurredAt,
+      email_stage: 'invitation_sent',
+      email_stage_at: occurredAt,
+      email_error_code: null,
+      email_error_at: null,
+    }, { onConflict: 'profile_id' })
+
+  if (error) {
+    console.error(JSON.stringify({
+      event: 'admin_portal_access_status_write_failed',
+      profileId: profile.id,
+      errorCode: error.code ?? null,
+    }))
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // Lookups compartidos (siempre con supabaseAdmin — ver nota de diseño en
 // CONTEXT.md: se necesita distinguir "no existe" de "no está en tu alcance",
@@ -771,6 +801,8 @@ async function handleInviteUser(admin: any, actor: ActorProfile, payload: Payloa
     }
     return fail(500, 'No se pudo completar la invitación. Intentá nuevamente.', 'internal_error')
   }
+
+  await recordInvitationAccessStatus(admin, updatedProfile as TargetProfile)
 
   await logAudit(admin, {
     actorUserId: actor.id,

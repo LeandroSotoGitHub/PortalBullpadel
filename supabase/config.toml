@@ -20,3 +20,13 @@ project_id = "portal-bullpadel"
 # función (capa adicional a la validación propia de withSupabase({auth:
 # 'user'}) en supabase/functions/admin-portal/index.ts — ver ese archivo).
 verify_jwt = true
+
+[functions.brevo-webhook]
+# Brevo no posee JWT de Supabase. La función valida un bearer propio guardado
+# como BREVO_WEBHOOK_TOKEN antes de procesar cualquier payload.
+verify_jwt = false
+
+[functions.sheet-status-export]
+# Google Apps Script usa un bearer independiente (SHEET_SYNC_TOKEN). La salida
+# es de solo lectura y contiene únicamente email + estado calculado.
+verify_jwt = false
