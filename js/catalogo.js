@@ -218,6 +218,20 @@ function csvEscape(value) {
 }
 
 /**
+ * Escapa un código (SKU / EAN) para que Excel lo abra como texto.
+ * Sin esto, Excel convierte los EAN de 13 dígitos a notación científica
+ * (8,4454E+12) y borra los ceros a la izquierda del SKU (078965 → 78965).
+ * La fórmula ="..." fuerza el valor como texto y conserva todos los dígitos.
+ */
+
+function csvCodigo(value) {
+  if (value === null || value === undefined) return '';
+  const str = String(value).trim();
+  if (str === '') return '';
+  return '="' + str.replace(/"/g, '""') + '"';
+}
+
+/**
  * Dado un código de material (ej: "X12"), devuelve el nombre completo
  * usando el array MATERIALES. Si no lo encuentra, devuelve el código.
  */
@@ -260,9 +274,9 @@ function buildCatalogoTecnicoRows() {
 
     return [
       csvEscape(p.nombre           || '-'),
-      csvEscape(p.sku              || ''),
-      csvEscape(p.ean              || ''),
-      csvEscape(p.ean2             || ''),
+      csvCodigo(p.sku),
+      csvCodigo(p.ean),
+      csvCodigo(p.ean2),
       csvEscape(p.linea            || '-'),
       csvEscape(p.forma            || '-'),
       csvEscape(p.peso             || '-'),
